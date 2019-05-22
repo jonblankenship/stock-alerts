@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StockAlerts.Data;
+using StockAlerts.Domain.Services;
+using System;
+using AutoMapper;
+using StockAlerts.Data.Repositories;
+using StockAlerts.Domain.Repositories;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -26,6 +28,8 @@ namespace StockAlerts.Functions
         public override void Configure(IFunctionsHostBuilder builder)
         {
             ConfigureDbContexts(builder);
+            ConfigureServices(builder);
+            ConfigureAutoMapper(builder);
         }
 
         private void ConfigureDbContexts(IFunctionsHostBuilder builder)
@@ -34,6 +38,26 @@ namespace StockAlerts.Functions
             {
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
+        }
+
+        private void ConfigureServices(IFunctionsHostBuilder builder)
+        {
+            builder.Services.AddScoped<IAlertDefinitionsService, AlertDefinitionsService>();
+            builder.Services.AddScoped<IStocksService, StocksService>();
+
+            builder.Services.AddScoped<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
+            builder.Services.AddScoped<IStocksRepository, StocksRepository>();
+        }
+
+        private void ConfigureAutoMapper(IFunctionsHostBuilder builder)
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<DataModelMappingProfile>();
+            });
+            Mapper.AssertConfigurationIsValid();
+
+            builder.Services.AddSingleton(Mapper.Instance);
         }
     }
 }

@@ -4,6 +4,7 @@
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
@@ -13,7 +14,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.28" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAlerts.Data\StockAlerts.Data.csproj" />
@@ -28,7 +29,10 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(OutDir)bin\*&quot; &quot;$(OutDir)&quot; /Y /I /E" />
+  <ItemGroup>
+    <EfMigrationItems Include="$(OutDir)bin\*" />
+  </ItemGroup>
+  <Target Name="CopyEfMigrationItems" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="@(EfMigrationItems)" DestinationFolder="$(OutDir)" />
   </Target>
 </Project>

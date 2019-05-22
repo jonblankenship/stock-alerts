@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockAlerts.Data;
 
 namespace StockAlerts.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190521191859_Update001")]
+    partial class Update001
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +64,7 @@ namespace StockAlerts.Data.Migrations
 
                     b.HasKey("AppUserId");
 
-                    b.ToTable("AppUsers");
+                    b.ToTable("AppUser");
                 });
 
             modelBuilder.Entity("StockAlerts.Data.Model.Stock", b =>
@@ -80,7 +82,7 @@ namespace StockAlerts.Data.Migrations
 
                     b.HasKey("StockId");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stock");
                 });
 
             modelBuilder.Entity("StockAlerts.Data.Model.UserPreferences", b =>
