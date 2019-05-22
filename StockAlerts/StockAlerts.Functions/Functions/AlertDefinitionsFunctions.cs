@@ -10,7 +10,7 @@ using StockAlerts.Domain.Services;
 
 namespace StockAlerts.Functions
 {
-    public class AlertDefinitionsFunctions
+    public class AlertDefinitionsFunctions : FunctionBase
     {
         private readonly IAlertDefinitionsService _alertDefinitionsService;
 
@@ -24,10 +24,17 @@ namespace StockAlerts.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "alert-definitions")] HttpRequest req,
             ILogger log)
         {
-            // TODO: Get userId from req.HttpContext.User claims
-            var userId = MiscConstants.AppUserId;
-            var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(userId);
-            return new OkObjectResult(alertDefinitions);
+            try
+            {
+                // TODO: Get userId from req.HttpContext.User claims
+                var userId = MiscConstants.AppUserId;
+                var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(userId);
+                return new OkObjectResult(alertDefinitions);
+            }        
+            catch (Exception e)
+            {
+                return HandleException(e, req.HttpContext);
+            }
         }
 
         [FunctionName("GetAlertDefinition")]
@@ -36,8 +43,15 @@ namespace StockAlerts.Functions
             string alertDefinitionId,
             ILogger log)
         {
-            var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
-            return new OkObjectResult(alertDefinition);
+            try
+            {
+                var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
+                return new OkObjectResult(alertDefinition);
+            }
+            catch (Exception e)
+            {
+                return HandleException(e, req.HttpContext);
+            }
         }
     }
 }

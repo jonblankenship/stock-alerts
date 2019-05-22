@@ -4,17 +4,28 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace StockAlerts.Functions
 {
-    public static class PingFunction
+    public class PingFunction : FunctionBase
     {
+        public PingFunction()
+        { }
+
         [FunctionName("Ping")]
-        public static IActionResult Run(
+        public async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ping")] HttpRequest req,
             ILogger log)
         {
-            return new OkObjectResult($"StockAlerts API Ping: {DateTime.UtcNow:F}");
+            try
+            {
+                return new OkObjectResult($"StockAlerts API Ping: {DateTime.UtcNow:F}");
+            }
+            catch (Exception e)
+            {
+                return HandleException(e, req.HttpContext);
+            }
         }
     }
 }

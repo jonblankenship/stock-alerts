@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace StockAlerts.Functions
 {
-    public class StocksFunctions
+    public class StocksFunctions : FunctionBase
     {
         private readonly IStocksService _stocksService;
 
@@ -27,8 +27,15 @@ namespace StockAlerts.Functions
             string stockId,
             ILogger log)
         {
-            var stock = await _stocksService.GetStockAsync(new Guid(stockId));
-            return new OkObjectResult(stock);
+            try
+            {
+                var stock = await _stocksService.GetStockAsync(new Guid(stockId));
+                return new OkObjectResult(stock);
+            }
+            catch (Exception e)
+            {
+                return HandleException(e, req.HttpContext);
+            }
         }
 
         [FunctionName("FindStocks")]
@@ -36,15 +43,22 @@ namespace StockAlerts.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "stocks")] HttpRequest req,
             ILogger log)
         {
-            var startsWith = req.Query["startsWith"];            
+            try
+            { 
+                var startsWith = req.Query["startsWith"];            
 
-            if (startsWith.Any())
-            {
-                var stocks = await _stocksService.FindStocksAsync(startsWith);
-                return new OkObjectResult(stocks);
+                if (startsWith.Any())
+                {
+                    var stocks = await _stocksService.FindStocksAsync(startsWith);
+                    return new OkObjectResult(stocks);
+                }
+
+                return new OkObjectResult(new List<Stock>());
             }
-
-            return new OkObjectResult(new List<Stock>());
+            catch (Exception e)
+            {
+                return HandleException(e, req.HttpContext);
+            }
         }
     }
 }
