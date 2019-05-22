@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using StockAlerts.Functions.Attributes;
 
 namespace StockAlerts.Functions
 {
@@ -14,18 +15,12 @@ namespace StockAlerts.Functions
         { }
 
         [FunctionName("Ping")]
-        public async Task<IActionResult> RunAsync(
+        [HandleExceptions]
+        public IActionResult Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ping")] HttpRequest req,
             ILogger log)
         {
-            try
-            {
-                return new OkObjectResult($"StockAlerts API Ping: {DateTime.UtcNow:F}");
-            }
-            catch (Exception e)
-            {
-                return HandleException(e, req.HttpContext);
-            }
+            return new OkObjectResult($"StockAlerts API Ping: {DateTime.UtcNow:F}");
         }
     }
 }

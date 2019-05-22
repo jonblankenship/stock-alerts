@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Services;
+using StockAlerts.Functions.Attributes;
 
 namespace StockAlerts.Functions
 {
@@ -20,38 +21,26 @@ namespace StockAlerts.Functions
         }
 
         [FunctionName("GetAlertDefinitions")]
+        [HandleExceptions]
         public async Task<IActionResult> GetAlertDefinitionsAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "alert-definitions")] HttpRequest req,
             ILogger log)
         {
-            try
-            {
-                // TODO: Get userId from req.HttpContext.User claims
-                var userId = MiscConstants.AppUserId;
-                var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(userId);
-                return new OkObjectResult(alertDefinitions);
-            }        
-            catch (Exception e)
-            {
-                return HandleException(e, req.HttpContext);
-            }
+            // TODO: Get userId from req.HttpContext.User claims
+            var userId = MiscConstants.AppUserId;
+            var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(userId);
+            return new OkObjectResult(alertDefinitions);
         }
 
         [FunctionName("GetAlertDefinition")]
+        [HandleExceptions]
         public async Task<IActionResult> GetAlertDefinitionAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "alert-definitions/{alertDefinitionId}")] HttpRequest req,
             string alertDefinitionId,
             ILogger log)
         {
-            try
-            {
-                var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
-                return new OkObjectResult(alertDefinition);
-            }
-            catch (Exception e)
-            {
-                return HandleException(e, req.HttpContext);
-            }
+            var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
+            return new OkObjectResult(alertDefinition);
         }
     }
 }
