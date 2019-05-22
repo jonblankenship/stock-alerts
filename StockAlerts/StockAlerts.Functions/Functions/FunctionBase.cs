@@ -10,13 +10,13 @@ namespace StockAlerts.Functions
 {
     public abstract class FunctionBase
     {
-        public static IActionResult HandleException(
+        protected static IActionResult HandleException(
             Exception exception,
             HttpContext context)
         {
             HttpStatusCode status;
             string message;
-            string stackTrace = String.Empty;
+            string stackTrace = string.Empty;
 
             var exceptionType = exception.GetType();
             if (exceptionType == typeof(BadRequestException))
