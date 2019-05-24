@@ -11,14 +11,14 @@ namespace StockAlerts.Functions
     public class GetQuotesFunction
     {
         private readonly IDataUpdateService _dataUpdateService;
-        private readonly IAppSettings _appSettings;
+        private readonly ISettings _settings;
 
         public GetQuotesFunction(
             IDataUpdateService dataUpdateService,
-            IAppSettings appSettings)
+            ISettings settings)
         {
             _dataUpdateService = dataUpdateService ?? throw new ArgumentNullException(nameof(dataUpdateService));
-            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         [FunctionName("GetQuotes")]
@@ -27,8 +27,8 @@ namespace StockAlerts.Functions
             [TimerTrigger("0 */1 8-16 * * 1-5", RunOnStartup = true)]TimerInfo myTimer,
             ILogger log)
         {
-            if (DateTimeOffset.UtcNow >= _appSettings.MarketOpenUtc &&
-                DateTimeOffset.UtcNow <= _appSettings.MarketCloseUtc)
+            if (DateTimeOffset.UtcNow >= _settings.AppSettings.MarketOpenUtc &&
+                DateTimeOffset.UtcNow <= _settings.AppSettings.MarketCloseUtc)
             {
                 log.Log(LogLevel.Information, "Executing GetQuotes: Performing update quotes for subscribed stocks.");
                 await _dataUpdateService.UpdateQuotesForSubscribedStocksAsync();

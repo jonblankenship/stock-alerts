@@ -32,6 +32,7 @@ namespace StockAlerts.Domain.Model
                 throw new ApplicationException($"Attempted to update stock ({Symbol}) with a quote for a different stock ({quote.Symbol}).");
 
             LastTime = quote.LastTime;
+            PreviousLastPrice = LastPrice;
             LastPrice = quote.LastPrice;
         }
 

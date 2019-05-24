@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace StockAlerts.Domain.Settings
 {
-    public class AppSettings : IAppSettings
+    public class AppSettings
     {
         public string StockAlertsUserAgent { get; set; }
 

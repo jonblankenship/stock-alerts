@@ -29,7 +29,11 @@ namespace StockAlerts.Domain.Tests.Unit.Model
         public void OnNewQuote_SymbolMatches_StockUpdatedWithQuote()
         {
             // Arrange
-            var stock = new Stock { Symbol = "ABC" };
+            var stock = new Stock
+            {
+                Symbol = "ABC",
+                LastPrice = 9.56M
+            };
             var quote = new PriceQuote
             {
                 LastPrice = 9.99M,
@@ -42,6 +46,7 @@ namespace StockAlerts.Domain.Tests.Unit.Model
 
             // Assert
             stock.LastPrice.Should().Be(quote.LastPrice);
+            stock.PreviousLastPrice.Should().Be(9.56M);
             stock.LastTime.Should().Be(quote.LastTime);
             stock.Symbol.Should().Be(quote.Symbol);
         }

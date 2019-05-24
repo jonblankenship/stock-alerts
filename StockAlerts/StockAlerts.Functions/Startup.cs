@@ -23,17 +23,21 @@ namespace StockAlerts.Functions
 {
     public class Startup : FunctionsStartup
     {
+        private readonly bool _isDevelopment;
         private readonly IConfigurationRoot _configuration;
-        private IAppSettings _appSettings;
+        private Settings _settings;
 
         public Startup()
         {
             var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
                 .AddJsonFile("local.settings.json", true, true)
+                .AddJsonFile("appsettings.json", true, true)
                 .AddEnvironmentVariables();
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+            _isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+
+            if (!_isDevelopment)
             {
                 var azureServiceTokenProvider = new AzureServiceTokenProvider();
                 var keyVaultClient =
@@ -81,8 +85,9 @@ namespace StockAlerts.Functions
             builder.Services.AddTransient<Stock, Stock>();
 
             // Settings
-            _appSettings = _configuration.Get<AppSettings>();            
-            builder.Services.AddSingleton(_appSettings);
+            _settings = new Settings();
+            _settings.Initialize(_configuration, _isDevelopment);
+            builder.Services.AddSingleton<ISettings>(_settings);
             builder.Services.AddSingleton<IIntrinioSettings>(_configuration.GetSection("IntrinioSettings").Get<IntrinioSettings>());
         }
 
@@ -96,7 +101,7 @@ namespace StockAlerts.Functions
 
         private void ConfigureHttpClients(IFunctionsHostBuilder builder)
         {
-            var stockAlertsUserAgent = _appSettings.StockAlertsUserAgent;
+            var stockAlertsUserAgent = _settings.AppSettings.StockAlertsUserAgent;
 
             if (stockAlertsUserAgent == null)
                 throw new Exception("`StockAlertsUserAgent` must be set");
