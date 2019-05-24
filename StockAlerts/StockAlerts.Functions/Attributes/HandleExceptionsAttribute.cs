@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PostSharp.Aspects;
 using StockAlerts.Domain.Exceptions;
+using System;
+using System.Net;
 
 namespace StockAlerts.Functions.Attributes
 {

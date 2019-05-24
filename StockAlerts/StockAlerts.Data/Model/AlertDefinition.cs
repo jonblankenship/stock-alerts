@@ -22,8 +22,8 @@ namespace StockAlerts.Data.Model
 
         public ComparisonOperator ComparisonOperator { get; set; }
 
-        public Stock Stock { get; set; }
+        public virtual Stock Stock { get; set; }
 
-        public AppUser AppUser { get; set; }
+        public virtual AppUser AppUser { get; set; }
     }
 }

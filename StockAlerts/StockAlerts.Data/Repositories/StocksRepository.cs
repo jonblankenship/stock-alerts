@@ -1,12 +1,13 @@
-﻿using StockAlerts.Domain.Model;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using StockAlerts.Domain.Enums;
+using StockAlerts.Domain.Exceptions;
+using StockAlerts.Domain.Model;
+using StockAlerts.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using StockAlerts.Domain.Exceptions;
-using StockAlerts.Domain.Repositories;
 
 namespace StockAlerts.Data.Repositories
 {
@@ -45,6 +46,45 @@ namespace StockAlerts.Data.Repositories
             var dataObjects = await query.ToListAsync();
 
             return _mapper.Map<List<Stock>>(dataObjects);
+        }
+
+        public async Task<IEnumerable<Stock>> GetSubscribedStocksAsync()
+        {
+            var query = (from a in _dbContext.AlertDefinitions
+                         where a.Status == AlertDefinitionStatuses.Enabled
+                         select a.Stock).Distinct();
+
+            var dataObjects = await query.ToListAsync();
+            return _mapper.Map<List<Stock>>(dataObjects);
+        }
+
+        public async Task SaveAsync(Stock stock)
+        {
+            if (stock.StockId == Guid.Empty)
+                await InsertAsync(stock);
+            else
+                await UpdateAsync(stock);
+        }
+
+        private async Task InsertAsync(Stock stock)
+        {
+            var dataObject = _mapper.Map<Data.Model.Stock>(stock);
+            await _dbContext.Stocks.AddAsync(dataObject);
+            await _dbContext.SaveChangesAsync();
+            _mapper.Map<Stock>(dataObject);
+        }
+
+        private async Task UpdateAsync(Stock stock)
+        {
+            var dataObject = await (from s in _dbContext.Stocks
+                                    where s.StockId == stock.StockId
+                                    select s).SingleAsync();
+
+            _mapper.Map(stock, dataObject);
+            _dbContext.Update(dataObject);
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(dataObject).State = EntityState.Detached;
+            _mapper.Map<Stock>(dataObject);
         }
     }
 }

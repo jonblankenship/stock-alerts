@@ -12,8 +12,8 @@ namespace StockAlerts.Data.Model
 
         public Guid UserId { get; set; }
 
-        public ICollection<AlertDefinition> AlertDefinitions { get; set; }
+        public virtual ICollection<AlertDefinition> AlertDefinitions { get; set; }
 
-        public UserPreferences UserPreferences { get; set; }
+        public virtual UserPreferences UserPreferences { get; set; }
     }
 }

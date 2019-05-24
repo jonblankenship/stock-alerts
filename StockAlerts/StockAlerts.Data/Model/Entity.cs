@@ -4,8 +4,8 @@ namespace StockAlerts.Data.Model
 {
     public abstract class Entity
     {
-        public DateTime Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
-        public DateTime Modified { get; set; }
+        public DateTimeOffset Modified { get; set; }
     }
 }

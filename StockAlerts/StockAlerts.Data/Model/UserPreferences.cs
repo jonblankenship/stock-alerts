@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace StockAlerts.Data.Model
 {
@@ -20,6 +18,6 @@ namespace StockAlerts.Data.Model
 
         public string SmsNumber { get; set; }
 
-        public AppUser AppUser { get; set; }
+        public virtual AppUser AppUser { get; set; }
     }
 }
