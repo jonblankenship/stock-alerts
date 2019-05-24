@@ -11,6 +11,9 @@ using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Settings;
@@ -21,14 +24,29 @@ namespace StockAlerts.Functions
     public class Startup : FunctionsStartup
     {
         private readonly IConfigurationRoot _configuration;
+        private IAppSettings _appSettings;
 
         public Startup()
         {
-            _configuration = new ConfigurationBuilder()
+            var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(Environment.CurrentDirectory)
                 .AddJsonFile("local.settings.json", true, true)
-                .AddEnvironmentVariables()
-                .Build();
+                .AddEnvironmentVariables();
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Development")
+            {
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                var keyVaultClient =
+                    new KeyVaultClient(
+                        new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider
+                            .KeyVaultTokenCallback));
+
+                configurationBuilder.AddAzureKeyVault(
+                    $"https://{Environment.GetEnvironmentVariable("Vault")}.vault.azure.net/", keyVaultClient,
+                    new DefaultKeyVaultSecretManager());
+            }
+
+            _configuration = configurationBuilder.Build();
         }
 
         public override void Configure(IFunctionsHostBuilder builder)
@@ -43,8 +61,7 @@ namespace StockAlerts.Functions
         {
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
-                       .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                ApplicationDbContext.ConfigureStartupOptions(_configuration, options);
             });
         }
 
@@ -64,7 +81,8 @@ namespace StockAlerts.Functions
             builder.Services.AddTransient<Stock, Stock>();
 
             // Settings
-            builder.Services.AddSingleton<IAppSettings>(_configuration.GetSection("AppSettings").Get<AppSettings>());
+            _appSettings = _configuration.Get<AppSettings>();            
+            builder.Services.AddSingleton(_appSettings);
             builder.Services.AddSingleton<IIntrinioSettings>(_configuration.GetSection("IntrinioSettings").Get<IntrinioSettings>());
         }
 
@@ -78,7 +96,7 @@ namespace StockAlerts.Functions
 
         private void ConfigureHttpClients(IFunctionsHostBuilder builder)
         {
-            var stockAlertsUserAgent = _configuration.GetValue<string>("StockAlertsUserAgent");
+            var stockAlertsUserAgent = _appSettings.StockAlertsUserAgent;
 
             if (stockAlertsUserAgent == null)
                 throw new Exception("`StockAlertsUserAgent` must be set");

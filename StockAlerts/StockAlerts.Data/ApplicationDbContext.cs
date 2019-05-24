@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using StockAlerts.Data.Model;
 
 namespace StockAlerts.Data
@@ -19,6 +20,14 @@ namespace StockAlerts.Data
         public DbSet<Stock> Stocks { get; set; }
         
         public DbSet<AppUser> AppUsers { get; set; }
+
+        public static void ConfigureStartupOptions(
+            IConfigurationRoot configuration,
+            DbContextOptionsBuilder optionsBuilder
+        )
+        {
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("StockAlertsDatabase"));
+        }
 
         public override int SaveChanges()
         {

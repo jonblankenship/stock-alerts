@@ -26,10 +26,17 @@ namespace StockAlerts.Functions
         public async Task GetQuotesAsync(
             [TimerTrigger("0 */1 8-16 * * 1-5", RunOnStartup = true)]TimerInfo myTimer,
             ILogger log)
-        {            
+        {
             if (DateTimeOffset.UtcNow >= _appSettings.MarketOpenUtc &&
                 DateTimeOffset.UtcNow <= _appSettings.MarketCloseUtc)
+            {
+                log.Log(LogLevel.Information, "Executing GetQuotes: Performing update quotes for subscribed stocks.");
                 await _dataUpdateService.UpdateQuotesForSubscribedStocksAsync();
+            }
+            else
+            {
+                log.Log(LogLevel.Information, "Executing GetQuotes: Outside of market hours - no update.");
+            }
         }
     }
 }

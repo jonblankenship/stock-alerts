@@ -1,14 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace StockAlerts.Data
 {
     public class ApplicationDbContextDesignTimeFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
+        private readonly IConfigurationRoot _configuration;
+
+        public ApplicationDbContextDesignTimeFactory()
+        {
+            var configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile("local.settings.json", true, true)
+                .AddEnvironmentVariables();
+            
+            _configuration = configurationBuilder.Build();
+        }
+
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=StockAlerts;Trusted_Connection=True;MultipleActiveResultSets=true");
+
+            ApplicationDbContext.ConfigureStartupOptions(_configuration, optionsBuilder);
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

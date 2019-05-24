@@ -5,6 +5,8 @@ namespace StockAlerts.Domain.Settings
 {
     public class AppSettings : IAppSettings
     {
+        public string StockAlertsUserAgent { get; set; }
+
         public string MarketOpenTime { get; set; }
 
         public string MarketCloseTime { get; set; }
