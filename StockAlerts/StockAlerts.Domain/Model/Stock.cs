@@ -22,6 +22,8 @@ namespace StockAlerts.Domain.Model
 
         public decimal LastPrice { get; set; }
 
+        public decimal PreviousLastPrice { get; set; }
+
         public DateTimeOffset LastTime { get; set; }
         
         public void OnNewQuote(PriceQuote quote)

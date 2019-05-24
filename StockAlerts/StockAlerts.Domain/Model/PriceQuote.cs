@@ -4,6 +4,9 @@ namespace StockAlerts.Domain.Model
 {
     public class PriceQuote
     {
+        public PriceQuote()
+        { { { } } }
+
         public PriceQuote(IQuote quote)
         {
             Symbol = quote.Symbol;

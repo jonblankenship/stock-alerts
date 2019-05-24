@@ -13,6 +13,8 @@ namespace StockAlerts.Data.Model
 
         public decimal LastPrice { get; set; }
 
+        public decimal PreviousLastPrice { get; set; }
+
         public DateTimeOffset LastTime { get; set; }
     }
 }

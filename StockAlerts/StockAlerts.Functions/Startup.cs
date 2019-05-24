@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Model;
+using StockAlerts.Domain.Settings;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -49,15 +50,22 @@ namespace StockAlerts.Functions
 
         private void ConfigureServices(IFunctionsHostBuilder builder)
         {
+            // Services
             builder.Services.AddScoped<IAlertDefinitionsService, AlertDefinitionsService>();
             builder.Services.AddScoped<IStocksService, StocksService>();
             builder.Services.AddScoped<IDataUpdateService, DataUpdateService>();
             builder.Services.AddScoped<IStockDataWebClient, IntrinioClient>();
 
+            // Repositories
             builder.Services.AddScoped<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
             builder.Services.AddScoped<IStocksRepository, StocksRepository>();
 
+            // Domain models
             builder.Services.AddTransient<Stock, Stock>();
+
+            // Settings
+            builder.Services.AddSingleton<IAppSettings>(_configuration.GetSection("AppSettings").Get<AppSettings>());
+            builder.Services.AddSingleton<IIntrinioSettings>(_configuration.GetSection("IntrinioSettings").Get<IntrinioSettings>());
         }
 
         private void ConfigureAutoMapper(IFunctionsHostBuilder builder)
@@ -81,13 +89,6 @@ namespace StockAlerts.Functions
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("User-Agent", stockAlertsUserAgent);
             });
-
-            var intrinioSettings = new IntrinioSettings()
-            {
-                ApiKey = _configuration.GetValue<string>("IntrinioApiKey")
-            };
-            builder.Services.AddScoped<IIntrinioSettings, IntrinioSettings>(x => intrinioSettings);
-
         }
     }
 }

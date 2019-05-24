@@ -19,7 +19,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
         public async Task GetStockAsync_StockIdDoesNotExist_NotFoundException()
         {
             // Arrange
-            var context = await InMemoryDbContextFactory.GetContextAsync();
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var repository = CreateRepository(context);
 
             // Act & Assert
@@ -30,7 +30,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
         public async Task GetStockAsync_StockIdExists_StockReturned()
         {
             // Arrange
-            var context = await InMemoryDbContextFactory.GetContextAsync();
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var repository = CreateRepository(context);
             var existingStock = await context.Stocks.FirstAsync();
 
@@ -47,7 +47,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
         public async Task FindStocksAsync_NoMatch_EmptyListReturned()
         {
             // Arrange
-            var context = await InMemoryDbContextFactory.GetContextAsync();
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var repository = CreateRepository(context);
 
             // Act
@@ -61,7 +61,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
         public async Task FindStocksAsync_Match_StocksReturned()
         {
             // Arrange
-            var context = await InMemoryDbContextFactory.GetContextAsync();
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var repository = CreateRepository(context);
 
             // Act
@@ -77,7 +77,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
         public async Task GetSubscribedStocksAsync_StocksWithEnabledAlertDefinitionsReturned()
         {
             // Arrange
-            var context = await InMemoryDbContextFactory.GetContextAsync();
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var repository = CreateRepository(context);
             var expectedSymbols = await (from a in context.AlertDefinitions
                                          where a.Status == AlertDefinitionStatuses.Enabled
