@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Domain", "Stock
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Data", "StockAlerts.Data\StockAlerts.Data.csproj", "{6EA90AB7-2143-4925-A5EB-084FD42B58BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.DataProviders.Intrinio", "StockAlerts.DataProviders.Intrinio\StockAlerts.DataProviders.Intrinio.csproj", "{0B1D8E65-B933-4BC9-998D-F710190E20B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.DataProviders.Intrinio", "StockAlerts.DataProviders.Intrinio\StockAlerts.DataProviders.Intrinio.csproj", "{0B1D8E65-B933-4BC9-998D-F710190E20B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5F2B71C9-14B2-4468-A898-DB012391DE01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.Data.Tests.Unit", "StockAlerts.Data.Tests.Unit\StockAlerts.Data.Tests.Unit.csproj", "{E4883826-70F9-4828-AA33-FDAA2B31CC4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Data.Tests.Unit", "StockAlerts.Data.Tests.Unit\StockAlerts.Data.Tests.Unit.csproj", "{E4883826-70F9-4828-AA33-FDAA2B31CC4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.Domain.Tests.Unit", "StockAlerts.Domain.Tests.Unit\StockAlerts.Domain.Tests.Unit.csproj", "{61962B11-17EF-4B54-A2C7-86EF411CBF9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Domain.Tests.Unit", "StockAlerts.Domain.Tests.Unit\StockAlerts.Domain.Tests.Unit.csproj", "{61962B11-17EF-4B54-A2C7-86EF411CBF9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

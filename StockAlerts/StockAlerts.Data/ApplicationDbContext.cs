@@ -21,12 +21,18 @@ namespace StockAlerts.Data
         
         public DbSet<AppUser> AppUsers { get; set; }
 
+        public DbSet<ApiCall> ApiCalls { get; set; }
+
         public static void ConfigureStartupOptions(
+            bool isDevelopment,
             IConfigurationRoot configuration,
             DbContextOptionsBuilder optionsBuilder
         )
         {
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("StockAlertsDatabase"));
+            var connectionString = isDevelopment
+                ? configuration.GetConnectionString("LocalStockAlertsDatabase")
+                : configuration.GetConnectionString("StockAlertsDatabase");
+            optionsBuilder.UseSqlServer(connectionString);
         }
 
         public override int SaveChanges()

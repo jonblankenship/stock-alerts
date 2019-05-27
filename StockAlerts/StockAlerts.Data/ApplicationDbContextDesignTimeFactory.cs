@@ -23,7 +23,9 @@ namespace StockAlerts.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-            ApplicationDbContext.ConfigureStartupOptions(_configuration, optionsBuilder);
+            var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+            
+            ApplicationDbContext.ConfigureStartupOptions(isDevelopment, _configuration, optionsBuilder);
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

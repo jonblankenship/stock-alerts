@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using StockAlerts.Domain.QueueMessages;
 using StockAlerts.Domain.Repositories;
 
 namespace StockAlerts.Domain.Services
@@ -25,6 +26,13 @@ namespace StockAlerts.Domain.Services
         {
             var alertDefinition = await _alertDefinitionsRepository.GetAlertDefinitionAsync(alertDefinitionId);
             return alertDefinition;
+        }
+
+        public async Task EvaluateAlertAsync(AlertEvaluationMessage message)
+        {
+            var alertDefinition = await _alertDefinitionsRepository.GetAlertDefinitionAsync(message.AlertDefinitionId);
+
+            await alertDefinition.EvaluateAsync(message);
         }
     }
 }

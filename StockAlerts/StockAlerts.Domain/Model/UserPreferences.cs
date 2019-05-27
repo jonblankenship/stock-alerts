@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StockAlerts.Data.Model
+namespace StockAlerts.Domain.Model
 {
-    public class UserPreferences : Entity
+    public class UserPreferences
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UserPreferencesId { get; set; }
 
         public Guid AppUserId { get; set; }
@@ -19,7 +17,5 @@ namespace StockAlerts.Data.Model
         public bool ShouldSendSms { get; set; }
 
         public string SmsNumber { get; set; }
-
-        public virtual AppUser AppUser { get; set; }
     }
 }

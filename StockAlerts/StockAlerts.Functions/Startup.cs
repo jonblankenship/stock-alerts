@@ -15,6 +15,7 @@ using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using StockAlerts.Domain.Constants;
+using StockAlerts.Domain.Factories;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Settings;
 
@@ -65,7 +66,7 @@ namespace StockAlerts.Functions
         {
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
-                ApplicationDbContext.ConfigureStartupOptions(_configuration, options);
+                ApplicationDbContext.ConfigureStartupOptions(_isDevelopment, _configuration, options);
             });
         }
 
@@ -76,13 +77,21 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<IStocksService, StocksService>();
             builder.Services.AddScoped<IDataUpdateService, DataUpdateService>();
             builder.Services.AddScoped<IStockDataWebClient, IntrinioClient>();
+            builder.Services.AddScoped<INotificationsService, NotificationsService>();
 
             // Repositories
             builder.Services.AddScoped<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
             builder.Services.AddScoped<IStocksRepository, StocksRepository>();
+            builder.Services.AddScoped<IApiCallsRepository, ApiCallsRepository>();
+            builder.Services.AddScoped<IAppUsersRepository, AppUsersRepository>();
+
+            // Factories
+            builder.Services.AddScoped<IQueueClientFactory, QueueClientFactory>();
 
             // Domain models
             builder.Services.AddTransient<Stock, Stock>();
+            builder.Services.AddTransient<AlertDefinition, AlertDefinition>();
+            builder.Services.AddTransient<AppUser, AppUser>();
 
             // Settings
             _settings = new Settings();
@@ -106,7 +115,7 @@ namespace StockAlerts.Functions
             if (stockAlertsUserAgent == null)
                 throw new Exception("`StockAlertsUserAgent` must be set");
 
-            builder.Services.AddHttpClient(HttpsClients.IntrinioApi, c =>
+            builder.Services.AddHttpClient(Apis.Intrinio, c =>
             {
                 c.BaseAddress = new Uri("https://api-v2.intrinio.com");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");

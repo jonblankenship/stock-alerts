@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StockAlerts.Domain.Settings
+﻿namespace StockAlerts.Domain.Settings
 {
     public class ServiceBusSettings
     {
-        public string ServiceBusConnectionString { get; set; }
+        public string ConnectionString { get; set; }
 
         public string AlertProcessingQueue { get; set; }
 

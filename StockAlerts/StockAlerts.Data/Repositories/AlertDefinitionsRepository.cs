@@ -26,8 +26,8 @@ namespace StockAlerts.Data.Repositories
         public async Task<IEnumerable<AlertDefinition>> GetAlertDefinitionsAsync(Guid appUserId)
         {
             var query = from a in _dbContext.AlertDefinitions
-                        where a.AppUserId == appUserId
-                        select a;
+                where a.AppUserId == appUserId
+                select a;
 
             var dataObjects = await query.ToListAsync();
 
@@ -37,8 +37,11 @@ namespace StockAlerts.Data.Repositories
         public async Task<AlertDefinition> GetAlertDefinitionAsync(Guid alertDefinitionId)
         {
             var query = from a in _dbContext.AlertDefinitions
-                        where a.AlertDefinitionId == alertDefinitionId
-                        select a;
+                    .Include(x => x.AppUser)
+                    .ThenInclude(x => x.UserPreferences)
+                    .Include(x => x.Stock)
+                where a.AlertDefinitionId == alertDefinitionId
+                select a;
 
             var dataObject = await query.SingleOrDefaultAsync();
 
@@ -46,6 +49,46 @@ namespace StockAlerts.Data.Repositories
                 throw new NotFoundException($"AlertDefinition with id {alertDefinitionId} not found.");
 
             return _mapper.Map<AlertDefinition>(dataObject);
+        }
+
+        public async Task<IEnumerable<AlertDefinition>> GetAlertDefinitionsByStockIdAsync(Guid stockId)
+        {
+            var query = from a in _dbContext.AlertDefinitions
+                        where a.StockId == stockId
+                        select a;
+
+            var dataObjects = await query.ToListAsync();
+
+            return dataObjects.Select(a => _mapper.Map<AlertDefinition>(a)).ToList();
+        }
+
+        public async Task SaveAsync(AlertDefinition alertDefinition)
+        {
+            if (alertDefinition.AlertDefinitionId == Guid.Empty)
+                await InsertAsync(alertDefinition);
+            else
+                await UpdateAsync(alertDefinition);
+        }
+
+        private async Task InsertAsync(AlertDefinition alertDefinition)
+        {
+            var dataObject = _mapper.Map<Data.Model.AlertDefinition>(alertDefinition);
+            await _dbContext.AlertDefinitions.AddAsync(dataObject);
+            await _dbContext.SaveChangesAsync();
+            _mapper.Map<AlertDefinition>(dataObject);
+        }
+
+        private async Task UpdateAsync(AlertDefinition alertDefinition)
+        {
+            var dataObject = await (from a in _dbContext.AlertDefinitions
+                where a.AlertDefinitionId == alertDefinition.AlertDefinitionId
+                select a).SingleAsync();
+
+            _mapper.Map(alertDefinition, dataObject);
+            _dbContext.Update(dataObject);
+            await _dbContext.SaveChangesAsync();
+            _dbContext.Entry(dataObject).State = EntityState.Detached;
+            _mapper.Map<AlertDefinition>(dataObject);
         }
     }
 }

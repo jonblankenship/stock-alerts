@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using StockAlerts.Domain.Enums;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using StockAlerts.Domain.Enums;
 
 namespace StockAlerts.Data.Model
 {
@@ -18,12 +18,16 @@ namespace StockAlerts.Data.Model
 
         public AlertDefinitionType Type { get; set; }
 
-        public decimal PriceLevel { get; set; }
+        public decimal? PriceLevel { get; set; }
 
         public ComparisonOperator ComparisonOperator { get; set; }
+
+        public DateTimeOffset? LastSent { get; set; }
 
         public virtual Stock Stock { get; set; }
 
         public virtual AppUser AppUser { get; set; }
+
+        public virtual ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
     }
 }

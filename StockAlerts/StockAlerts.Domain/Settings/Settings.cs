@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace StockAlerts.Domain.Settings
 {
@@ -16,6 +15,8 @@ namespace StockAlerts.Domain.Settings
             AppSettings = configuration.GetSection(AppSettingsSection).Get<AppSettings>();
 
             ServiceBusSettings = configuration.GetSection(ServiceBusSettingsSection).Get<ServiceBusSettings>();
+
+            ServiceBusSettings.ConnectionString = configuration.GetValue<string>("ServiceBusConnectionString");
         }
 
         public bool IsDevelopment { get; private set; }

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PostSharp.Aspects;
 using StockAlerts.Domain.Exceptions;
 using System;
+using System.Diagnostics;
 using System.Net;
 
 namespace StockAlerts.Functions.Attributes
@@ -13,6 +14,8 @@ namespace StockAlerts.Functions.Attributes
         public override void OnException(MethodExecutionArgs args)
         {
             var exception = args.Exception;
+            
+            Debugger.Break();
 
             args.FlowBehavior = FlowBehavior.Return;
             

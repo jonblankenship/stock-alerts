@@ -15,6 +15,9 @@ namespace StockAlerts.Data
         {
             CreateMap<AlertDefinition, Domain.Model.AlertDefinition>().ConstructUsingServiceLocator();
             CreateMap<Stock, Domain.Model.Stock>().ConstructUsingServiceLocator();
+            CreateMap<AlertTriggerHistory, Domain.Model.AlertTriggerHistory>();
+            CreateMap<AppUser, Domain.Model.AppUser>().ConstructUsingServiceLocator();
+            CreateMap<UserPreferences, Domain.Model.UserPreferences>();
         }
 
         private void MapDomainToDataModel()
@@ -24,6 +27,22 @@ namespace StockAlerts.Data
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.AlertDefinition, AlertDefinition>()
+                .ForMember(d => d.Created, opt => opt.Ignore())
+                .ForMember(d => d.Modified, opt => opt.Ignore());
+            
+            CreateMap<Domain.Model.ApiCall, ApiCall>()
+                .ForMember(d => d.Created, opt => opt.Ignore())
+                .ForMember(d => d.Modified, opt => opt.Ignore());
+
+            CreateMap<Domain.Model.AlertTriggerHistory, AlertTriggerHistory>()
+                .ForMember(d => d.Created, opt => opt.Ignore())
+                .ForMember(d => d.Modified, opt => opt.Ignore());
+
+            CreateMap<Domain.Model.AppUser, AppUser>()
+                .ForMember(d => d.Created, opt => opt.Ignore())
+                .ForMember(d => d.Modified, opt => opt.Ignore());
+
+            CreateMap<Domain.Model.UserPreferences, UserPreferences>()
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
         }
