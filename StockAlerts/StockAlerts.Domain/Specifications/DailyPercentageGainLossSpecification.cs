@@ -35,14 +35,12 @@ namespace StockAlerts.Domain.Specifications
             {
                 return percentageGainLoss == _alertCriteria.Level &&
                        previousPercentageGainLoss != _alertCriteria.Level;
-
             }
 
             if (_alertCriteria.Operator == CriteriaOperator.LessThanOrEqualTo)
             {
                 return percentageGainLoss <= _alertCriteria.Level &&
                        previousPercentageGainLoss > _alertCriteria.Level;
-
             }
 
             if (_alertCriteria.Operator == CriteriaOperator.LessThan)

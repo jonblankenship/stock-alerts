@@ -32,14 +32,12 @@ namespace StockAlerts.Domain.Specifications
             {
                 return candidate.LastPrice == _alertCriteria.Level &&
                        candidate.PreviousLastPrice != _alertCriteria.Level;
-
             }
 
             if (_alertCriteria.Operator == CriteriaOperator.LessThanOrEqualTo)
             {
                 return candidate.LastPrice <= _alertCriteria.Level &&
                        candidate.PreviousLastPrice > _alertCriteria.Level;
-
             }
 
             if (_alertCriteria.Operator == CriteriaOperator.LessThan)
