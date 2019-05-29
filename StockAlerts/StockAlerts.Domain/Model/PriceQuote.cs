@@ -11,12 +11,15 @@ namespace StockAlerts.Domain.Model
         {
             Symbol = quote.Symbol;
             LastPrice = quote.LastPrice;
+            OpenPrice = quote.OpenPrice;
             LastTime = quote.LastTime;
         }
 
         public string Symbol { get; set; }
 
         public decimal LastPrice { get; set; }
+
+        public decimal OpenPrice { get; set; }
 
         public DateTimeOffset LastTime { get; set; }
     }

@@ -10,6 +10,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20190521191533_Update001.cs" />
     <Compile Remove="Migrations\20190521191533_Update001.Designer.cs" />
+    <Compile Remove="Migrations\20190528211558_Update006.cs" />
+    <Compile Remove="Migrations\20190528211558_Update006.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

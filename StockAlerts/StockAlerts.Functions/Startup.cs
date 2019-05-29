@@ -87,11 +87,13 @@ namespace StockAlerts.Functions
 
             // Factories
             builder.Services.AddScoped<IQueueClientFactory, QueueClientFactory>();
+            builder.Services.AddScoped<IAlertCriteriaSpecificationFactory, AlertCriteriaSpecificationFactory>();
 
             // Domain models
             builder.Services.AddTransient<Stock, Stock>();
             builder.Services.AddTransient<AlertDefinition, AlertDefinition>();
             builder.Services.AddTransient<AppUser, AppUser>();
+            builder.Services.AddTransient<AlertCriteria, AlertCriteria>();
 
             // Settings
             _settings = new Settings();

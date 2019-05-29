@@ -4,20 +4,25 @@ using StockAlerts.Domain.Repositories;
 using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using StockAlerts.Domain.Factories;
 
 namespace StockAlerts.Domain.Model
 {
     public class AlertDefinition
     {
         private readonly IAlertDefinitionsRepository _alertDefinitionsRepository;
+        private readonly IAlertCriteriaSpecificationFactory _alertCriteriaSpecificationFactory;
         private readonly INotificationsService _notificationsService;
 
         public AlertDefinition(
             IAlertDefinitionsRepository alertDefinitionsRepository,
+            IAlertCriteriaSpecificationFactory alertCriteriaSpecificationFactory,
             INotificationsService notificationsService)
         {
             _alertDefinitionsRepository = alertDefinitionsRepository ?? throw new ArgumentNullException(nameof(alertDefinitionsRepository));
+            _alertCriteriaSpecificationFactory = alertCriteriaSpecificationFactory ?? throw new ArgumentNullException(nameof(alertCriteriaSpecificationFactory));
             _notificationsService = notificationsService ?? throw new ArgumentNullException(nameof(notificationsService));
         }
 
@@ -31,10 +36,18 @@ namespace StockAlerts.Domain.Model
 
         public DateTimeOffset? LastSent { get; set; }
 
+        public string Name { get; set; }
+
         public ComparisonOperator ComparisonOperator { get; set; }
 
         public ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
 
+        public ICollection<AlertCriteria> AlertCriterias { get; set; }
+
+        public AlertCriteria RootCriteria => (from ac in AlertCriterias
+                                              where ac.RootCriteriaId == ac.AlertCriteriaId
+                                              select ac).Single();
+        
         public Stock Stock { get; set; }
 
         public AppUser AppUser { get; set; }
@@ -51,41 +64,19 @@ namespace StockAlerts.Domain.Model
         {
             if (Status == AlertDefinitionStatuses.Enabled)
             {
-                if (Type == AlertDefinitionType.PriceAlert)
+                if (!LastSent.HasValue || DateTimeOffset.UtcNow.Date > LastSent.Value.Date) // Alert not already sent today
                 {
-                    await EvaluatePriceAlertAsync(message);
-                }
+                    var specification = _alertCriteriaSpecificationFactory.CreateSpecification(this);
+                    if (specification.IsSatisfiedBy(message))
+                    {
+                        var subject = $"Stock Alert Triggered: {Stock.Symbol}";
+                        var notificationMessage = $"Stock Alert Triggered {Environment.NewLine}" +
+                                                  $"Notification Name: {Name}{Environment.NewLine}" +
+                                                  $"Stock: {Stock.Symbol} ({message.LastPrice:C}){Environment.NewLine}" +
+                                                  $"Criteria: {RootCriteria}{Environment.NewLine}";
 
-                // Evaluate other alerts - Dividend change alert? PE alert? Earnings announcement?
-            }
-        }
-
-        private async Task EvaluatePriceAlertAsync(AlertEvaluationMessage message)
-        {
-            if (!LastSent.HasValue || DateTimeOffset.UtcNow.Date > LastSent.Value.Date) // Alert not already sent today
-            {
-                // Price Greater Than Alert
-                if (ComparisonOperator == ComparisonOperator.GreaterThan &&
-                    message.LastPrice > PriceLevel &&
-                    message.PreviousLastPrice <= PriceLevel)
-                {
-                    var subject = $"Alert: {Stock.Symbol} greater than {PriceLevel:C}";
-                    var notificationMessage =
-                        $"{Stock.Symbol} has exceeded {PriceLevel:C} and triggered an alert.  It is currently trading at {message.LastPrice:C}.";
-
-                    await TriggerAlertAsync(subject, notificationMessage);
-                }
-
-                // Price Less Than Alert
-                if (ComparisonOperator == ComparisonOperator.LessThan &&
-                    message.LastPrice < PriceLevel &&
-                    message.PreviousLastPrice >= PriceLevel)
-                {
-                    var subject = $"Alert: {Stock.Symbol} less than {PriceLevel:C}";
-                    var notificationMessage =
-                        $"{Stock.Symbol} has dropped below {PriceLevel:C} and triggered an alert.  It is currently trading at {message.LastPrice:C}.";
-
-                    await TriggerAlertAsync(subject, notificationMessage);
+                        await TriggerAlertAsync(subject, notificationMessage);
+                    }
                 }
             }
         }

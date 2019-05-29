@@ -25,7 +25,7 @@ namespace StockAlerts.DataProviders.Intrinio.Model
         public object AskSize { get; set; }
 
         [JsonProperty("open_price")]
-        public double OpenPrice { get; set; }
+        public decimal OpenPrice { get; set; }
 
         [JsonProperty("high_price")]
         public double HighPrice { get; set; }

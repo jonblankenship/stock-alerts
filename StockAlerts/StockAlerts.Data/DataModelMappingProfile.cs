@@ -18,6 +18,7 @@ namespace StockAlerts.Data
             CreateMap<AlertTriggerHistory, Domain.Model.AlertTriggerHistory>();
             CreateMap<AppUser, Domain.Model.AppUser>().ConstructUsingServiceLocator();
             CreateMap<UserPreferences, Domain.Model.UserPreferences>();
+            CreateMap<AlertCriteria, Domain.Model.AlertCriteria>();
         }
 
         private void MapDomainToDataModel()
@@ -43,6 +44,10 @@ namespace StockAlerts.Data
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.UserPreferences, UserPreferences>()
+                .ForMember(d => d.Created, opt => opt.Ignore())
+                .ForMember(d => d.Modified, opt => opt.Ignore());
+
+            CreateMap<Domain.Model.AlertCriteria, AlertCriteria>()
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
         }

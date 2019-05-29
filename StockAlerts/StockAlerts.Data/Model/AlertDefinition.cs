@@ -24,10 +24,14 @@ namespace StockAlerts.Data.Model
 
         public DateTimeOffset? LastSent { get; set; }
 
+        public string Name { get; set; }
+
         public virtual Stock Stock { get; set; }
 
         public virtual AppUser AppUser { get; set; }
 
         public virtual ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
+
+        public virtual ICollection<AlertCriteria> AlertCriterias { get; set; }
     }
 }

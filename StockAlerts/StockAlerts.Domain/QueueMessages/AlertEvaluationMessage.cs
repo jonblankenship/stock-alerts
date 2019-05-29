@@ -11,5 +11,7 @@ namespace StockAlerts.Domain.QueueMessages
         public decimal LastPrice { get; set; }
 
         public decimal PreviousLastPrice { get; set; }
+
+        public decimal OpenPrice { get; set; }
     }
 }

@@ -10,6 +10,8 @@ namespace StockAlerts.Domain.Model
 
         decimal LastPrice { get; }
 
+        decimal OpenPrice { get; }
+
         DateTimeOffset LastTime { get; }
     }
 }
