@@ -1,4 +1,6 @@
-﻿using StockAlerts.Domain.Enums;
+﻿using System;
+using System.Collections.Generic;
+using StockAlerts.Domain.Enums;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.QueueMessages;
 using StockAlerts.Domain.Specifications;
@@ -8,6 +10,19 @@ namespace StockAlerts.Domain.Factories
 {
     public class AlertCriteriaSpecificationFactory : IAlertCriteriaSpecificationFactory
     {
+        private readonly
+            IDictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>> _factoryMethods;
+
+        public AlertCriteriaSpecificationFactory()
+        {
+            _factoryMethods = new Dictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>>
+            {
+                { CriteriaType.Composite, CreateCompositeSpecification },
+                { CriteriaType.Price, CreatePriceSpecification },
+                { CriteriaType.DailyPercentageGainLoss, CreateDailyPercentageGainLossSpecification }
+            };
+        }
+
         public ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition)
         {
             return CreateSpecification(alertDefinition, alertDefinition.RootCriteria);
@@ -15,64 +30,43 @@ namespace StockAlerts.Domain.Factories
 
         public ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition, AlertCriteria alertCriteria)
         {
-            switch (alertCriteria.Type)
-            {
-                case CriteriaType.Composite:
-                    switch (alertCriteria.Operator)
-                    {
-                        case CriteriaOperator.And:
-                            return CreateAndSpecification(alertDefinition, alertCriteria);
-                        case CriteriaOperator.Or:
-                            return CreateOrSpecification(alertDefinition, alertCriteria);
-                    }
-                    break;                        
-                case CriteriaType.Price:
-                    return CreatePriceSpecification(alertCriteria);
-                case CriteriaType.DailyPercentageGainLoss:
-                    return CreateDailyPercentageGainLossSpecification(alertCriteria);
-            }         
-
-            return null;
+            var factoryMethod = _factoryMethods[alertCriteria.Type];
+            return factoryMethod.Invoke(alertDefinition, alertCriteria);
         }
 
-        private ISpecification<AlertEvaluationMessage> CreateAndSpecification(
+        private ISpecification<AlertEvaluationMessage> CreateCompositeSpecification(
             AlertDefinition alertDefinition,
             AlertCriteria alertCriteria)
         {
-            var andSpecification = new AndSpecification<AlertEvaluationMessage>();
-            var childCriteria = (from ac in alertDefinition.AlertCriterias
-                where ac.ParentCriteriaId.HasValue && ac.ParentCriteriaId.Value == alertCriteria.AlertCriteriaId
-                select ac).ToList();
+            CompositeSpecification<AlertEvaluationMessage> specification;
+            
+            if (alertCriteria.Operator == CriteriaOperator.And)
+                specification = new AndSpecification<AlertEvaluationMessage>();
+            else if (alertCriteria.Operator == CriteriaOperator.Or)
+                specification = new OrSpecification<AlertEvaluationMessage>();
+            else
+                throw new ApplicationException("Operator not supported.");
+
+            var childCriteria = from ac in alertDefinition.AlertCriterias
+                                where ac.ParentCriteriaId.HasValue && ac.ParentCriteriaId.Value == alertCriteria.AlertCriteriaId
+                                select ac;
 
             foreach (var c in childCriteria)
             {
-                andSpecification.AddChildSpecification(CreateSpecification(alertDefinition, c));
+                specification.AddChildSpecification(CreateSpecification(alertDefinition, c));
             }
 
-            return andSpecification;
+            return specification;
         }
 
-        private ISpecification<AlertEvaluationMessage> CreateOrSpecification(
-            AlertDefinition alertDefinition,
-            AlertCriteria alertCriteria)
-        {
-            var orSpecification = new OrSpecification<AlertEvaluationMessage>();
-            var childCriteria = (from ac in alertDefinition.AlertCriterias
-                                 where ac.ParentCriteriaId.HasValue && ac.ParentCriteriaId.Value == alertCriteria.AlertCriteriaId
-                                 select ac).ToList();
-
-            foreach (var c in childCriteria)
-            {
-                orSpecification.AddChildSpecification(CreateSpecification(alertDefinition, c));
-            }
-
-            return orSpecification;
-        }
-
-        private ISpecification<AlertEvaluationMessage> CreatePriceSpecification(AlertCriteria alertCriteria) =>
+        private ISpecification<AlertEvaluationMessage> CreatePriceSpecification(
+            AlertDefinition alertDefinition, 
+            AlertCriteria alertCriteria) =>
             new PriceSpecification(alertCriteria);
 
-        private ISpecification<AlertEvaluationMessage> CreateDailyPercentageGainLossSpecification(AlertCriteria alertCriteria) =>
+        private ISpecification<AlertEvaluationMessage> CreateDailyPercentageGainLossSpecification(
+            AlertDefinition alertDefinition, 
+            AlertCriteria alertCriteria) =>
             new DailyPercentageGainLossSpecification(alertCriteria);
     }
 }
