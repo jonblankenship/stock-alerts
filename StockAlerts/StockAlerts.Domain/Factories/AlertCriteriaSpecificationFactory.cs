@@ -10,8 +10,7 @@ namespace StockAlerts.Domain.Factories
 {
     public class AlertCriteriaSpecificationFactory : IAlertCriteriaSpecificationFactory
     {
-        private readonly
-            IDictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>> _factoryMethods;
+        private readonly IDictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>> _factoryMethods;
 
         public AlertCriteriaSpecificationFactory()
         {

@@ -13,5 +13,7 @@ namespace StockAlerts.Domain.Specifications
         }
 
         public abstract bool IsSatisfiedBy(TCandidate candidate);
+
+        public IReadOnlyCollection<ISpecification<TCandidate>> Children => _childSpecifications.AsReadOnly();
     }
 }

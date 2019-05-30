@@ -67,10 +67,7 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
             {
                 AppUserId = user.AppUserId,
                 StockId = stock.StockId,
-                Type = type,
-                Status = status,
-                ComparisonOperator = comparisonOperator,
-                PriceLevel = priceLevel
+                Status = status
             };
 
     }

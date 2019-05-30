@@ -30,16 +30,10 @@ namespace StockAlerts.Domain.Model
         
         public AlertDefinitionStatuses Status { get; set; }
 
-        public AlertDefinitionType Type { get; set; }
-
-        public decimal? PriceLevel { get; set; }
-
         public DateTimeOffset? LastSent { get; set; }
 
         public string Name { get; set; }
-
-        public ComparisonOperator ComparisonOperator { get; set; }
-
+        
         public ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
 
         public ICollection<AlertCriteria> AlertCriterias { get; set; }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StockAlerts.Domain.Model;
+using System;
 using Xunit;
 
 namespace StockAlerts.Domain.Tests.Unit.Model

@@ -15,13 +15,7 @@ namespace StockAlerts.Data.Model
         public Guid StockId { get; set; }
 
         public AlertDefinitionStatuses Status { get; set; }
-
-        public AlertDefinitionType Type { get; set; }
-
-        public decimal? PriceLevel { get; set; }
-
-        public ComparisonOperator ComparisonOperator { get; set; }
-
+        
         public DateTimeOffset? LastSent { get; set; }
 
         public string Name { get; set; }
