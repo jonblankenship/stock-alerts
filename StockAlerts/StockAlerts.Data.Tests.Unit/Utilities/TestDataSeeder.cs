@@ -30,10 +30,10 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
 
             var alertDefinitions = new List<AlertDefinition>
             {
-                CreateAlertDefinition(appUsers.First(), stocks.First(), AlertDefinitionType.PriceAlert, AlertDefinitionStatuses.Enabled, ComparisonOperator.GreaterThan, 120),
-                CreateAlertDefinition(appUsers.First(), stocks.Skip(1).First(), AlertDefinitionType.PriceAlert, AlertDefinitionStatuses.Disabled, ComparisonOperator.LessThan, 90),
-                CreateAlertDefinition(appUsers.First(), stocks.Skip(2).First(), AlertDefinitionType.PriceAlert, AlertDefinitionStatuses.Enabled, ComparisonOperator.LessThan, 50),
-                CreateAlertDefinition(appUsers.Skip(1).First(), stocks.First(), AlertDefinitionType.PriceAlert, AlertDefinitionStatuses.Enabled, ComparisonOperator.GreaterThan, 92.50M),
+                CreateAlertDefinition(appUsers.First(), stocks.First(), AlertDefinitionStatuses.Enabled),
+                CreateAlertDefinition(appUsers.First(), stocks.Skip(1).First(), AlertDefinitionStatuses.Disabled),
+                CreateAlertDefinition(appUsers.First(), stocks.Skip(2).First(), AlertDefinitionStatuses.Enabled),
+                CreateAlertDefinition(appUsers.Skip(1).First(), stocks.First(), AlertDefinitionStatuses.Enabled),
             };
             await context.AlertDefinitions.AddRangeAsync(alertDefinitions);
 
@@ -59,10 +59,7 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
         private static AlertDefinition CreateAlertDefinition(
             AppUser user,
             Stock stock,
-            AlertDefinitionType type,
-            AlertDefinitionStatuses status,
-            ComparisonOperator comparisonOperator,
-            decimal priceLevel) =>
+            AlertDefinitionStatuses status) =>
             new AlertDefinition
             {
                 AppUserId = user.AppUserId,
