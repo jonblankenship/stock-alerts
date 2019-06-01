@@ -19,7 +19,7 @@ namespace StockAlerts.Functions
         [FunctionName("EvaluateAlertFunction")]
         public async Task RunAsync([ServiceBusTrigger("alertprocessingqueue", Connection = "ServiceBusConnectionString")]string myQueueItem, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
+            log.LogInformation($"Executing EvaluateAlertFunction for message: {myQueueItem}");
 
             var message = JsonConvert.DeserializeObject<AlertEvaluationMessage>(myQueueItem);
 

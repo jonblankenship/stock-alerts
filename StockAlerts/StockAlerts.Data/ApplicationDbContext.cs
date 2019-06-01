@@ -32,7 +32,25 @@ namespace StockAlerts.Data
             var connectionString = isDevelopment
                 ? configuration.GetConnectionString("LocalStockAlertsDatabase")
                 : configuration.GetConnectionString("StockAlertsDatabase");
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder
+                //.UseLazyLoadingProxies() // Needed to support loading of recursive tree of AlertCriteria
+                .UseSqlServer(connectionString);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AlertCriteria>()
+                .HasMany(ac => ac.ChildrenCriteria)
+                .WithOne(ac => ac.ParentCriteria)
+                .HasForeignKey(ac => ac.ParentCriteriaId);
+
+            modelBuilder.Entity<AlertDefinition>()
+                .HasOne(ad => ad.RootCriteria)
+                .WithOne(ac => ac.AlertDefinition)
+                .HasForeignKey<AlertCriteria>(ac => ac.AlertDefinitionId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public override int SaveChanges()

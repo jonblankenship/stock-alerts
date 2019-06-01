@@ -1,13 +1,11 @@
 ﻿using StockAlerts.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StockAlerts.Data.Model
+namespace StockAlerts.Resources.Model
 {
-    public class AlertCriteria : Entity
+    public class AlertCriteria
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid AlertCriteriaId { get; set; }
 
         public Guid? AlertDefinitionId { get; set; }
@@ -20,10 +18,6 @@ namespace StockAlerts.Data.Model
 
         public decimal? Level { get; set; }
 
-        public virtual AlertDefinition AlertDefinition { get; set; }
-
-        public virtual AlertCriteria ParentCriteria { get; set; }
-
-        public virtual ICollection<AlertCriteria> ChildrenCriteria { get; set; }
+        public ICollection<AlertCriteria> ChildrenCriteria { get; set; }
     }
 }

@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.0" />
+    <PackageReference Include="AutoMapper.Collection" Version="5.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.3" />
@@ -28,6 +29,7 @@
     <ProjectReference Include="..\StockAlerts.DataProviders.Intrinio\StockAlerts.DataProviders.Intrinio.csproj" />
     <ProjectReference Include="..\StockAlerts.Data\StockAlerts.Data.csproj" />
     <ProjectReference Include="..\StockAlerts.Domain\StockAlerts.Domain.csproj" />
+    <ProjectReference Include="..\StockAlerts.Resources\StockAlerts.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

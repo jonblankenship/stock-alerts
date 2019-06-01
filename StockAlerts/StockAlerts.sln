@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Data.Tests.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Domain.Tests.Unit", "StockAlerts.Domain.Tests.Unit\StockAlerts.Domain.Tests.Unit.csproj", "{61962B11-17EF-4B54-A2C7-86EF411CBF9A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.Resources", "StockAlerts.Resources\StockAlerts.Resources.csproj", "{77E6C68C-5B7E-47C0-B440-43A301651F91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{61962B11-17EF-4B54-A2C7-86EF411CBF9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61962B11-17EF-4B54-A2C7-86EF411CBF9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61962B11-17EF-4B54-A2C7-86EF411CBF9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77E6C68C-5B7E-47C0-B440-43A301651F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77E6C68C-5B7E-47C0-B440-43A301651F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77E6C68C-5B7E-47C0-B440-43A301651F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77E6C68C-5B7E-47C0-B440-43A301651F91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockAlerts.Data;
 
 namespace StockAlerts.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190531113631_Update011")]
+    partial class Update011
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +42,7 @@ namespace StockAlerts.Data.Migrations
 
                     b.HasKey("AlertCriteriaId");
 
-                    b.HasIndex("AlertDefinitionId")
-                        .IsUnique()
-                        .HasFilter("[AlertDefinitionId] IS NOT NULL");
+                    b.HasIndex("AlertDefinitionId");
 
                     b.HasIndex("ParentCriteriaId");
 
@@ -64,6 +64,8 @@ namespace StockAlerts.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<Guid>("RootCriteriaId");
+
                     b.Property<int>("Status");
 
                     b.Property<Guid>("StockId");
@@ -71,6 +73,8 @@ namespace StockAlerts.Data.Migrations
                     b.HasKey("AlertDefinitionId");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("RootCriteriaId");
 
                     b.HasIndex("StockId");
 
@@ -189,8 +193,8 @@ namespace StockAlerts.Data.Migrations
             modelBuilder.Entity("StockAlerts.Data.Model.AlertCriteria", b =>
                 {
                     b.HasOne("StockAlerts.Data.Model.AlertDefinition", "AlertDefinition")
-                        .WithOne("RootCriteria")
-                        .HasForeignKey("StockAlerts.Data.Model.AlertCriteria", "AlertDefinitionId")
+                        .WithMany()
+                        .HasForeignKey("AlertDefinitionId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("StockAlerts.Data.Model.AlertCriteria", "ParentCriteria")
@@ -203,6 +207,11 @@ namespace StockAlerts.Data.Migrations
                     b.HasOne("StockAlerts.Data.Model.AppUser", "AppUser")
                         .WithMany("AlertDefinitions")
                         .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("StockAlerts.Data.Model.AlertCriteria", "RootCriteria")
+                        .WithMany()
+                        .HasForeignKey("RootCriteriaId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("StockAlerts.Data.Model.Stock", "Stock")

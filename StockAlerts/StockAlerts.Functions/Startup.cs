@@ -11,6 +11,7 @@ using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using AutoMapper.EquivalencyExpression;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
@@ -18,6 +19,7 @@ using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Factories;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Settings;
+using StockAlerts.Resources;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -64,10 +66,12 @@ namespace StockAlerts.Functions
 
         private void ConfigureDbContexts(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                ApplicationDbContext.ConfigureStartupOptions(_isDevelopment, _configuration, options);
-            });
+            builder.Services.AddDbContext<ApplicationDbContext>(
+                options =>
+                {
+                    ApplicationDbContext.ConfigureStartupOptions(_isDevelopment, _configuration, options);
+                }, 
+                ServiceLifetime.Transient);
         }
 
         private void ConfigureServices(IFunctionsHostBuilder builder)
@@ -106,8 +110,16 @@ namespace StockAlerts.Functions
         {
             var serviceProvider = builder.Services.BuildServiceProvider();
             builder.Services.AddAutoMapper(
-                cfg => cfg.ConstructServicesUsing(t => serviceProvider.GetService(t)),
-                new List<Assembly> { Assembly.GetAssembly(typeof(DataModelMappingProfile))});
+                cfg =>
+                {
+                    cfg.ConstructServicesUsing(t => serviceProvider.GetService(t));
+                    cfg.AddCollectionMappers();
+                },
+                new List<Assembly>
+                {
+                    Assembly.GetAssembly(typeof(DataModelMappingProfile)),
+                    Assembly.GetAssembly(typeof(ResourceModelMappingProfile))
+                });
         }
 
         private void ConfigureHttpClients(IFunctionsHostBuilder builder)

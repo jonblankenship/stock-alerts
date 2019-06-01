@@ -26,6 +26,6 @@ namespace StockAlerts.Data.Model
 
         public virtual ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
 
-        public virtual ICollection<AlertCriteria> AlertCriterias { get; set; }
+        public virtual AlertCriteria RootCriteria { get; set; }
     }
 }

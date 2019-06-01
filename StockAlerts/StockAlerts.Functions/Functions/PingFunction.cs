@@ -20,6 +20,8 @@ namespace StockAlerts.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "ping")] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("Executing Ping.");
+
             return new OkObjectResult($"StockAlerts API Ping: {DateTime.UtcNow:F}");
         }
     }

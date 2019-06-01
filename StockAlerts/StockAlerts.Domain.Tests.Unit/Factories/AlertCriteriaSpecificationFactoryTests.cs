@@ -23,20 +23,14 @@ namespace StockAlerts.Domain.Tests.Unit.Factories
             var factory = new AlertCriteriaSpecificationFactory();
             var alertDefinitionsRepositoryMock = new Mock<IAlertDefinitionsRepository>();
             var notificationServiceMock = new Mock<INotificationsService>();
-            var rootCriteriaId = Guid.NewGuid();
             var alertDefinition = new AlertDefinition(alertDefinitionsRepositoryMock.Object, factory, notificationServiceMock.Object)
             {
-                AlertCriterias = new List<AlertCriteria>
-                {
-                    new AlertCriteria
+                RootCriteria = new AlertCriteria
                     {
-                        AlertCriteriaId = rootCriteriaId,
-                        RootCriteriaId = rootCriteriaId,
                         Type = CriteriaType.Price,
                         Operator = CriteriaOperator.LessThanOrEqualTo,
                         Level = 50
                     }
-                }
             };
 
             // Act
@@ -56,34 +50,26 @@ namespace StockAlerts.Domain.Tests.Unit.Factories
             var rootCriteriaId = Guid.NewGuid();
             var alertDefinition = new AlertDefinition(alertDefinitionsRepositoryMock.Object, factory, notificationServiceMock.Object)
             {
-                AlertCriterias = new List<AlertCriteria>
-                {
-                    new AlertCriteria
+                RootCriteria = new AlertCriteria
                     {
-                        AlertCriteriaId = rootCriteriaId,
-                        RootCriteriaId = rootCriteriaId,
                         Type = CriteriaType.Composite,
-                        Operator = CriteriaOperator.And
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = rootCriteriaId,
-                        Type = CriteriaType.Price,
-                        Operator = CriteriaOperator.LessThanOrEqualTo,
-                        Level = 50
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = rootCriteriaId,
-                        Type = CriteriaType.DailyPercentageGainLoss,
-                        Operator = CriteriaOperator.LessThanOrEqualTo,
-                        Level = -0.02M
+                        Operator = CriteriaOperator.And,
+                        ChildrenCriteria = new List<AlertCriteria>
+                        {
+                            new AlertCriteria
+                            {
+                                Type = CriteriaType.Price,
+                                Operator = CriteriaOperator.LessThanOrEqualTo,
+                                Level = 50
+                            },
+                            new AlertCriteria
+                            {
+                                Type = CriteriaType.DailyPercentageGainLoss,
+                                Operator = CriteriaOperator.LessThanOrEqualTo,
+                                Level = -0.02M
+                            }
+                        }
                     }
-                }
             };
 
             // Act
@@ -104,73 +90,56 @@ namespace StockAlerts.Domain.Tests.Unit.Factories
             var factory = new AlertCriteriaSpecificationFactory();
             var alertDefinitionsRepositoryMock = new Mock<IAlertDefinitionsRepository>();
             var notificationServiceMock = new Mock<INotificationsService>();
-            var rootCriteriaId = Guid.NewGuid();
-            var firstOrCriteriaId = Guid.NewGuid();
-            var secondOrCriteriaId = Guid.NewGuid();
             var alertDefinition = new AlertDefinition(alertDefinitionsRepositoryMock.Object, factory, notificationServiceMock.Object)
             {
-                AlertCriterias = new List<AlertCriteria>
-                {
-                    new AlertCriteria
+                RootCriteria = new AlertCriteria
                     {
-                        AlertCriteriaId = rootCriteriaId,
-                        RootCriteriaId = rootCriteriaId,
                         Type = CriteriaType.Composite,
-                        Operator = CriteriaOperator.And
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = firstOrCriteriaId,
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = rootCriteriaId,
-                        Type = CriteriaType.Composite,
-                        Operator = CriteriaOperator.Or
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = secondOrCriteriaId,
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = rootCriteriaId,
-                        Type = CriteriaType.Composite,
-                        Operator = CriteriaOperator.Or
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = firstOrCriteriaId,
-                        Type = CriteriaType.Price,
-                        Operator = CriteriaOperator.LessThanOrEqualTo,
-                        Level = 50
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = firstOrCriteriaId,
-                        Type = CriteriaType.DailyPercentageGainLoss,
-                        Operator = CriteriaOperator.LessThanOrEqualTo,
-                        Level = -0.02M
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = secondOrCriteriaId,
-                        Type = CriteriaType.Price,
-                        Operator = CriteriaOperator.GreaterThanOrEqualTo,
-                        Level = 80
-                    },
-                    new AlertCriteria
-                    {
-                        AlertCriteriaId = Guid.NewGuid(),
-                        RootCriteriaId = rootCriteriaId,
-                        ParentCriteriaId = secondOrCriteriaId,
-                        Type = CriteriaType.DailyPercentageGainLoss,
-                        Operator = CriteriaOperator.GreaterThanOrEqualTo,
-                        Level = 0.02M
+                        Operator = CriteriaOperator.And,
+                        ChildrenCriteria = new List<AlertCriteria>
+                        {
+                            new AlertCriteria
+                            {
+                                Type = CriteriaType.Composite,
+                                Operator = CriteriaOperator.Or,
+                                ChildrenCriteria = new List<AlertCriteria>
+                                {
+                                    new AlertCriteria
+                                    {
+                                        Type = CriteriaType.Price,
+                                        Operator = CriteriaOperator.LessThanOrEqualTo,
+                                        Level = 50
+                                    },
+                                    new AlertCriteria
+                                    {
+                                        Type = CriteriaType.DailyPercentageGainLoss,
+                                        Operator = CriteriaOperator.LessThanOrEqualTo,
+                                        Level = -0.02M
+                                    }
+                                }
+                            },
+                            new AlertCriteria
+                            {
+                                Type = CriteriaType.Composite,
+                                Operator = CriteriaOperator.Or,
+                                ChildrenCriteria = new List<AlertCriteria>
+                                {
+                                    new AlertCriteria
+                                    {
+                                        Type = CriteriaType.Price,
+                                        Operator = CriteriaOperator.GreaterThanOrEqualTo,
+                                        Level = 80
+                                    },
+                                    new AlertCriteria
+                                    {
+                                        Type = CriteriaType.DailyPercentageGainLoss,
+                                        Operator = CriteriaOperator.GreaterThanOrEqualTo,
+                                        Level = 0.02M
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
             };
 
             // Act

@@ -1,12 +1,14 @@
-﻿using StockAlerts.Domain.Model;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using StockAlerts.Domain.Exceptions;
+using StockAlerts.Domain.Extensions;
+using StockAlerts.Domain.Model;
+using StockAlerts.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using StockAlerts.Domain.Exceptions;
-using StockAlerts.Domain.Repositories;
+using StockAlerts.Data.Extensions;
 
 namespace StockAlerts.Data.Repositories
 {
@@ -14,7 +16,7 @@ namespace StockAlerts.Data.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-
+        
         public AlertDefinitionsRepository(
             ApplicationDbContext dbContext,
             IMapper mapper)
@@ -36,15 +38,11 @@ namespace StockAlerts.Data.Repositories
 
         public async Task<AlertDefinition> GetAlertDefinitionAsync(Guid alertDefinitionId)
         {
-            var query = from a in _dbContext.AlertDefinitions
-                    .Include(x => x.AppUser)
-                    .ThenInclude(x => x.UserPreferences)
-                    .Include(x => x.Stock)
-                where a.AlertDefinitionId == alertDefinitionId
-                select a;
+            var query = from a in _dbContext.AlertDefinitions.IncludeAllRelatedEntities()
+                        where a.AlertDefinitionId == alertDefinitionId
+                        select a;
 
             var dataObject = await query.SingleOrDefaultAsync();
-
             if (dataObject == null)
                 throw new NotFoundException($"AlertDefinition with id {alertDefinitionId} not found.");
 
@@ -75,20 +73,29 @@ namespace StockAlerts.Data.Repositories
             var dataObject = _mapper.Map<Data.Model.AlertDefinition>(alertDefinition);
             await _dbContext.AlertDefinitions.AddAsync(dataObject);
             await _dbContext.SaveChangesAsync();
-            _mapper.Map<AlertDefinition>(dataObject);
+
+            _mapper.Map(dataObject, alertDefinition);
         }
 
         private async Task UpdateAsync(AlertDefinition alertDefinition)
         {
-            var dataObject = await (from a in _dbContext.AlertDefinitions
-                where a.AlertDefinitionId == alertDefinition.AlertDefinitionId
-                select a).SingleAsync();
+            var dataObject = await (from a in _dbContext.AlertDefinitions.IncludeAllAlertCriteria()
+                                    where a.AlertDefinitionId == alertDefinition.AlertDefinitionId
+                                    select a).SingleAsync();
+
+            var criteria = dataObject.RootCriteria.Traverse(c => c.ChildrenCriteria);
+
+            var alertCriteriaToDelete = from ac in criteria
+                                        where !alertDefinition.ContainsAlertCriteriaId(ac.AlertCriteriaId)
+                                        select ac;
+
+            _dbContext.RemoveRange(alertCriteriaToDelete);
 
             _mapper.Map(alertDefinition, dataObject);
             _dbContext.Update(dataObject);
             await _dbContext.SaveChangesAsync();
-            _dbContext.Entry(dataObject).State = EntityState.Detached;
-            _mapper.Map<AlertDefinition>(dataObject);
+
+            _mapper.Map(dataObject, alertDefinition);
         }
     }
 }

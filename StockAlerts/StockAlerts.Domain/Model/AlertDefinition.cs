@@ -5,7 +5,10 @@ using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using StockAlerts.Domain.Exceptions;
 using StockAlerts.Domain.Factories;
 
 namespace StockAlerts.Domain.Model
@@ -15,6 +18,9 @@ namespace StockAlerts.Domain.Model
         private readonly IAlertDefinitionsRepository _alertDefinitionsRepository;
         private readonly IAlertCriteriaSpecificationFactory _alertCriteriaSpecificationFactory;
         private readonly INotificationsService _notificationsService;
+
+        public AlertDefinition()
+        { }
 
         public AlertDefinition(
             IAlertDefinitionsRepository alertDefinitionsRepository,
@@ -27,7 +33,11 @@ namespace StockAlerts.Domain.Model
         }
 
         public Guid AlertDefinitionId { get; set; }
-        
+
+        public Guid AppUserId { get; set; }
+
+        public Guid StockId { get; set; }
+
         public AlertDefinitionStatuses Status { get; set; }
 
         public DateTimeOffset? LastSent { get; set; }
@@ -36,21 +46,21 @@ namespace StockAlerts.Domain.Model
         
         public ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
 
-        public ICollection<AlertCriteria> AlertCriterias { get; set; }
-
-        public AlertCriteria RootCriteria => (from ac in AlertCriterias
-                                              where ac.RootCriteriaId == ac.AlertCriteriaId
-                                              select ac).Single();
+        public AlertCriteria RootCriteria {get; set; }
         
         public Stock Stock { get; set; }
 
         public AppUser AppUser { get; set; }
+
+        public bool ContainsAlertCriteriaId(Guid alertCriteriaId) =>
+            RootCriteria.ContainsAlertCriteriaId(alertCriteriaId);
 
         public async Task SaveAsync()
         {
             if (_alertDefinitionsRepository == null)
                 throw new ApplicationException($"{nameof(AlertDefinition)} instantiated without an {nameof(IAlertDefinitionsRepository)}.");
 
+            Validate();
             await _alertDefinitionsRepository.SaveAsync(this);
         }
 
@@ -73,6 +83,43 @@ namespace StockAlerts.Domain.Model
                     }
                 }
             }
+        }
+
+        private void Validate()
+        {
+            var errors = new List<string>();
+
+            if (StockId == Guid.Empty)
+                errors.Add("StockId must be provided.");
+            if (AppUserId == Guid.Empty)
+                errors.Add("AppUserId must be provided.");
+            if (string.IsNullOrWhiteSpace(Name))
+                errors.Add("Alert Definition Name must be provided.");
+            if (RootCriteria == null)
+                errors.Add("Alert Definition must have a root criteria.");
+
+            //if (AlertCriterias?.Any() ?? false)
+            //{
+            //    var criteriaRootIds = (from ac in AlertCriterias
+            //        select ac.RootCriteriaId).Distinct().ToList();
+            //    if (criteriaRootIds.Count != 1)
+            //        errors.Add($"There must be exactly one root Alert Criteria.  This Alert Definition has {criteriaRootIds.Count} roots.");
+
+            //    var parentIds = (from ac in AlertCriterias
+            //        where ac.ParentCriteriaId.HasValue
+            //        select ac.ParentCriteriaId).Distinct().ToList();
+            //    foreach (var id in parentIds)
+            //    {
+            //        var parentCriteria = (from ac in AlertCriterias
+            //            where ac.AlertCriteriaId == id
+            //            select ac).Single();
+            //        if (parentCriteria.Type != CriteriaType.Composite)
+            //            errors.Add($"Alert Criteria {id} is a parent to another criteria, but its type is not Composite.");
+            //    }
+            //}
+
+            if (errors.Any())
+                throw new BadRequestException(string.Join(Environment.NewLine, errors));
         }
 
         private async Task TriggerAlertAsync(string subject, string notificationMessage)

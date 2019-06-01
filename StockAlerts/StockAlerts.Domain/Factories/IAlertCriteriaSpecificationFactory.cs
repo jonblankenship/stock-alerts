@@ -8,6 +8,6 @@ namespace StockAlerts.Domain.Factories
     {
         ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition);
 
-        ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition, AlertCriteria alertCriteria);
+        ISpecification<AlertEvaluationMessage> CreateSpecification(AlertCriteria alertCriteria);
     }
 }

@@ -10,11 +10,11 @@ namespace StockAlerts.Domain.Factories
 {
     public class AlertCriteriaSpecificationFactory : IAlertCriteriaSpecificationFactory
     {
-        private readonly IDictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>> _factoryMethods;
+        private readonly IDictionary<CriteriaType, Func<AlertCriteria, ISpecification<AlertEvaluationMessage>>> _factoryMethods;
 
         public AlertCriteriaSpecificationFactory()
         {
-            _factoryMethods = new Dictionary<CriteriaType, Func<AlertDefinition, AlertCriteria, ISpecification<AlertEvaluationMessage>>>
+            _factoryMethods = new Dictionary<CriteriaType, Func<AlertCriteria, ISpecification<AlertEvaluationMessage>>>
             {
                 { CriteriaType.Composite, CreateCompositeSpecification },
                 { CriteriaType.Price, CreatePriceSpecification },
@@ -24,17 +24,16 @@ namespace StockAlerts.Domain.Factories
 
         public ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition)
         {
-            return CreateSpecification(alertDefinition, alertDefinition.RootCriteria);
+            return CreateSpecification(alertDefinition.RootCriteria);
         }
 
-        public ISpecification<AlertEvaluationMessage> CreateSpecification(AlertDefinition alertDefinition, AlertCriteria alertCriteria)
+        public ISpecification<AlertEvaluationMessage> CreateSpecification(AlertCriteria alertCriteria)
         {
             var factoryMethod = _factoryMethods[alertCriteria.Type];
-            return factoryMethod.Invoke(alertDefinition, alertCriteria);
+            return factoryMethod.Invoke(alertCriteria);
         }
 
         private ISpecification<AlertEvaluationMessage> CreateCompositeSpecification(
-            AlertDefinition alertDefinition,
             AlertCriteria alertCriteria)
         {
             CompositeSpecification<AlertEvaluationMessage> specification;
@@ -46,25 +45,19 @@ namespace StockAlerts.Domain.Factories
             else
                 throw new ApplicationException("Operator not supported.");
 
-            var childCriteria = from ac in alertDefinition.AlertCriterias
-                                where ac.ParentCriteriaId.HasValue && ac.ParentCriteriaId.Value == alertCriteria.AlertCriteriaId
-                                select ac;
-
-            foreach (var c in childCriteria)
+            foreach (var c in alertCriteria.ChildrenCriteria)
             {
-                specification.AddChildSpecification(CreateSpecification(alertDefinition, c));
+                specification.AddChildSpecification(CreateSpecification(c));
             }
 
             return specification;
         }
 
         private ISpecification<AlertEvaluationMessage> CreatePriceSpecification(
-            AlertDefinition alertDefinition, 
             AlertCriteria alertCriteria) =>
             new PriceSpecification(alertCriteria);
 
         private ISpecification<AlertEvaluationMessage> CreateDailyPercentageGainLossSpecification(
-            AlertDefinition alertDefinition, 
             AlertCriteria alertCriteria) =>
             new DailyPercentageGainLossSpecification(alertCriteria);
     }

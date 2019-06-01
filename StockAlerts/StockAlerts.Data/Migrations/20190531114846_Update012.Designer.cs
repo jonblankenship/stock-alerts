@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockAlerts.Data;
 
 namespace StockAlerts.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190531114846_Update012")]
+    partial class Update012
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,6 +27,8 @@ namespace StockAlerts.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<Guid?>("AlertDefinitionId");
+
+                    b.Property<Guid?>("AlertDefinitionId1");
 
                     b.Property<DateTimeOffset>("Created");
 
@@ -43,6 +47,8 @@ namespace StockAlerts.Data.Migrations
                     b.HasIndex("AlertDefinitionId")
                         .IsUnique()
                         .HasFilter("[AlertDefinitionId] IS NOT NULL");
+
+                    b.HasIndex("AlertDefinitionId1");
 
                     b.HasIndex("ParentCriteriaId");
 
@@ -63,6 +69,8 @@ namespace StockAlerts.Data.Migrations
                     b.Property<DateTimeOffset>("Modified");
 
                     b.Property<string>("Name");
+
+                    b.Property<Guid>("RootCriteriaId");
 
                     b.Property<int>("Status");
 
@@ -192,6 +200,10 @@ namespace StockAlerts.Data.Migrations
                         .WithOne("RootCriteria")
                         .HasForeignKey("StockAlerts.Data.Model.AlertCriteria", "AlertDefinitionId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("StockAlerts.Data.Model.AlertDefinition")
+                        .WithMany("AlertCriterias")
+                        .HasForeignKey("AlertDefinitionId1");
 
                     b.HasOne("StockAlerts.Data.Model.AlertCriteria", "ParentCriteria")
                         .WithMany("ChildrenCriteria")

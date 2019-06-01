@@ -29,6 +29,8 @@ namespace StockAlerts.Functions
             string stockId,
             ILogger log)
         {
+            log.LogInformation("Executing GetStockAsync.");
+
             var stock = await _stocksService.GetStockAsync(new Guid(stockId));
             return new OkObjectResult(stock);
         }
@@ -39,6 +41,8 @@ namespace StockAlerts.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "stocks")] HttpRequest req,
             ILogger log)
         {
+            log.LogInformation("Executing FindStocksAsync.");
+
             var startsWith = req.Query["startsWith"];            
 
             if (startsWith.Any())

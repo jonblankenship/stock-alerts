@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.EquivalencyExpression;
 using StockAlerts.Data.Model;
 
 namespace StockAlerts.Data
@@ -48,8 +49,11 @@ namespace StockAlerts.Data
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.AlertCriteria, AlertCriteria>()
+                .EqualityComparison((s, d) => s.AlertCriteriaId == d.AlertCriteriaId)
                 .ForMember(d => d.Created, opt => opt.Ignore())
-                .ForMember(d => d.Modified, opt => opt.Ignore());
+                .ForMember(d => d.Modified, opt => opt.Ignore())
+                .ForMember(d => d.AlertDefinition, opt => opt.Ignore())
+                .ForMember(d => d.ParentCriteria, opt => opt.Ignore());
         }
     }
 }
