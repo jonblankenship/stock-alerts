@@ -89,7 +89,13 @@ namespace StockAlerts.Data.Repositories
                                         where !alertDefinition.ContainsAlertCriteriaId(ac.AlertCriteriaId)
                                         select ac;
 
-            _dbContext.RemoveRange(alertCriteriaToDelete);
+            foreach (var ac in alertCriteriaToDelete)
+            {
+                if (_dbContext.Entry(ac) != null)
+                    _dbContext.Entry(ac).State = EntityState.Deleted;
+                else
+                    _dbContext.Remove(ac);
+            }
 
             _mapper.Map(alertDefinition, dataObject);
             _dbContext.Update(dataObject);

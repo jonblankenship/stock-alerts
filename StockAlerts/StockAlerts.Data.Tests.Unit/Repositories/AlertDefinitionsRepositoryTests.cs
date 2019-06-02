@@ -71,7 +71,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
             var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
             var mapper = CreateMapper();
             var repository = CreateRepository(context, mapper);
-            var expectedAlertDefinition = await AddComplexAlertDefinitionToContextAsync(context, mapper);
+            var expectedAlertDefinition = await CreateAndSaveComplexAlertDefinitionAsync(context, mapper);
 
             // Act
             var result = await repository.GetAlertDefinitionAsync(expectedAlertDefinition.AlertDefinitionId);
@@ -82,6 +82,115 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
             result.Stock.StockId.Should().Be(expectedAlertDefinition.Stock.StockId);
 
             AssertCriteria(expectedAlertDefinition.RootCriteria, result.RootCriteria);
+        }
+
+        [Fact]
+        public async Task GetAlertDefinitionByStockIdAsync_UnknownStockId_EmptyArray()
+        {
+            // Arrange
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
+            var mapper = CreateMapper();
+            var repository = CreateRepository(context, mapper);
+
+            // Act
+            var results = await repository.GetAlertDefinitionsByStockIdAsync(Guid.NewGuid());
+
+            // Assert
+            results.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task GetAlertDefinitionByStockIdAsync_KnownStockId_AlertDefinitionsReturned()
+        {
+            // Arrange
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
+            var mapper = CreateMapper();
+            var repository = CreateRepository(context, mapper);
+            var stock = await context.Stocks.FirstAsync();
+            var expectedAlertDefinitionIds = (from ad in context.AlertDefinitions
+                                              where ad.StockId == stock.StockId
+                                              select ad.AlertDefinitionId).ToList();
+
+            // Act
+            var results = (await repository.GetAlertDefinitionsByStockIdAsync(stock.StockId)).ToList();
+
+            // Assert
+            results.Count.Should().Be(expectedAlertDefinitionIds.Count);
+            foreach (var r in results)
+            {
+                expectedAlertDefinitionIds.Should().Contain(r.AlertDefinitionId);
+            }
+        }
+
+        [Fact]
+        public async Task SaveAsync_Insert_AlertDefinitionSaved()
+        {
+            // Arrange
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
+            var mapper = CreateMapper();
+            var repository = CreateRepository(context, mapper);
+            var alertDefinition = await CreateComplexAlertDefinitionAsync(context, mapper);
+
+            // Act
+            await repository.SaveAsync(alertDefinition);
+
+            // Assert
+            var result = await repository.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
+            AssertAlertDefinition(alertDefinition, result);
+        }
+
+        [Fact]
+        public async Task SaveAsync_Update_AlertDefinitionSaved()
+        {
+            // Arrange
+            var context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
+            var mapper = CreateMapper();
+            var alertDefinition = await CreateAndSaveComplexAlertDefinitionAsync(context, mapper);
+            alertDefinition.Name = "Updated Definition";
+            alertDefinition.RootCriteria.ChildrenCriteria.Remove(alertDefinition.RootCriteria.ChildrenCriteria.Last());
+            alertDefinition.RootCriteria.ChildrenCriteria.Add(
+                new AlertCriteria
+                {
+                    Type = CriteriaType.Composite,
+                    Operator = CriteriaOperator.And,
+                    ChildrenCriteria = new List<AlertCriteria>
+                    {
+                        new AlertCriteria
+                        {
+                            Type = CriteriaType.DailyPercentageGainLoss,
+                            Operator = CriteriaOperator.LessThanOrEqualTo,
+                            Level = -0.02M
+                        },
+                        new AlertCriteria
+                        {
+                            Type = CriteriaType.DailyPercentageGainLoss,
+                            Operator = CriteriaOperator.GreaterThanOrEqualTo,
+                            Level = -0.06M
+                        }
+                    }
+                }
+            );
+
+            // Create new context (with same DB name) to match service lifetime of context when running as a service
+            context = await InMemoryDbContextFactory.CreateDatabaseContextAsync();
+            var repository = CreateRepository(context, mapper);
+
+            // Act
+            await repository.SaveAsync(alertDefinition);
+
+            // Assert
+            var result = await repository.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
+            AssertAlertDefinition(alertDefinition, result);
+        }
+
+        private void AssertAlertDefinition(AlertDefinition expected, AlertDefinition actual)
+        {
+
+            actual.AlertDefinitionId.Should().Be(expected.AlertDefinitionId);
+            actual.AppUser.AppUserId.Should().Be(expected.AppUser.AppUserId);
+            actual.Stock.StockId.Should().Be(expected.Stock.StockId);
+            
+            AssertCriteria(expected.RootCriteria, actual.RootCriteria);
         }
 
         private void AssertCriteria(AlertCriteria expected, AlertCriteria actual)
@@ -116,7 +225,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
             IMapper mapper) =>
             new AlertDefinitionsRepository(context, mapper);
 
-        private async Task<AlertDefinition> AddComplexAlertDefinitionToContextAsync(
+        private async Task<AlertDefinition> CreateComplexAlertDefinitionAsync(
             ApplicationDbContext context,
             IMapper mapper)
         {
@@ -135,7 +244,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
                 RootCriteria = new AlertCriteria
                 {
                     Type = CriteriaType.Composite,
-                    Operator = CriteriaOperator.And,
+                    Operator = CriteriaOperator.Or,
                     ChildrenCriteria = new List<AlertCriteria>
                     {
                         new AlertCriteria
@@ -181,6 +290,15 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
                     }
                 }
             };
+
+            return alertDefinition;
+        }
+
+        private async Task<AlertDefinition> CreateAndSaveComplexAlertDefinitionAsync(
+            ApplicationDbContext context,
+            IMapper mapper)
+        {
+            var alertDefinition = await CreateComplexAlertDefinitionAsync(context, mapper);
 
             var dataObject = mapper.Map<Data.Model.AlertDefinition>(alertDefinition);
 

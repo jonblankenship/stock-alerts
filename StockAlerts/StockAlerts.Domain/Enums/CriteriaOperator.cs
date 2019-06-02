@@ -4,7 +4,6 @@
     {
         And,
         Or,
-        Not,
         Equals,
         LessThan,
         LessThanOrEqualTo,

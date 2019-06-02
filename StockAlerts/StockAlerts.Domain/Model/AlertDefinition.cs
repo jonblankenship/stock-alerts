@@ -98,26 +98,8 @@ namespace StockAlerts.Domain.Model
             if (RootCriteria == null)
                 errors.Add("Alert Definition must have a root criteria.");
 
-            //if (AlertCriterias?.Any() ?? false)
-            //{
-            //    var criteriaRootIds = (from ac in AlertCriterias
-            //        select ac.RootCriteriaId).Distinct().ToList();
-            //    if (criteriaRootIds.Count != 1)
-            //        errors.Add($"There must be exactly one root Alert Criteria.  This Alert Definition has {criteriaRootIds.Count} roots.");
-
-            //    var parentIds = (from ac in AlertCriterias
-            //        where ac.ParentCriteriaId.HasValue
-            //        select ac.ParentCriteriaId).Distinct().ToList();
-            //    foreach (var id in parentIds)
-            //    {
-            //        var parentCriteria = (from ac in AlertCriterias
-            //            where ac.AlertCriteriaId == id
-            //            select ac).Single();
-            //        if (parentCriteria.Type != CriteriaType.Composite)
-            //            errors.Add($"Alert Criteria {id} is a parent to another criteria, but its type is not Composite.");
-            //    }
-            //}
-
+            RootCriteria.Validate(errors);
+            
             if (errors.Any())
                 throw new BadRequestException(string.Join(Environment.NewLine, errors));
         }

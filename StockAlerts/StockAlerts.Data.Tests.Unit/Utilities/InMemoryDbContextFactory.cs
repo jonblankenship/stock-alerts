@@ -21,6 +21,7 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
                 throw new ArgumentNullException(nameof(databaseName));
 
             var options = new DbContextOptionsBuilder<T>()
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                 .UseInMemoryDatabase(databaseName)
                 .Options;
 
