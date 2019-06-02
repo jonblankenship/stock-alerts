@@ -15,8 +15,6 @@ namespace StockAlerts.Functions.Attributes
         {
             var exception = args.Exception;
             
-            Debugger.Break();
-
             args.FlowBehavior = FlowBehavior.Return;
             
             HttpStatusCode status;
