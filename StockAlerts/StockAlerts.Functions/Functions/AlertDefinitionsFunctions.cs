@@ -1,47 +1,34 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using AutoMapper;
 using Newtonsoft.Json;
 using StockAlerts.Data;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Exceptions;
-using StockAlerts.Domain.Factories;
 using StockAlerts.Domain.Model;
-using StockAlerts.Domain.Repositories;
 using StockAlerts.Domain.Services;
 using StockAlerts.Functions.Attributes;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace StockAlerts.Functions
 {
     public class AlertDefinitionsFunctions : FunctionBase
     {
         private readonly IAlertDefinitionsService _alertDefinitionsService;
-        private readonly IAlertDefinitionsRepository _alertDefinitionsRepository;
-        private readonly IAlertCriteriaSpecificationFactory _alertCriteriaSpecificationFactory;
-        private readonly INotificationsService _notificationsService;
         private readonly IMapper _mapper;
-        private readonly ApplicationDbContext _context;
 
-        public AlertDefinitionsFunctions(IAlertDefinitionsService alertDefinitionsService,
-            IAlertDefinitionsRepository alertDefinitionsRepository,
-            IAlertCriteriaSpecificationFactory alertCriteriaSpecificationFactory,
-            INotificationsService notificationsService,
-            IMapper mapper,
-            ApplicationDbContext context)
+        public AlertDefinitionsFunctions(
+            IAlertDefinitionsService alertDefinitionsService,
+            IMapper mapper)
         {
             _alertDefinitionsService = alertDefinitionsService ?? throw new ArgumentNullException(nameof(alertDefinitionsService));
-            _alertDefinitionsRepository = alertDefinitionsRepository ?? throw new ArgumentNullException(nameof(alertDefinitionsRepository));
-            _alertCriteriaSpecificationFactory = alertCriteriaSpecificationFactory ?? throw new ArgumentNullException(nameof(alertCriteriaSpecificationFactory));
-            _notificationsService = notificationsService ?? throw new ArgumentNullException(nameof(notificationsService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         [FunctionName("GetAlertDefinitions")]
@@ -119,6 +106,23 @@ namespace StockAlerts.Functions
             alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
             var resource = _mapper.Map<Resources.Model.AlertDefinition>(alertDefinition);
             return new OkObjectResult(resource);
+        }
+
+        [FunctionName("DeleteAlertDefinition")]
+        [HandleExceptions]
+        public async Task<IActionResult> DeleteAlertDefinitionAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "alert-definitions/{alertDefinitionId}")] HttpRequest req,
+            string alertDefinitionId,
+            ILogger log)
+        {
+            log.LogInformation("Executing DeleteAlertDefinitionAsync.");
+
+            var alertDefinitionIdGuid = new Guid(alertDefinitionId);
+
+            var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinitionIdGuid);
+            await alertDefinition.DeleteAsync();
+
+            return new NoContentResult();
         }
     }
 }

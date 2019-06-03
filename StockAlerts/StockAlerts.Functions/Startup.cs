@@ -84,7 +84,7 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<INotificationsService, NotificationsService>();
 
             // Repositories
-            builder.Services.AddScoped<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
+            builder.Services.AddTransient<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
             builder.Services.AddScoped<IStocksRepository, StocksRepository>();
             builder.Services.AddScoped<IApiCallsRepository, ApiCallsRepository>();
             builder.Services.AddScoped<IAppUsersRepository, AppUsersRepository>();

@@ -34,5 +34,12 @@ namespace StockAlerts.Domain.Repositories
         /// <param name="alertDefinition"></param>
         /// <returns></returns>
         Task SaveAsync(AlertDefinition alertDefinition);
+
+        /// <summary>
+        /// Deletes a <see cref="alertDefinition"/> from the database
+        /// </summary>
+        /// <param name="alertDefinition"></param>
+        /// <returns></returns>
+        Task DeleteAsync(AlertDefinition alertDefinition);
     }
 }

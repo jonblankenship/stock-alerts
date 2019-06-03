@@ -68,6 +68,15 @@ namespace StockAlerts.Data.Repositories
                 await UpdateAsync(alertDefinition);
         }
 
+        public async Task DeleteAsync(AlertDefinition alertDefinition)
+        {
+            var dataObject = _mapper.Map<Data.Model.AlertDefinition>(alertDefinition);
+            var childCriteria = dataObject.RootCriteria.Traverse(x => x.ChildrenCriteria);
+            _dbContext.RemoveRange(childCriteria);
+            _dbContext.AlertDefinitions.Remove(dataObject);
+            await _dbContext.SaveChangesAsync();
+        }
+
         private async Task InsertAsync(AlertDefinition alertDefinition)
         {
             var dataObject = _mapper.Map<Data.Model.AlertDefinition>(alertDefinition);

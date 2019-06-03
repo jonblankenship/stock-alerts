@@ -64,6 +64,14 @@ namespace StockAlerts.Domain.Model
             await _alertDefinitionsRepository.SaveAsync(this);
         }
 
+        public async Task DeleteAsync()
+        {
+            if (_alertDefinitionsRepository == null)
+                throw new ApplicationException($"{nameof(AlertDefinition)} instantiated without an {nameof(IAlertDefinitionsRepository)}.");
+
+            await _alertDefinitionsRepository.DeleteAsync(this);
+        }
+
         public async Task EvaluateAsync(AlertEvaluationMessage message)
         {
             if (Status == AlertDefinitionStatuses.Enabled)
