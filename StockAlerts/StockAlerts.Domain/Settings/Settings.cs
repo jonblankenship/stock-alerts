@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using StockAlerts.Domain.Authentication;
 
 namespace StockAlerts.Domain.Settings
 {
@@ -7,6 +8,9 @@ namespace StockAlerts.Domain.Settings
         // Section names
         private const string AppSettingsSection = "AppSettings";
         private const string ServiceBusSettingsSection = "ServiceBusSettings";
+        private const string JwtIssuerOptionsSection = "JwtIssuerOptions";
+        private const string JwtOptionsSection = "Jwt";
+        private const string AuthSettingsSection = "AuthSettings";
 
         public void Initialize(IConfiguration configuration, bool isDevelopment)
         {
@@ -17,6 +21,12 @@ namespace StockAlerts.Domain.Settings
             ServiceBusSettings = configuration.GetSection(ServiceBusSettingsSection).Get<ServiceBusSettings>();
 
             ServiceBusSettings.ConnectionString = configuration.GetValue<string>("ServiceBusConnectionString");
+
+            JwtIssuerOptions = configuration.GetSection(JwtIssuerOptionsSection).Get<JwtIssuerOptions>();
+
+            JwtOptions = configuration.GetSection(JwtOptionsSection).Get<JwtOptions>();
+
+            AuthSettings = configuration.GetSection(AuthSettingsSection).Get<AuthSettings>();
         }
 
         public bool IsDevelopment { get; private set; }
@@ -24,5 +34,11 @@ namespace StockAlerts.Domain.Settings
         public ServiceBusSettings ServiceBusSettings { get; private set; }
 
         public AppSettings AppSettings { get; private set; }
+
+        public JwtIssuerOptions JwtIssuerOptions { get; private set; }
+
+        public JwtOptions JwtOptions { get; private set; }
+
+        public AuthSettings AuthSettings { get; set; }
     }
 }

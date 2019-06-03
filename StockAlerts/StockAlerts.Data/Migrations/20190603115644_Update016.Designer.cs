@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockAlerts.Data;
 
 namespace StockAlerts.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190603115644_Update016")]
+    partial class Update016
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,8 +289,6 @@ namespace StockAlerts.Data.Migrations
 
                     b.Property<DateTimeOffset>("Created");
 
-                    b.Property<bool>("HasBeenGrantedAccess");
-
                     b.Property<DateTimeOffset>("Modified");
 
                     b.Property<Guid>("UserId");
@@ -296,30 +296,6 @@ namespace StockAlerts.Data.Migrations
                     b.HasKey("AppUserId");
 
                     b.ToTable("AppUsers");
-                });
-
-            modelBuilder.Entity("StockAlerts.Data.Model.RefreshToken", b =>
-                {
-                    b.Property<Guid>("RefreshTokenId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("AppUserId");
-
-                    b.Property<DateTimeOffset>("Created");
-
-                    b.Property<DateTime>("Expires");
-
-                    b.Property<DateTimeOffset>("Modified");
-
-                    b.Property<string>("RemoteIpAddress");
-
-                    b.Property<string>("Token");
-
-                    b.HasKey("RefreshTokenId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("StockAlerts.Data.Model.Stock", b =>
@@ -448,14 +424,6 @@ namespace StockAlerts.Data.Migrations
                     b.HasOne("StockAlerts.Data.Model.AlertDefinition", "AlertDefinition")
                         .WithMany("AlertTriggerHistories")
                         .HasForeignKey("AlertDefinitionId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("StockAlerts.Data.Model.RefreshToken", b =>
-                {
-                    b.HasOne("StockAlerts.Data.Model.AppUser")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

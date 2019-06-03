@@ -2,24 +2,25 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StockAlerts.Data.Model;
 
 namespace StockAlerts.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions) : base(dbContextOptions)
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public DbSet<AppUser> AppUsers { get; set; }
+
         public DbSet<AlertDefinition> AlertDefinitions { get; set; }
 
         public DbSet<Stock> Stocks { get; set; }
-        
-        public DbSet<AppUser> AppUsers { get; set; }
 
         public DbSet<ApiCall> ApiCalls { get; set; }
 

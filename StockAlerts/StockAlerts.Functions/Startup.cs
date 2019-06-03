@@ -11,15 +11,25 @@ using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using AutoMapper.EquivalencyExpression;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
+using Microsoft.IdentityModel.Tokens;
+using StockAlerts.Data.Model;
+using StockAlerts.Domain.Authentication;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Factories;
-using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Settings;
 using StockAlerts.Resources;
+using AlertCriteria = StockAlerts.Domain.Model.AlertCriteria;
+using AlertDefinition = StockAlerts.Domain.Model.AlertDefinition;
+using AppUser = StockAlerts.Domain.Model.AppUser;
+using Stock = StockAlerts.Domain.Model.Stock;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -59,7 +69,9 @@ namespace StockAlerts.Functions
         public override void Configure(IFunctionsHostBuilder builder)
         {
             ConfigureDbContexts(builder);
+            ConfigureIdentity(builder);
             ConfigureServices(builder);
+            ConfigureJwtAuthentication(builder);
             ConfigureHttpClients(builder);
             ConfigureAutoMapper(builder);
         }
@@ -74,6 +86,21 @@ namespace StockAlerts.Functions
                 ServiceLifetime.Transient);
         }
 
+        private void ConfigureIdentity(IFunctionsHostBuilder builder)
+        {
+            builder.Services.AddIdentityCore<IdentityUser>(o => 
+                {
+                    o.Password.RequireDigit = false;
+                    o.Password.RequireLowercase = false;
+                    o.Password.RequireUppercase = false;
+                    o.Password.RequireNonAlphanumeric = false;
+                    o.Password.RequiredLength = 6;
+                    o.User.RequireUniqueEmail = true;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+        }
+
         private void ConfigureServices(IFunctionsHostBuilder builder)
         {
             // Services
@@ -82,16 +109,19 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<IDataUpdateService, DataUpdateService>();
             builder.Services.AddScoped<IStockDataWebClient, IntrinioClient>();
             builder.Services.AddScoped<INotificationsService, NotificationsService>();
+            builder.Services.AddScoped<IAccountsService, AccountsService>();
 
             // Repositories
             builder.Services.AddTransient<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
-            builder.Services.AddScoped<IStocksRepository, StocksRepository>();
-            builder.Services.AddScoped<IApiCallsRepository, ApiCallsRepository>();
-            builder.Services.AddScoped<IAppUsersRepository, AppUsersRepository>();
+            builder.Services.AddTransient<IStocksRepository, StocksRepository>();
+            builder.Services.AddTransient<IApiCallsRepository, ApiCallsRepository>();
+            builder.Services.AddTransient<IAppUsersRepository, AppUsersRepository>();
 
             // Factories
             builder.Services.AddScoped<IQueueClientFactory, QueueClientFactory>();
             builder.Services.AddScoped<IAlertCriteriaSpecificationFactory, AlertCriteriaSpecificationFactory>();
+            builder.Services.AddScoped<IJwtTokenFactory, JwtTokenFactory>();
+            builder.Services.AddScoped<ITokenFactory, TokenFactory>();
 
             // Domain models
             builder.Services.AddTransient<Stock, Stock>();
@@ -104,6 +134,77 @@ namespace StockAlerts.Functions
             _settings.Initialize(_configuration, _isDevelopment);
             builder.Services.AddSingleton<ISettings>(_settings);
             builder.Services.AddSingleton<IIntrinioSettings>(_configuration.GetSection("IntrinioSettings").Get<IntrinioSettings>());
+
+            // Misc
+            builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
+        }
+
+        private void ConfigureJwtAuthentication(IFunctionsHostBuilder builder)
+        {
+            // Register the ConfigurationBuilder instance of AuthSettings
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_settings.AuthSettings.SecretKey));
+
+            // Configure JwtIssuerOptions
+            _settings.JwtIssuerOptions.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = _settings.JwtIssuerOptions.Issuer,
+
+                ValidateAudience = true,
+                ValidAudience = _settings.JwtIssuerOptions.Audience,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer("WebJobsAuthLevel", configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = _settings.JwtIssuerOptions.Issuer;
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = _settings.JwtIssuerOptions.Issuer;
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+
+                configureOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
         }
 
         private void ConfigureAutoMapper(IFunctionsHostBuilder builder)

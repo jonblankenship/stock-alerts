@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StockAlerts.Data;
 
 namespace StockAlerts.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190603113902_Update015")]
+    partial class Update015
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,44 +284,44 @@ namespace StockAlerts.Data.Migrations
 
             modelBuilder.Entity("StockAlerts.Data.Model.AppUser", b =>
                 {
-                    b.Property<Guid>("AppUserId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("ConcurrencyStamp");
 
                     b.Property<DateTimeOffset>("Created");
 
-                    b.Property<bool>("HasBeenGrantedAccess");
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<DateTimeOffset>("Modified");
 
-                    b.Property<Guid>("UserId");
+                    b.Property<string>("NormalizedEmail");
 
-                    b.HasKey("AppUserId");
+                    b.Property<string>("NormalizedUserName");
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName");
+
+                    b.HasKey("Id");
 
                     b.ToTable("AppUsers");
-                });
-
-            modelBuilder.Entity("StockAlerts.Data.Model.RefreshToken", b =>
-                {
-                    b.Property<Guid>("RefreshTokenId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid>("AppUserId");
-
-                    b.Property<DateTimeOffset>("Created");
-
-                    b.Property<DateTime>("Expires");
-
-                    b.Property<DateTimeOffset>("Modified");
-
-                    b.Property<string>("RemoteIpAddress");
-
-                    b.Property<string>("Token");
-
-                    b.HasKey("RefreshTokenId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("RefreshToken");
                 });
 
             modelBuilder.Entity("StockAlerts.Data.Model.Stock", b =>
@@ -349,8 +351,6 @@ namespace StockAlerts.Data.Migrations
                     b.Property<Guid>("UserPreferencesId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("AppUserId");
-
                     b.Property<DateTimeOffset>("Created");
 
                     b.Property<string>("EmailAddress");
@@ -365,9 +365,11 @@ namespace StockAlerts.Data.Migrations
 
                     b.Property<string>("SmsNumber");
 
+                    b.Property<Guid>("UserId");
+
                     b.HasKey("UserPreferencesId");
 
-                    b.HasIndex("AppUserId")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("UserPreferences");
@@ -451,19 +453,11 @@ namespace StockAlerts.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("StockAlerts.Data.Model.RefreshToken", b =>
-                {
-                    b.HasOne("StockAlerts.Data.Model.AppUser")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("StockAlerts.Data.Model.UserPreferences", b =>
                 {
                     b.HasOne("StockAlerts.Data.Model.AppUser", "AppUser")
                         .WithOne("UserPreferences")
-                        .HasForeignKey("StockAlerts.Data.Model.UserPreferences", "AppUserId")
+                        .HasForeignKey("StockAlerts.Data.Model.UserPreferences", "UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

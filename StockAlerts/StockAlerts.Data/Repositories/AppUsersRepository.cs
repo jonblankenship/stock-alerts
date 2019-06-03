@@ -5,6 +5,7 @@ using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Repositories;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StockAlerts.Data.Repositories
@@ -25,7 +26,7 @@ namespace StockAlerts.Data.Repositories
         public async Task<AppUser> GetAppUserAsync(Guid appUserId)
         {
             var query = from a in _dbContext.AppUsers.Include(x => x.UserPreferences)
-                where a.AppUserId == appUserId
+                        where a.AppUserId == appUserId
                         select a;
 
             var dataObject = await query.SingleOrDefaultAsync();
@@ -34,6 +35,55 @@ namespace StockAlerts.Data.Repositories
                 throw new NotFoundException($"AppUser with id {appUserId} not found.");
 
             return _mapper.Map<AppUser>(dataObject);
+        }
+
+        public async Task<AppUser> GetAppUserByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            var query = from a in _dbContext.AppUsers.Include(x => x.UserPreferences)
+                        where a.UserId == userId
+                        select a;
+
+            var dataObject = await query.SingleOrDefaultAsync(cancellationToken);
+
+            if (dataObject == null)
+                throw new NotFoundException($"AppUser with UserId {userId} not found.");
+
+            return _mapper.Map<AppUser>(dataObject);
+        }
+
+        public async Task SaveAsync(AppUser appUser, CancellationToken cancellationToken)
+        {
+            if (appUser.AppUserId == Guid.Empty)
+                await InsertAsync(appUser, cancellationToken);
+            else
+                await UpdateAsync(appUser, cancellationToken);
+        }
+
+        private async Task InsertAsync(AppUser appUser, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dataObject = _mapper.Map<Data.Model.AppUser>(appUser);
+                await _dbContext.AppUsers.AddAsync(dataObject, cancellationToken);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                _mapper.Map(dataObject, appUser);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task UpdateAsync(AppUser appUser, CancellationToken cancellationToken)
+        {
+            var dataObject = _mapper.Map<Data.Model.AppUser>(appUser);
+            _dbContext.Update(dataObject);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            _mapper.Map(dataObject, appUser);
+
         }
     }
 }
