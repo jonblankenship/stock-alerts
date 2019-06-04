@@ -110,6 +110,7 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<IStockDataWebClient, IntrinioClient>();
             builder.Services.AddScoped<INotificationsService, NotificationsService>();
             builder.Services.AddScoped<IAccountsService, AccountsService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             // Repositories
             builder.Services.AddTransient<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
@@ -137,6 +138,7 @@ namespace StockAlerts.Functions
 
             // Misc
             builder.Services.AddScoped<IJwtTokenHandler, JwtTokenHandler>();
+            builder.Services.AddScoped<IJwtTokenValidator, JwtTokenValidator>();
         }
 
         private void ConfigureJwtAuthentication(IFunctionsHostBuilder builder)

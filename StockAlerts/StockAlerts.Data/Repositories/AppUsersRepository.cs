@@ -23,13 +23,15 @@ namespace StockAlerts.Data.Repositories
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<AppUser> GetAppUserAsync(Guid appUserId)
+        public async Task<AppUser> GetAppUserAsync(Guid appUserId, CancellationToken cancellationToken)
         {
-            var query = from a in _dbContext.AppUsers.Include(x => x.UserPreferences)
+            var query = from a in _dbContext.AppUsers
+                            .Include(x => x.UserPreferences)
+                            .Include(x => x.RefreshTokens)
                         where a.AppUserId == appUserId
                         select a;
 
-            var dataObject = await query.SingleOrDefaultAsync();
+            var dataObject = await query.SingleOrDefaultAsync(cancellationToken);
 
             if (dataObject == null)
                 throw new NotFoundException($"AppUser with id {appUserId} not found.");

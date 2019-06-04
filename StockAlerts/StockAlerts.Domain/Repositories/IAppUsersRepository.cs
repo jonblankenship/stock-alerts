@@ -11,8 +11,9 @@ namespace StockAlerts.Domain.Repositories
         /// Retrieves the <see cref="AppUser"/> for the given <see cref="appUserId"/>
         /// </summary>
         /// <param name="appUserId"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<AppUser> GetAppUserAsync(Guid appUserId);
+        Task<AppUser> GetAppUserAsync(Guid appUserId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Retrieves the <see cref="AppUser"/> with the given <see cref="userId"/>

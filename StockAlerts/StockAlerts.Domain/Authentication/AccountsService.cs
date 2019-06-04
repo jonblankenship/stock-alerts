@@ -56,6 +56,7 @@ namespace StockAlerts.Domain.Authentication
             var appUser = new AppUser(_appUsersRepository)
             {
                 UserId = new Guid(user.Id),
+                UserName = user.UserName,
                 HasBeenGrantedAccess = true
             };
             await appUser.SaveAsync(cancellationToken);

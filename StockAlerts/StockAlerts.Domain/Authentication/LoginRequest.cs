@@ -6,6 +6,9 @@ namespace StockAlerts.Domain.Authentication
 {
     public class LoginRequest
     {
+        public LoginRequest()
+        { }
+
         public LoginRequest(string userName, string password, string remoteIpAddress)
         {
             Username = userName;

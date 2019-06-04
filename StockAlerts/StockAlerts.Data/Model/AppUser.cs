@@ -11,6 +11,8 @@ namespace StockAlerts.Data.Model
 
         public Guid UserId { get; set; }
 
+        public string UserName { get; set; }
+
         public bool HasBeenGrantedAccess { get; set; }
 
         public virtual ICollection<AlertDefinition> AlertDefinitions { get; set; }
