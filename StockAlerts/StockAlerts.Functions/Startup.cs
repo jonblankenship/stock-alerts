@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
+using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
 using StockAlerts.Data.Model;
@@ -164,8 +165,7 @@ namespace StockAlerts.Functions
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
-
-
+            
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -207,6 +207,12 @@ namespace StockAlerts.Functions
                 };
             });
 
+
+            // api user claim policy
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(CustomClaimIdentifiers.Rol, CustomClaims.ApiAccess));
+            });
         }
 
         private void ConfigureAutoMapper(IFunctionsHostBuilder builder)

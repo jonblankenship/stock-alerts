@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.Domain.Repositories;
 using StockAlerts.Domain.Settings;
+using Microsoft.AspNetCore.Http;
 
 namespace StockAlerts.Domain.Authentication
 {
@@ -53,6 +56,22 @@ namespace StockAlerts.Domain.Authentication
             }
 
             return new ExchangeRefreshTokenResponse(false, "Invalid token.");
+        }
+
+        public ClaimsPrincipal GetAuthenticatedPrincipal(HttpRequest request)
+        {
+            if (request.Headers.ContainsKey("Authorization"))
+            {
+                var header = request.Headers["Authorization"];
+                var scheme = header.FirstOrDefault()?.Split(' ').FirstOrDefault();
+                if (scheme == "Bearer")
+                {
+                    var token = header.FirstOrDefault()?.Split(' ').Last();
+                    return _jwtTokenValidator.GetPrincipalFromToken(token, _settings.AuthSettings.SecretKey);
+                }
+            }
+
+            return null;
         }
     }
 }

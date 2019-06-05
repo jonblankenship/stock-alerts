@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using StockAlerts.Domain.Exceptions;
 using System;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace StockAlerts.Functions

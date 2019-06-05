@@ -63,19 +63,11 @@ namespace StockAlerts.Data.Repositories
 
         private async Task InsertAsync(AppUser appUser, CancellationToken cancellationToken)
         {
-            try
-            {
-                var dataObject = _mapper.Map<Data.Model.AppUser>(appUser);
-                await _dbContext.AppUsers.AddAsync(dataObject, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
+            var dataObject = _mapper.Map<Data.Model.AppUser>(appUser);
+            await _dbContext.AppUsers.AddAsync(dataObject, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-                _mapper.Map(dataObject, appUser);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            _mapper.Map(dataObject, appUser);
         }
 
         private async Task UpdateAsync(AppUser appUser, CancellationToken cancellationToken)

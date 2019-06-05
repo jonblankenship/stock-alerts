@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Identity;
 using StockAlerts.Domain.Exceptions;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Repositories;
+using StockAlerts.Domain.Settings;
 
 namespace StockAlerts.Domain.Authentication
 {
@@ -17,17 +19,20 @@ namespace StockAlerts.Domain.Authentication
         private readonly IAppUsersRepository _appUsersRepository;
         private readonly ITokenFactory _tokenFactory;
         private readonly IJwtTokenFactory _jwtTokenFactory;
+        private readonly ISettings _settings;
 
         public AccountsService(
             UserManager<IdentityUser> userManager,
             IAppUsersRepository appUsersRepository,
             ITokenFactory tokenFactory,
-            IJwtTokenFactory jwtTokenFactory)
+            IJwtTokenFactory jwtTokenFactory,
+            ISettings settings)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _appUsersRepository = appUsersRepository ?? throw new ArgumentNullException(nameof(appUsersRepository));
             _tokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
             _jwtTokenFactory = jwtTokenFactory ?? throw new ArgumentNullException(nameof(jwtTokenFactory));
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public async Task RegisterUserAsync(RegisterRequest registerRequest, CancellationToken cancellationToken)
@@ -97,14 +102,48 @@ namespace StockAlerts.Domain.Authentication
             throw new BadRequestException("Username or password is incorrect.");
         }
 
-        public Task<bool> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest, CancellationToken cancellationToken)
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordRequest forgotPasswordRequest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            forgotPasswordRequest.Validate();
+
+            var user = await _userManager.FindByEmailAsync(forgotPasswordRequest.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                return true;
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // TODO: Implement _emailSender and Reset Password e-mail template
+            // var callbackUrl = $"{_settings.WebAppBaseUrl}/reset-password?code={HttpUtility.UrlEncode(code)}";
+            // await _emailSender.SendEmailAsync(user.Email, new ResetPasswordEmailModel(callbackUrl));
+            return true;
         }
 
-        public Task<bool> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
+        public async Task<bool> ResetPasswordAsync(ResetPasswordRequest resetPasswordRequest, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            resetPasswordRequest.Validate();
+
+            var user = await _userManager.FindByEmailAsync(resetPasswordRequest.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                return true;
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordRequest.Code, resetPasswordRequest.Password);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+
+            if (result.Errors.Any())
+            {
+                throw new ApplicationException(result.Errors.First().Description);
+            }
+
+            return false;
         }
     }
 }

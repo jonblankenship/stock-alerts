@@ -15,19 +15,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using StockAlerts.Domain.Authentication;
 
 namespace StockAlerts.Functions
 {
     public class AlertDefinitionsFunctions : FunctionBase
     {
         private readonly IAlertDefinitionsService _alertDefinitionsService;
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public AlertDefinitionsFunctions(
             IAlertDefinitionsService alertDefinitionsService,
+            IAuthService authService,
             IMapper mapper)
         {
             _alertDefinitionsService = alertDefinitionsService ?? throw new ArgumentNullException(nameof(alertDefinitionsService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -38,6 +42,10 @@ namespace StockAlerts.Functions
             ILogger log)
         {
             log.LogInformation("Executing GetAlertDefinitionsAsync.");
+
+            var claimsPrincipal = _authService.GetAuthenticatedPrincipal(req);
+            if (claimsPrincipal == null)
+                return new UnauthorizedResult();
 
             // TODO: Get userId from req.HttpContext.User claims
             var userId = MiscConstants.AppUserId;
@@ -55,6 +63,11 @@ namespace StockAlerts.Functions
         {
             log.LogInformation("Executing GetAlertDefinitionAsync.");
 
+            var claimsPrincipal = _authService.GetAuthenticatedPrincipal(req);
+            if (claimsPrincipal == null)
+                return new UnauthorizedResult();
+
+            // TODO: Only allow retrieval of alert definitions owned by claimsPrincipal
             var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
             var resource = _mapper.Map<Resources.Model.AlertDefinition>(alertDefinition);
             return new OkObjectResult(resource);
@@ -68,14 +81,19 @@ namespace StockAlerts.Functions
         {
             log.LogInformation("Executing PostAlertDefinitionAsync.");
 
+            var claimsPrincipal = _authService.GetAuthenticatedPrincipal(req);
+            if (claimsPrincipal == null)
+                return new UnauthorizedResult();
+
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var body = JsonConvert.DeserializeObject<Resources.Model.AlertDefinition>(requestBody);
+            var body = JsonConvert.DeserializeObject<Resources.Model.AlertDefinition>(requestBody);            
 
             if (body.AlertDefinitionId != Guid.Empty)
                 throw new BadRequestException("AlertDefinitionId must be empty on a POST.");
 
             var alertDefinition = _mapper.Map<AlertDefinition>(body);
 
+            // TODO: Assign AppUserId of claimsPrincipal to alert definition
             await alertDefinition.SaveAsync();
 
             alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
@@ -92,6 +110,10 @@ namespace StockAlerts.Functions
         {
             log.LogInformation("Executing PutAlertDefinitionAsync.");
 
+            var claimsPrincipal = _authService.GetAuthenticatedPrincipal(req);
+            if (claimsPrincipal == null)
+                return new UnauthorizedResult();
+
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var body = JsonConvert.DeserializeObject<Resources.Model.AlertDefinition>(requestBody);
 
@@ -101,6 +123,7 @@ namespace StockAlerts.Functions
 
             var alertDefinition = _mapper.Map<AlertDefinition>(body);
 
+            // TODO: Only allow update of alert definitions owned by the claimsPrincipal
             await alertDefinition.SaveAsync();
 
             alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
@@ -117,8 +140,13 @@ namespace StockAlerts.Functions
         {
             log.LogInformation("Executing DeleteAlertDefinitionAsync.");
 
+            var claimsPrincipal = _authService.GetAuthenticatedPrincipal(req);
+            if (claimsPrincipal == null)
+                return new UnauthorizedResult();
+
             var alertDefinitionIdGuid = new Guid(alertDefinitionId);
 
+            // TODO: Only allow delete of alert definitions owned by the claimsPrincipal
             var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinitionIdGuid);
             await alertDefinition.DeleteAsync();
 

@@ -8,7 +8,11 @@ using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using StockAlerts.Domain.Authentication;
+using StockAlerts.Domain.Settings;
 using StockAlerts.Functions.Attributes;
 
 namespace StockAlerts.Functions
@@ -16,10 +20,14 @@ namespace StockAlerts.Functions
     public class StocksFunctions : FunctionBase
     {
         private readonly IStocksService _stocksService;
+        private readonly IAuthService _authService;
 
-        public StocksFunctions(IStocksService stocksService)
+        public StocksFunctions(
+            IStocksService stocksService,
+            IAuthService authService)
         {
             _stocksService = stocksService ?? throw new ArgumentNullException(nameof(stocksService));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         }
 
         [FunctionName("GetStock")]
@@ -31,10 +39,13 @@ namespace StockAlerts.Functions
         {
             log.LogInformation("Executing GetStockAsync.");
 
+            if (_authService.GetAuthenticatedPrincipal(req) == null)
+                return new UnauthorizedResult();
+
             var stock = await _stocksService.GetStockAsync(new Guid(stockId));
             return new OkObjectResult(stock);
         }
-
+        
         [FunctionName("FindStocks")]
         [HandleExceptions]
         public async Task<IActionResult> FindStocksAsync(
@@ -42,6 +53,9 @@ namespace StockAlerts.Functions
             ILogger log)
         {
             log.LogInformation("Executing FindStocksAsync.");
+
+            if (_authService.GetAuthenticatedPrincipal(req) == null)
+                return new UnauthorizedResult();
 
             var startsWith = req.Query["startsWith"];            
 

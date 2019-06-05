@@ -59,6 +59,25 @@ namespace StockAlerts.Functions
             return await LoginAsync(loginRequest, cancellationToken);
         }
 
+        [FunctionName("ResetPasswordFunction")]
+        [HandleExceptions]
+        public async Task<IActionResult> ForgotPasswordFunction(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "accounts/reset-password")] HttpRequest req,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            log.LogInformation("Executing ResetPasswordFunction.");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var resetPasswordRequest = JsonConvert.DeserializeObject<ResetPasswordRequest>(requestBody);
+            resetPasswordRequest.RemoteIpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var response = await _accountsService.ResetPasswordAsync(resetPasswordRequest, cancellationToken);
+
+            return new OkObjectResult(response);
+        }
+
+
         private async Task<IActionResult> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken)
         {
             var response = await _accountsService.LoginAsync(loginRequest, cancellationToken);
