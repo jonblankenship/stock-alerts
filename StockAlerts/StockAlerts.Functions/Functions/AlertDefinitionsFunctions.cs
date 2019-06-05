@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using StockAlerts.Domain.Authentication;
+using StockAlerts.Domain.Extensions;
 
 namespace StockAlerts.Functions
 {
@@ -47,9 +48,7 @@ namespace StockAlerts.Functions
             if (claimsPrincipal == null)
                 return new UnauthorizedResult();
 
-            // TODO: Get userId from req.HttpContext.User claims
-            var userId = MiscConstants.AppUserId;
-            var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(userId);
+            var alertDefinitions = await _alertDefinitionsService.GetAlertDefinitionsAsync(claimsPrincipal.GetAppUserIdClaim());
             var resources = _mapper.Map<IList<Resources.Model.AlertDefinition>>(alertDefinitions);
             return new OkObjectResult(resources);
         }
@@ -67,8 +66,10 @@ namespace StockAlerts.Functions
             if (claimsPrincipal == null)
                 return new UnauthorizedResult();
 
-            // TODO: Only allow retrieval of alert definitions owned by claimsPrincipal
             var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(new Guid(alertDefinitionId));
+
+            claimsPrincipal.GuardIsAuthorizedForAppUserId(alertDefinition.AppUserId);
+
             var resource = _mapper.Map<Resources.Model.AlertDefinition>(alertDefinition);
             return new OkObjectResult(resource);
         }
@@ -92,8 +93,7 @@ namespace StockAlerts.Functions
                 throw new BadRequestException("AlertDefinitionId must be empty on a POST.");
 
             var alertDefinition = _mapper.Map<AlertDefinition>(body);
-
-            // TODO: Assign AppUserId of claimsPrincipal to alert definition
+            alertDefinition.AppUserId = claimsPrincipal.GetAppUserIdClaim();
             await alertDefinition.SaveAsync();
 
             alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
@@ -120,10 +120,12 @@ namespace StockAlerts.Functions
             var alertDefinitionIdGuid = new Guid(alertDefinitionId);
             if (body.AlertDefinitionId != alertDefinitionIdGuid)
                 throw new BadRequestException("AlertDefinitionId in body does not match alertDefinitionId provided in route.");
+            
+            var existingAlertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinitionIdGuid);
+            claimsPrincipal.GuardIsAuthorizedForAppUserId(existingAlertDefinition.AppUserId);
 
             var alertDefinition = _mapper.Map<AlertDefinition>(body);
 
-            // TODO: Only allow update of alert definitions owned by the claimsPrincipal
             await alertDefinition.SaveAsync();
 
             alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinition.AlertDefinitionId);
@@ -146,8 +148,8 @@ namespace StockAlerts.Functions
 
             var alertDefinitionIdGuid = new Guid(alertDefinitionId);
 
-            // TODO: Only allow delete of alert definitions owned by the claimsPrincipal
             var alertDefinition = await _alertDefinitionsService.GetAlertDefinitionAsync(alertDefinitionIdGuid);
+            claimsPrincipal.GuardIsAuthorizedForAppUserId(alertDefinition.AppUserId);
             await alertDefinition.DeleteAsync();
 
             return new NoContentResult();
