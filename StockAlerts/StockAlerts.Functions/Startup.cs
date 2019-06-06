@@ -21,16 +21,12 @@ using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.IdentityModel.Tokens;
-using StockAlerts.Data.Model;
 using StockAlerts.Domain.Authentication;
 using StockAlerts.Domain.Constants;
 using StockAlerts.Domain.Factories;
+using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Settings;
 using StockAlerts.Resources;
-using AlertCriteria = StockAlerts.Domain.Model.AlertCriteria;
-using AlertDefinition = StockAlerts.Domain.Model.AlertDefinition;
-using AppUser = StockAlerts.Domain.Model.AppUser;
-using Stock = StockAlerts.Domain.Model.Stock;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -112,12 +108,14 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<INotificationsService, NotificationsService>();
             builder.Services.AddScoped<IAccountsService, AccountsService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddTransient<IUserPreferencesService, UserPreferencesService>();
 
             // Repositories
             builder.Services.AddTransient<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
             builder.Services.AddTransient<IStocksRepository, StocksRepository>();
             builder.Services.AddTransient<IApiCallsRepository, ApiCallsRepository>();
             builder.Services.AddTransient<IAppUsersRepository, AppUsersRepository>();
+            builder.Services.AddTransient<IUserPreferencesRepository, UserPreferencesRepository>();
 
             // Factories
             builder.Services.AddScoped<IQueueClientFactory, QueueClientFactory>();
@@ -126,9 +124,10 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<ITokenFactory, TokenFactory>();
 
             // Domain models
+            builder.Services.AddTransient<AppUser, AppUser>();
+            builder.Services.AddTransient<UserPreferences, UserPreferences>();
             builder.Services.AddTransient<Stock, Stock>();
             builder.Services.AddTransient<AlertDefinition, AlertDefinition>();
-            builder.Services.AddTransient<AppUser, AppUser>();
             builder.Services.AddTransient<AlertCriteria, AlertCriteria>();
 
             // Settings
@@ -200,7 +199,8 @@ namespace StockAlerts.Functions
                     {
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                         {
-                            context.Response.Headers.Add("Token-Expired", "true");
+                            if (!context.Response.Headers.ContainsKey("Token-Expired"))
+                                context.Response.Headers.Add("Token-Expired", "true");
                         }
                         return Task.CompletedTask;
                     }

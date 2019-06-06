@@ -18,7 +18,7 @@ namespace StockAlerts.Data
             CreateMap<Stock, Domain.Model.Stock>().ConstructUsingServiceLocator();
             CreateMap<AlertTriggerHistory, Domain.Model.AlertTriggerHistory>();
             CreateMap<AppUser, Domain.Model.AppUser>().ConstructUsingServiceLocator();
-            CreateMap<UserPreferences, Domain.Model.UserPreferences>();
+            CreateMap<UserPreferences, Domain.Model.UserPreferences>().ConstructUsingServiceLocator();
             CreateMap<AlertCriteria, Domain.Model.AlertCriteria>();
             CreateMap<RefreshToken, Domain.Model.RefreshToken>();
         }

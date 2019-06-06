@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace StockAlerts.Resources.Model
+{
+    public class UserPreferences
+    {
+        public Guid UserPreferencesId { get; set; }
+
+        public Guid AppUserId { get; set; }
+
+        public bool ShouldSendEmail { get; set; }
+
+        public string EmailAddress { get; set; }
+
+        public bool ShouldSendPush { get; set; }
+
+        public bool ShouldSendSms { get; set; }
+
+        public string SmsNumber { get; set; }
+    }
+}

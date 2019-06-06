@@ -16,9 +16,10 @@ namespace StockAlerts.Resources
         private void MapResourceToDomainModel()
         {
             CreateMap<AlertDefinition, Domain.Model.AlertDefinition>()
-                //.ForMember(d => d.AlertCriterias, opt => opt.ConvertUsing(new AlertCriteriaValueConverter(), nameof(AlertDefinition.RootCriteria)))
                 .ConstructUsingServiceLocator();
             CreateMap<AlertCriteria, Domain.Model.AlertCriteria>();
+            CreateMap<UserPreferences, Domain.Model.UserPreferences>()
+                .ConstructUsingServiceLocator();
         }
 
         private void MapDomainToDataModel()
@@ -26,6 +27,8 @@ namespace StockAlerts.Resources
             CreateMap<Domain.Model.AlertDefinition, AlertDefinition>();
 
             CreateMap<Domain.Model.AlertCriteria, AlertCriteria>();
+
+            CreateMap<Domain.Model.UserPreferences, UserPreferences>();
         }
     }
 }
