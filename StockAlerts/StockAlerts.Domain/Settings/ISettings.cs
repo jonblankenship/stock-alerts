@@ -13,5 +13,9 @@ namespace StockAlerts.Domain.Settings
         JwtOptions JwtOptions { get; }
         
         AuthSettings AuthSettings { get; set; }
+
+        EmailSenderOptions EmailSenderOptions { get; set; }
+
+        string WebAppBaseUrl { get; }
     }
 }

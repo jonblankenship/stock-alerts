@@ -2,12 +2,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AzureFunctionsVersion>v2</AzureFunctionsVersion>
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.0" />
     <PackageReference Include="AutoMapper.Collection" Version="5.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="DarkLoop.Azure.WebJobs.Authorize" Version="1.0.25-preview" />
+    <PackageReference Include="FluentEmail.Core" Version="2.5.1" />
+    <PackageReference Include="FluentEmail.Mailgun" Version="2.5.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
@@ -27,6 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.28" />
     <PackageReference Include="PostSharp" Version="6.2.5" />
+    <PackageReference Include="RazorLight.Unofficial" Version="2.0.0-beta1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockAlerts.DataProviders.Intrinio\StockAlerts.DataProviders.Intrinio.csproj" />
@@ -57,4 +61,7 @@
   <Target Name="CopyEfMigrationItems" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="@(EfMigrationItems)" DestinationFolder="$(OutDir)" />
   </Target>
+  <PropertyGroup>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+  </PropertyGroup>
 </Project>

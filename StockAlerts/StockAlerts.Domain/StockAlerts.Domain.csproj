@@ -2,14 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="EmailTemplates\ResetPasswordEmailTemplate.cshtml" />
+    <None Remove="EmailTemplates\WelcomeEmailTemplate.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="EmailTemplates\ResetPasswordEmailTemplate.cshtml" />
+    <EmbeddedResource Include="EmailTemplates\WelcomeEmailTemplate.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentEmail.Core" Version="2.5.1" />
+    <PackageReference Include="FluentEmail.Mailgun" Version="2.5.3" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="RazorLight.Unofficial" Version="2.0.0-beta1.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,5 +38,7 @@
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  <PropertyGroup>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+  </PropertyGroup>
 </Project>

@@ -59,14 +59,32 @@ namespace StockAlerts.Functions
             return await LoginAsync(loginRequest, cancellationToken);
         }
 
+        [FunctionName("ForgotPasswordFunction")]
+        [HandleExceptions]
+        public async Task<IActionResult> ForgotPasswordFunctionAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "accounts/forgot-password")] HttpRequest req,
+            ILogger log,
+            CancellationToken cancellationToken)
+        {
+            log.LogInformation("Executing ResetPasswordFunctionAsync.");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var forgotPasswordRequest = JsonConvert.DeserializeObject<ForgotPasswordRequest>(requestBody);
+            forgotPasswordRequest.RemoteIpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var response = await _accountsService.ForgotPasswordAsync(forgotPasswordRequest, cancellationToken);
+
+            return new OkObjectResult(response);
+        }
+
         [FunctionName("ResetPasswordFunction")]
         [HandleExceptions]
-        public async Task<IActionResult> ForgotPasswordFunction(
+        public async Task<IActionResult> ResetPasswordFunctionAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "accounts/reset-password")] HttpRequest req,
             ILogger log,
             CancellationToken cancellationToken)
         {
-            log.LogInformation("Executing ResetPasswordFunction.");
+            log.LogInformation("Executing ResetPasswordFunctionAsync.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var resetPasswordRequest = JsonConvert.DeserializeObject<ResetPasswordRequest>(requestBody);
@@ -76,7 +94,6 @@ namespace StockAlerts.Functions
 
             return new OkObjectResult(response);
         }
-
 
         private async Task<IActionResult> LoginAsync(LoginRequest loginRequest, CancellationToken cancellationToken)
         {

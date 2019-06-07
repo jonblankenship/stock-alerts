@@ -11,6 +11,7 @@ namespace StockAlerts.Domain.Settings
         private const string JwtIssuerOptionsSection = "JwtIssuerOptions";
         private const string JwtOptionsSection = "Jwt";
         private const string AuthSettingsSection = "AuthSettings";
+        private const string EmailSenderOptionsSection = "EmailSenderOptions";
 
         public void Initialize(IConfiguration configuration, bool isDevelopment)
         {
@@ -27,6 +28,8 @@ namespace StockAlerts.Domain.Settings
             JwtOptions = configuration.GetSection(JwtOptionsSection).Get<JwtOptions>();
 
             AuthSettings = configuration.GetSection(AuthSettingsSection).Get<AuthSettings>();
+
+            EmailSenderOptions = configuration.GetSection($"{EmailSenderOptionsSection}").Get<EmailSenderOptions>();
         }
 
         public bool IsDevelopment { get; private set; }
@@ -40,5 +43,9 @@ namespace StockAlerts.Domain.Settings
         public JwtOptions JwtOptions { get; private set; }
 
         public AuthSettings AuthSettings { get; set; }
+
+        public EmailSenderOptions EmailSenderOptions { get; set; }
+
+        public string WebAppBaseUrl => IsDevelopment ? "http://localhost:7071" : "https://stockalerts.azurewebsites.new";
     }
 }

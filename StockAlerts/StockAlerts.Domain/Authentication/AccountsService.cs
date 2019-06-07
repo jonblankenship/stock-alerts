@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using StockAlerts.Domain.EmailTemplates;
 using StockAlerts.Domain.Exceptions;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Repositories;
+using StockAlerts.Domain.Services;
 using StockAlerts.Domain.Settings;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace StockAlerts.Domain.Authentication
 {
@@ -19,6 +20,7 @@ namespace StockAlerts.Domain.Authentication
         private readonly IAppUsersRepository _appUsersRepository;
         private readonly ITokenFactory _tokenFactory;
         private readonly IJwtTokenFactory _jwtTokenFactory;
+        private readonly IEmailSender _emailSender;
         private readonly ISettings _settings;
 
         public AccountsService(
@@ -26,12 +28,14 @@ namespace StockAlerts.Domain.Authentication
             IAppUsersRepository appUsersRepository,
             ITokenFactory tokenFactory,
             IJwtTokenFactory jwtTokenFactory,
+            IEmailSender emailSender,
             ISettings settings)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _appUsersRepository = appUsersRepository ?? throw new ArgumentNullException(nameof(appUsersRepository));
             _tokenFactory = tokenFactory ?? throw new ArgumentNullException(nameof(tokenFactory));
             _jwtTokenFactory = jwtTokenFactory ?? throw new ArgumentNullException(nameof(jwtTokenFactory));
+            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -115,9 +119,8 @@ namespace StockAlerts.Domain.Authentication
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            // TODO: Implement _emailSender and Reset Password e-mail template
-            // var callbackUrl = $"{_settings.WebAppBaseUrl}/reset-password?code={HttpUtility.UrlEncode(code)}";
-            // await _emailSender.SendEmailAsync(user.Email, new ResetPasswordEmailModel(callbackUrl));
+            var callbackUrl = $"{_settings.WebAppBaseUrl}/reset-password?code={HttpUtility.UrlEncode(code)}";
+            await _emailSender.SendEmailAsync(user.Email, new ResetPasswordEmailModel(callbackUrl));
             return true;
         }
 

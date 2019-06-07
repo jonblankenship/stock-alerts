@@ -1,32 +1,33 @@
 ﻿using AutoMapper;
+using AutoMapper.EquivalencyExpression;
+using FluentEmail.Core.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
 using StockAlerts.Data;
 using StockAlerts.Data.Repositories;
 using StockAlerts.DataProviders.Intrinio;
+using StockAlerts.Domain.Authentication;
+using StockAlerts.Domain.Constants;
+using StockAlerts.Domain.Factories;
+using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Repositories;
 using StockAlerts.Domain.Services;
+using StockAlerts.Domain.Settings;
+using StockAlerts.Resources;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper.EquivalencyExpression;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Azure.WebJobs.Host.Bindings;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
-using Microsoft.IdentityModel.Tokens;
-using StockAlerts.Domain.Authentication;
-using StockAlerts.Domain.Constants;
-using StockAlerts.Domain.Factories;
-using StockAlerts.Domain.Model;
-using StockAlerts.Domain.Settings;
-using StockAlerts.Resources;
+using RazorRenderer = StockAlerts.Functions.EmailRendering.RazorRenderer;
 
 [assembly: FunctionsStartup(typeof(StockAlerts.Functions.Startup))]
 namespace StockAlerts.Functions
@@ -71,6 +72,7 @@ namespace StockAlerts.Functions
             ConfigureJwtAuthentication(builder);
             ConfigureHttpClients(builder);
             ConfigureAutoMapper(builder);
+            ConfigureEmailSender(builder);
         }
 
         private void ConfigureDbContexts(IFunctionsHostBuilder builder)
@@ -108,7 +110,8 @@ namespace StockAlerts.Functions
             builder.Services.AddScoped<INotificationsService, NotificationsService>();
             builder.Services.AddScoped<IAccountsService, AccountsService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddTransient<IUserPreferencesService, UserPreferencesService>();
+            builder.Services.AddScoped<IUserPreferencesService, UserPreferencesService>();
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
 
             // Repositories
             builder.Services.AddTransient<IAlertDefinitionsRepository, AlertDefinitionsRepository>();
@@ -244,6 +247,15 @@ namespace StockAlerts.Functions
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("User-Agent", stockAlertsUserAgent);
             });
+        }
+
+        private void ConfigureEmailSender(IFunctionsHostBuilder builder)
+        {
+            builder.Services.TryAdd(ServiceDescriptor.Singleton<ITemplateRenderer, RazorRenderer>(sp => new RazorRenderer(Assembly.GetExecutingAssembly())));
+
+            builder.Services
+                .AddFluentEmail("jon@jonblankenship.com", "Jon from Stock Alerts")                
+                .AddMailGunSender(_settings.EmailSenderOptions.Domain, _settings.EmailSenderOptions.MailGunApiKey);
         }
     }
 }
