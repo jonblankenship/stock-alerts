@@ -62,7 +62,14 @@ namespace StockAlerts.Domain.Authentication
             {
                 UserId = new Guid(user.Id),
                 UserName = user.UserName,
-                HasBeenGrantedAccess = true
+                HasBeenGrantedAccess = true,
+                UserPreferences = new UserPreferences
+                {
+                    EmailAddress = user.Email,
+                    ShouldSendEmail = false,
+                    ShouldSendPush = false,
+                    ShouldSendSms = false
+                }
             };
             await appUser.SaveAsync(cancellationToken);
 

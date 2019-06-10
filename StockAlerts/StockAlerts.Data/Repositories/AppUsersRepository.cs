@@ -72,7 +72,14 @@ namespace StockAlerts.Data.Repositories
 
         private async Task UpdateAsync(AppUser appUser, CancellationToken cancellationToken)
         {
-            var dataObject = _mapper.Map<Data.Model.AppUser>(appUser);
+            var dataObject = await (from a in _dbContext.AppUsers
+                                    where a.AppUserId == appUser.AppUserId
+                                    select a).SingleOrDefaultAsync(cancellationToken);
+
+            if (dataObject == null)
+                throw new NotFoundException($"AppUser with ID {appUser.AppUserId} does not exist.");
+
+            dataObject = _mapper.Map(appUser, dataObject);
             _dbContext.Update(dataObject);
             await _dbContext.SaveChangesAsync(cancellationToken);
 

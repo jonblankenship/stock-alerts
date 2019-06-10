@@ -3,17 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
+using StockAlerts.Domain.Authentication;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Services;
+using StockAlerts.Functions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using StockAlerts.Domain.Authentication;
-using StockAlerts.Domain.Settings;
-using StockAlerts.Functions.Attributes;
 
 namespace StockAlerts.Functions
 {
