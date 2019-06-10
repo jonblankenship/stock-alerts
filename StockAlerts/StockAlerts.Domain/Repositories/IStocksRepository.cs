@@ -15,6 +15,13 @@ namespace StockAlerts.Domain.Repositories
         Task<Stock> GetStockAsync(Guid stockId);
 
         /// <summary>
+        /// Gets a <see cref="Stock"/> by <see cref="symbol"/>
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        Task<Stock> GetStockAsync(string symbol);
+
+        /// <summary>
         /// Finds all <see cref="Stock"/>s whose symbol starts with <see cref="symbolStartsWith"/>
         /// </summary>
         /// <param name="symbolStartsWith"></param>

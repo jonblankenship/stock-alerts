@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 using StockAlerts.Domain.Model;
 
-namespace StockAlerts.DataProviders.Intrinio.Model
+namespace StockAlerts.DataProviders.Intrinio.Model.V2
 {
     public class RealTimeQuote : IQuote
     {

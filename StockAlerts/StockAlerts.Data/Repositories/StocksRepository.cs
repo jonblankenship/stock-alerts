@@ -37,6 +37,19 @@ namespace StockAlerts.Data.Repositories
             return _mapper.Map<Stock>(dataObject);
         }
 
+        public async Task<Stock> GetStockAsync(string symbol)
+        {
+            var query = from s in _dbContext.Stocks
+                where s.Symbol == symbol
+                select s;
+
+            var dataObject = await query.SingleOrDefaultAsync();
+            if (dataObject != null)
+                return _mapper.Map<Stock>(dataObject);
+
+            return null;
+        }
+
         public async Task<IEnumerable<Stock>> FindStocksAsync(string symbolStartsWith)
         {
             var query = from s in _dbContext.Stocks

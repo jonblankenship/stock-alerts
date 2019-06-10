@@ -20,6 +20,8 @@ namespace StockAlerts.Domain.Model
 
         public string Symbol { get; set; }
 
+        public string Name { get; set; }
+
         public decimal LastPrice { get; set; }
 
         public decimal PreviousLastPrice { get; set; }

@@ -17,13 +17,17 @@ namespace StockAlerts.Functions
     public class StocksFunctions : FunctionBase
     {
         private readonly IStocksService _stocksService;
+        private readonly IDataUpdateService _dataUpdateService;
+
         private readonly IAuthService _authService;
 
         public StocksFunctions(
             IStocksService stocksService,
+            IDataUpdateService dataUpdateService,
             IAuthService authService)
         {
             _stocksService = stocksService ?? throw new ArgumentNullException(nameof(stocksService));
+            _dataUpdateService = dataUpdateService ?? throw new ArgumentNullException(nameof(dataUpdateService));
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         }
 
@@ -63,6 +67,23 @@ namespace StockAlerts.Functions
             }
 
             return new OkObjectResult(new List<Stock>());
+        }
+
+        [FunctionName("UpdateStockInfos")]
+        [HandleExceptions]
+        public async Task<IActionResult> UpdateStockInfosAsync(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "stocks/update-infos")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("Executing UpdateStockInfos.");
+
+            if (_authService.GetAuthenticatedPrincipal(req) == null)
+                return new UnauthorizedResult();
+
+            await _dataUpdateService.UpdateAllStockInfosAsync();
+
+            return new NoContentResult();
         }
     }
 }

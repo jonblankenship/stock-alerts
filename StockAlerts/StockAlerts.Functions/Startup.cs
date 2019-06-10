@@ -238,9 +238,16 @@ namespace StockAlerts.Functions
             if (stockAlertsUserAgent == null)
                 throw new Exception("`StockAlertsUserAgent` must be set");
 
-            builder.Services.AddHttpClient(Apis.Intrinio, c =>
+            builder.Services.AddHttpClient(Apis.IntrinioV1, c =>
             {
                 c.BaseAddress = new Uri("https://api-v2.intrinio.com");
+                c.DefaultRequestHeaders.Add("Accept", "application/json");
+                c.DefaultRequestHeaders.Add("User-Agent", stockAlertsUserAgent);
+            });
+
+            builder.Services.AddHttpClient(Apis.IntrinioV2, c =>
+            {
+                c.BaseAddress = new Uri("https://api.intrinio.com");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
                 c.DefaultRequestHeaders.Add("User-Agent", stockAlertsUserAgent);
             });

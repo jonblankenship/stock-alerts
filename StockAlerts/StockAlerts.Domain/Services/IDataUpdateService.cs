@@ -5,5 +5,7 @@ namespace StockAlerts.Domain.Services
     public interface IDataUpdateService
     {
         Task UpdateQuotesForSubscribedStocksAsync();
+
+        Task UpdateAllStockInfosAsync();
     }
 }

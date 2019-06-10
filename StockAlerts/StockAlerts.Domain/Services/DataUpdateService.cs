@@ -59,6 +59,24 @@ namespace StockAlerts.Domain.Services
             }
         }
 
+        public async Task UpdateAllStockInfosAsync()
+        {
+            var stockInfos = await _stockDataWebClient.GetStockInfosAsync();
+            foreach (var s in stockInfos)
+            {
+                var stock = await _stocksRepository.GetStockAsync(s.Ticker);
+                if (stock == null)
+                {
+                    stock = new Stock(_stocksRepository);
+                }
+
+                stock.Symbol = s.Ticker;
+                stock.Name = s.SecurityName;
+
+                await stock.SaveAsync();
+            }
+        }
+
         private async Task EnqueueAlertEvaluationMessages(Stock stock)
         {
             var alertDefinitions = await _alertDefinitionsRepository.GetAlertDefinitionsByStockIdAsync(stock.StockId);
