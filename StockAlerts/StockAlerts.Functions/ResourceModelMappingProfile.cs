@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
-using StockAlerts.Resources.Converters;
+﻿using AutoMapper;
 using StockAlerts.Resources.Model;
 
-namespace StockAlerts.Resources
+namespace StockAlerts.Functions
 {
     public class ResourceModelMappingProfile : Profile
     {

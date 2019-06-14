@@ -1,0 +1,299 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewmodels="clr-namespace:StockAlerts.Forms.ViewModels"
+             xmlns:converters="clr-namespace:StockAlerts.Forms.Converters;assembly=StockAlerts.Forms"
+             xmlns:animations="clr-namespace:StockAlerts.Forms.Animations;assembly=StockAlerts.Forms"
+             xmlns:triggers="clr-namespace:StockAlerts.Forms.Triggers;assembly=StockAlerts.Forms"
+             xmlns:behaviors="clr-namespace:StockAlerts.Forms.Behaviors;assembly=StockAlerts.Forms"
+             xmlns:base="clr-namespace:StockAlerts.Forms.ViewModels.Base;assembly=StockAlerts.Forms"
+             mc:Ignorable="d"
+             x:Class="StockAlerts.Forms.Views.LoginView"
+             base:ViewModelLocator.AutoWireViewModel="true">
+    <ContentPage.Title>
+        <OnPlatform x:TypeArguments="x:String">
+            <On Platform="iOS, UWP, WinRT, WinPhone" Value="Stock Alerts" />
+        </OnPlatform>
+    </ContentPage.Title>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
+
+            <Style x:Key="TitleLabelStyle"
+                TargetType="{x:Type Label}">
+                <Setter Property="FontFamily"
+                    Value="{StaticResource MontserratRegular}" />
+                <Setter Property="FontAttributes"
+                    Value="Bold" />
+                <Setter Property="FontSize"
+                    Value="{StaticResource MediumSize}" />
+                <Setter Property="HorizontalOptions"
+                    Value="Center" />
+                <Setter Property="Margin"
+                    Value="0, 12" />
+            </Style>
+
+            <Style x:Key="HeaderLabelStyle"
+                TargetType="{x:Type Label}">
+                <Setter Property="FontFamily"
+                    Value="{StaticResource MontserratRegular}" />
+                <Setter Property="FontSize"
+                    Value="{StaticResource LittleSize}" />
+                <Setter Property="TextColor"
+                    Value="{StaticResource GreenColor}" />
+                <Setter Property="HorizontalOptions"
+                    Value="Start" />
+            </Style>
+
+            <Style x:Key="LoginButtonStyle"
+                TargetType="{x:Type Label}">
+                <Setter Property="FontFamily"
+                    Value="{StaticResource MontserratRegular}" />
+                <Setter Property="TextColor"
+                    Value="{StaticResource WhiteColor}" />
+                <Setter Property="HorizontalOptions"
+                    Value="Center" />
+                <Setter Property="VerticalOptions"
+                    Value="Center" />
+            </Style>
+
+            <Style x:Key="LoginPanelStyle"
+                TargetType="{x:Type Grid}">
+                <Setter Property="HeightRequest"
+                    Value="60" />
+                <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightGreenColor}" />
+                <Setter Property="HorizontalOptions"
+                    Value="FillAndExpand" />
+                <Setter Property="VerticalOptions"
+                    Value="FillAndExpand" />
+            </Style>
+
+            <Style x:Key="RegisterPanelStyle"
+                TargetType="{x:Type Grid}"
+                BasedOn="{StaticResource LoginPanelStyle}">
+                <Setter Property="BackgroundColor"
+                    Value="{StaticResource GreenColor}" />
+            </Style>
+
+            <Style x:Key="SettingsPanelStyle"
+                TargetType="{x:Type Grid}"
+                BasedOn="{StaticResource LoginPanelStyle}">
+                <Setter Property="BackgroundColor"
+                    Value="{StaticResource BlackColor}" />
+            </Style>
+
+            <Style x:Key="SettingsImageStyle"
+                TargetType="{x:Type Image}">
+                <Setter Property="Margin"
+                    Value="12" />
+            </Style>
+
+            <animations:StoryBoard
+              x:Key="LoginAnimation"
+              Target="{x:Reference LoginPanel}">
+                <animations:FadeInAnimation
+                    Direction="Up"
+                    Duration="1500" />
+            </animations:StoryBoard>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Triggers>
+        <EventTrigger
+            Event="Appearing">
+            <triggers:BeginAnimation
+                Animation="{StaticResource LoginAnimation}" />
+        </EventTrigger>
+    </ContentPage.Triggers>
+
+    <Grid
+      BackgroundColor="{StaticResource BackgroundColor}">
+
+        <!-- AUTH -->
+        <Grid
+            x:Name="LoginPanel"
+            Padding="0"
+            ColumnSpacing="0"
+            RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+            <!-- LOGIN / REGISTER -->
+            <Grid   
+                Grid.Row="0"
+                Margin="48, 24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackLayout  
+                  Grid.Column="0"
+                  Orientation="Horizontal"
+                  HorizontalOptions="Center">
+                    <Label     
+                        Text="["
+                        TextColor="{StaticResource LightGreenColor}"
+                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
+                    <Label
+                        Text="LOGIN"/>
+                    <Label
+                        Text="]"
+                        TextColor="{StaticResource LightGreenColor}"
+                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding SwitchToLoginCommand}"
+                            NumberOfTapsRequired="1" />
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
+                <StackLayout
+                  Grid.Column="1"
+                  Orientation="Horizontal"
+                  HorizontalOptions="Center">
+                    <Label     
+                        Text="["
+                        TextColor="{StaticResource LightGreenColor}"
+                        IsVisible="{Binding IsRegistering}"/>
+                    <Label
+                        Text="REGISTER"
+                        TextColor="Gray"/>
+                    <Label
+                        Text="]"
+                        TextColor="{StaticResource LightGreenColor}"
+                        IsVisible="{Binding IsRegistering}"/>
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Command="{Binding SwitchToRegisterCommand}"
+                            NumberOfTapsRequired="1" />
+                    </StackLayout.GestureRecognizers>
+                </StackLayout>
+            </Grid>
+            <!-- LOGIN FORM -->
+            <StackLayout   
+                Grid.Row="2"
+                Margin="24">
+                <StackLayout IsVisible="{Binding IsRegistering}">
+                    <Label
+                        Text="Username"
+                        Style="{StaticResource HeaderLabelStyle}" />
+                    <Entry Text="{Binding EmailAddress.Value, Mode=TwoWay}">
+                        <Entry.Style>
+                            <OnPlatform x:TypeArguments="Style">
+                                <On Platform="iOS, Android" Value="{StaticResource EntryStyle}" />
+                                <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
+                            </OnPlatform>
+                        </Entry.Style>
+                        <Entry.Behaviors>
+                            <behaviors:EventToCommandBehavior
+                                EventName="TextChanged"
+                                Command="{Binding ValidateEmailAddressCommand}" />
+                        </Entry.Behaviors>
+                        <Entry.Triggers>
+                            <DataTrigger 
+                                TargetType="Entry"
+                                Binding="{Binding EmailAddress.IsValid}"
+                                Value="False">
+                                <Setter Property="behaviors:LineColorBehavior.LineColor" Value="{StaticResource ErrorColor}" />
+                            </DataTrigger>
+                        </Entry.Triggers>
+                    </Entry>
+                </StackLayout>
+                <Label 
+                    Text="{Binding EmailAddress.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                    Style="{StaticResource ValidationErrorLabelStyle}" />
+                <Label
+                  Text="Username"
+                  Style="{StaticResource HeaderLabelStyle}" />
+                <Entry Text="{Binding UserName.Value, Mode=TwoWay}">
+                    <Entry.Style>
+                        <OnPlatform x:TypeArguments="Style">
+                            <On Platform="iOS, Android" Value="{StaticResource EntryStyle}" />
+                            <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
+                        </OnPlatform>
+                    </Entry.Style>
+                    <Entry.Behaviors>
+                        <behaviors:EventToCommandBehavior
+							EventName="TextChanged"
+							Command="{Binding ValidateUserNameCommand}" />
+                    </Entry.Behaviors>
+                    <Entry.Triggers>
+                        <DataTrigger 
+							TargetType="Entry"
+							Binding="{Binding UserName.IsValid}"
+							Value="False">
+                            <Setter Property="behaviors:LineColorBehavior.LineColor" Value="{StaticResource ErrorColor}" />
+                        </DataTrigger>
+                    </Entry.Triggers>
+                </Entry>
+                <Label 
+					Text="{Binding UserName.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+					Style="{StaticResource ValidationErrorLabelStyle}" />
+                <Label
+                  Text="Password"
+                  Style="{StaticResource HeaderLabelStyle}"/>
+                <Entry
+                  IsPassword="True"
+                  Text="{Binding Password.Value, Mode=TwoWay}">
+                    <Entry.Style>
+                        <OnPlatform x:TypeArguments="Style">
+                            <On Platform="iOS, Android" Value="{StaticResource EntryStyle}" />
+                            <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
+                        </OnPlatform>
+                    </Entry.Style>
+                    <Entry.Behaviors>
+                        <behaviors:EventToCommandBehavior
+							EventName="TextChanged"
+							Command="{Binding ValidatePasswordCommand}" />
+                    </Entry.Behaviors>
+                    <Entry.Triggers>
+                        <DataTrigger 
+							TargetType="Entry"
+							Binding="{Binding Password.IsValid}"
+							Value="False">
+                            <Setter Property="behaviors:LineColorBehavior.LineColor" Value="{StaticResource ErrorColor}" />
+                        </DataTrigger>
+                    </Entry.Triggers>
+                </Entry>
+                <Label 
+					Text="{Binding Password.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+					Style="{StaticResource ValidationErrorLabelStyle}" />
+            </StackLayout>
+            <!-- LOGIN BUTTON -->
+            <Grid
+                BackgroundColor="{StaticResource LightGreenColor}"
+                Grid.Row="3"
+                Padding="0"
+                ColumnSpacing="0"
+                RowSpacing="0">
+                <Label
+                  Text="{Binding LoginButtonText}"
+                  Style="{StaticResource LoginButtonStyle}"/>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding SignInCommand}"
+                        NumberOfTapsRequired="1" />
+                </Grid.GestureRecognizers>
+            </Grid>
+        </Grid>
+        <!-- INDICATOR -->
+        <ActivityIndicator      
+            Color="{StaticResource LightGreenColor}"
+            IsRunning="{Binding IsBusy}"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+            <ActivityIndicator.WidthRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="iOS, Android" Value="100" />
+                    <On Platform="UWP, WinRT, WinPhone" Value="400" />
+                </OnPlatform>
+            </ActivityIndicator.WidthRequest>
+        </ActivityIndicator>
+    </Grid>
+</ContentPage>

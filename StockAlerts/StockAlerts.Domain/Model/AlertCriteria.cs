@@ -1,11 +1,7 @@
 ﻿using StockAlerts.Domain.Enums;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using StockAlerts.Domain.Exceptions;
 
 namespace StockAlerts.Domain.Model
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StockAlerts.Domain.Authentication
+﻿namespace StockAlerts.Domain.Authentication
 {
     public abstract class ResponseMessage
     {
