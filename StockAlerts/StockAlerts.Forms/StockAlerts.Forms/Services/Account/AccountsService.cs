@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using StockAlerts.Forms.Models.Token;
+﻿using StockAlerts.Domain.Authentication;
 using StockAlerts.Forms.Services.RequestProvider;
-using StockAlerts.Domain.Authentication;
+using System;
+using System.Threading.Tasks;
 
 namespace StockAlerts.Forms.Services.Account
 {
@@ -19,13 +16,27 @@ namespace StockAlerts.Forms.Services.Account
 
         public async Task<LoginResponse> LoginAsync(string username, string password)
         {
-            var loginRequest = new LoginRequest()
+            var loginRequest = new LoginRequest
             {
                 Username = username,
                 Password = password
             };
 
             var result = await _requestProvider.PostAsync<LoginRequest, LoginResponse>("https://stockalerts.azurewebsites.net/api/accounts/login", loginRequest);
+
+            return result;
+        }
+
+        public async Task<LoginResponse> RegisterAsync(string emailAddress, string username, string password)
+        {
+            var registerRequest = new RegisterRequest
+            {
+                Email = emailAddress,
+                Username = username,
+                Password = password
+            };
+
+            var result = await _requestProvider.PostAsync<RegisterRequest, LoginResponse>("https://stockalerts.azurewebsites.net/api/accounts/register", registerRequest);
 
             return result;
         }

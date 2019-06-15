@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using StockAlerts.Domain.Authentication;
 using StockAlerts.Forms.Models.User;
 using StockAlerts.Forms.Services.Account;
+using StockAlerts.Forms.Services.RequestProvider;
 using StockAlerts.Forms.Services.Settings;
 using StockAlerts.Forms.Validations;
 using StockAlerts.Forms.ViewModels.Base;
@@ -21,6 +23,7 @@ namespace StockAlerts.Forms.ViewModels
         private bool _isRegistering;
         private bool _isLogin;
         private string _authUrl;
+        private string _loginErrorMessage;
 
         public LoginViewModel(
             ISettingsService settingsService,
@@ -29,10 +32,15 @@ namespace StockAlerts.Forms.ViewModels
             _settingsService = settingsService;
             _accountService = accountService;
 
+            _emailAddress = new ValidatableObject<string>();
             _userName = new ValidatableObject<string>();
             _password = new ValidatableObject<string>();
 
             IsRegistering = false;
+
+            _emailAddress.PropertyChanged += (sender, args) => { LoginErrorMessage = string.Empty; };
+            _userName.PropertyChanged += (sender, args) => { LoginErrorMessage = string.Empty; };
+            _password.PropertyChanged += (sender, args) => { LoginErrorMessage = string.Empty; };
 
             AddValidations();
         }
@@ -46,6 +54,8 @@ namespace StockAlerts.Forms.ViewModels
             set
             {
                 _userName = value;
+                _userName.Validate();
+                LoginErrorMessage = string.Empty;
                 RaisePropertyChanged(() => UserName);
             }
         }
@@ -59,6 +69,8 @@ namespace StockAlerts.Forms.ViewModels
             set
             {
                 _emailAddress = value;
+                _emailAddress.Validate();
+                LoginErrorMessage = string.Empty;
                 RaisePropertyChanged(() => EmailAddress);
             }
         }
@@ -72,6 +84,8 @@ namespace StockAlerts.Forms.ViewModels
             set
             {
                 _password = value;
+                _password.Validate();
+                LoginErrorMessage = string.Empty;
                 RaisePropertyChanged(() => Password);
             }
         }
@@ -126,6 +140,16 @@ namespace StockAlerts.Forms.ViewModels
             }
         }
 
+        public string LoginErrorMessage
+        {
+            get { return _loginErrorMessage; }
+            set
+            {
+                _loginErrorMessage = value;
+                RaisePropertyChanged(() => LoginErrorMessage);
+            }
+        }
+
         public string LoginButtonText
         {
             get => IsRegistering ? "[ REGISTER ]" : "[ LOGIN ]";
@@ -164,31 +188,76 @@ namespace StockAlerts.Forms.ViewModels
 
         private void SwitchToLogin()
         {
-            IsRegistering = false;
+            if (IsRegistering)
+            {
+                ClearFormFields();
+                IsRegistering = false;
+            }
         }
 
         private void SwitchToRegister()
         {
-            IsRegistering = true;
+            if (!IsRegistering)
+            {
+                ClearFormFields();
+                IsRegistering = true;
+            }
+        }
+
+        private void ClearFormFields()
+        {
+            _emailAddress.Value = string.Empty;
+            _userName.Value = string.Empty;
+            _password.Value = string.Empty;
+            _emailAddress.ResetValidation();
+            _userName.ResetValidation();
+            _password.ResetValidation();
+            LoginErrorMessage = string.Empty;
         }
 
         private async Task SignInAsync()
         {
             IsBusy = true;
 
-            var loginResult = await _accountService.LoginAsync(_userName.Value, _password.Value);
-
-            if (!string.IsNullOrWhiteSpace(loginResult.AccessToken.Token))
+            if (Validate())
             {
-                _settingsService.AuthAccessToken = loginResult.AccessToken.Token;
-                await NavigationService.NavigateToAsync<MainViewModel>();
-                await NavigationService.RemoveLastFromBackStackAsync();
+                LoginResponse loginResult = null;
+
+                try
+                {
+                    if (IsRegistering)
+                    {
+                        loginResult = await _accountService.RegisterAsync(_emailAddress.Value, _userName.Value, _password.Value);
+                    }
+                    else
+                    {
+                        loginResult = await _accountService.LoginAsync(_userName.Value, _password.Value);
+                    }
+                }
+                catch (HttpRequestExceptionEx e)
+                {
+                    if (e.Error != null)
+                    {
+                        LoginErrorMessage = e.Error.Error;
+                        IsBusy = false;
+                        return;
+                    }
+
+                    throw;
+                }
+
+                if (!string.IsNullOrWhiteSpace(loginResult.AccessToken.Token))
+                {
+                    _settingsService.AuthAccessToken = loginResult.AccessToken.Token;
+                    await NavigationService.NavigateToAsync<MainViewModel>();
+                    await NavigationService.RemoveLastFromBackStackAsync();
+                }
             }
 
             //LoginUrl = _identityService.CreateAuthorizationRequest();
+            //IsValid = true;
+            //IsLogin = true;
 
-            IsValid = true;
-            IsLogin = true;
             IsBusy = false;
         }
 

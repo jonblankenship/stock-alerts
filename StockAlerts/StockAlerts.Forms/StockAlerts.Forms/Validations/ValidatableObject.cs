@@ -71,5 +71,12 @@ namespace StockAlerts.Forms.Validations
 
             return this.IsValid;
         }
+
+        public void ResetValidation()
+        {
+            Errors.Clear();
+            IsValid = true;
+            RaisePropertyChanged(() => Errors);
+        }
     }
 }

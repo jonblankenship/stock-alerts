@@ -5,6 +5,7 @@ using StockAlerts.Domain.Exceptions;
 using System;
 using System.Diagnostics;
 using System.Net;
+using StockAlerts.Resources.Model;
 
 namespace StockAlerts.Functions.Attributes
 {
@@ -44,7 +45,7 @@ namespace StockAlerts.Functions.Attributes
                 stackTrace = exception.StackTrace;
             }
 
-            var payload = JsonConvert.SerializeObject(new { error = message, stackTrace });
+            var payload = JsonConvert.SerializeObject(new HttpError { Error = message, StackTrace = stackTrace });
             
             args.ReturnValue = new ContentResult
             {

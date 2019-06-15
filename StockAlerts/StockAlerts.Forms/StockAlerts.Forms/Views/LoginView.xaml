@@ -123,6 +123,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="60" />
+                <RowDefinition Height="60" />
             </Grid.RowDefinitions>
             <!-- LOGIN / REGISTER -->
             <Grid   
@@ -180,7 +181,7 @@
                 Margin="24">
                 <StackLayout IsVisible="{Binding IsRegistering}">
                     <Label
-                        Text="Username"
+                        Text="E-mail"
                         Style="{StaticResource HeaderLabelStyle}" />
                     <Entry Text="{Binding EmailAddress.Value, Mode=TwoWay}">
                         <Entry.Style>
@@ -189,11 +190,11 @@
                                 <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
                             </OnPlatform>
                         </Entry.Style>
-                        <Entry.Behaviors>
+                        <!--<Entry.Behaviors>
                             <behaviors:EventToCommandBehavior
                                 EventName="TextChanged"
                                 Command="{Binding ValidateEmailAddressCommand}" />
-                        </Entry.Behaviors>
+                        </Entry.Behaviors>-->
                         <Entry.Triggers>
                             <DataTrigger 
                                 TargetType="Entry"
@@ -203,10 +204,10 @@
                             </DataTrigger>
                         </Entry.Triggers>
                     </Entry>
+                    <Label 
+                        Text="{Binding EmailAddress.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
+                        Style="{StaticResource ValidationErrorLabelStyle}" />
                 </StackLayout>
-                <Label 
-                    Text="{Binding EmailAddress.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
-                    Style="{StaticResource ValidationErrorLabelStyle}" />
                 <Label
                   Text="Username"
                   Style="{StaticResource HeaderLabelStyle}" />
@@ -217,11 +218,11 @@
                             <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
                         </OnPlatform>
                     </Entry.Style>
-                    <Entry.Behaviors>
+                    <!--<Entry.Behaviors>
                         <behaviors:EventToCommandBehavior
 							EventName="TextChanged"
 							Command="{Binding ValidateUserNameCommand}" />
-                    </Entry.Behaviors>
+                    </Entry.Behaviors>-->
                     <Entry.Triggers>
                         <DataTrigger 
 							TargetType="Entry"
@@ -246,11 +247,11 @@
                             <On Platform="UWP, WinRT, WinPhone" Value="{StaticResource UwpEntryStyle}" />
                         </OnPlatform>
                     </Entry.Style>
-                    <Entry.Behaviors>
+                    <!--<Entry.Behaviors>
                         <behaviors:EventToCommandBehavior
 							EventName="TextChanged"
 							Command="{Binding ValidatePasswordCommand}" />
-                    </Entry.Behaviors>
+                    </Entry.Behaviors>-->
                     <Entry.Triggers>
                         <DataTrigger 
 							TargetType="Entry"
@@ -264,10 +265,15 @@
 					Text="{Binding Password.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
 					Style="{StaticResource ValidationErrorLabelStyle}" />
             </StackLayout>
+            <!-- LOGIN ERROR MESSAGE -->
+            <Grid
+                Grid.Row="3">
+                <Label Text="{Binding LoginErrorMessage}" Style="{StaticResource ValidationErrorLabelStyle}" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+            </Grid>
             <!-- LOGIN BUTTON -->
             <Grid
                 BackgroundColor="{StaticResource LightGreenColor}"
-                Grid.Row="3"
+                Grid.Row="4"
                 Padding="0"
                 ColumnSpacing="0"
                 RowSpacing="0">
