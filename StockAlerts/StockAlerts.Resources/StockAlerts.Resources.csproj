@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StockAlerts.Domain\StockAlerts.Domain.csproj" />
+    <ProjectReference Include="..\StockAlerts.Core\StockAlerts.Core.csproj" />
   </ItemGroup>
 
 </Project>

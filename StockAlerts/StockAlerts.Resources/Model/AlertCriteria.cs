@@ -1,6 +1,6 @@
-﻿using StockAlerts.Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using StockAlerts.Core.Enums;
 
 namespace StockAlerts.Resources.Model
 {

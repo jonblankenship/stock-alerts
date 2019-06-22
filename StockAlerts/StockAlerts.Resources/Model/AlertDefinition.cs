@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using StockAlerts.Domain.Enums;
+using StockAlerts.Core.Enums;
 
 namespace StockAlerts.Resources.Model
 {
@@ -19,5 +18,7 @@ namespace StockAlerts.Resources.Model
         public string Name { get; set; }
         
         public AlertCriteria RootCriteria { get; set; }
+
+        public Stock Stock { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace StockAlerts.Functions
         public ResourceModelMappingProfile()
         {
             MapResourceToDomainModel();
-            MapDomainToDataModel();
+            MapDomainToResourceModel();
         }
 
         private void MapResourceToDomainModel()
@@ -20,13 +20,15 @@ namespace StockAlerts.Functions
                 .ConstructUsingServiceLocator();
         }
 
-        private void MapDomainToDataModel()
+        private void MapDomainToResourceModel()
         {
             CreateMap<Domain.Model.AlertDefinition, AlertDefinition>();
 
             CreateMap<Domain.Model.AlertCriteria, AlertCriteria>();
 
             CreateMap<Domain.Model.UserPreferences, UserPreferences>();
+
+            CreateMap<Domain.Model.Stock, Stock>();
         }
     }
 }

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:StockAlerts.App.Views;assembly=StockAlerts.App"
+             xmlns:alertDefinitions="clr-namespace:StockAlerts.App.Views.AlertDefinitions;assembly=StockAlerts.App"
+             xmlns:xaml="clr-namespace:Prism.Navigation.Xaml;assembly=Prism.Forms"
+             mc:Ignorable="d"
+             x:Class="StockAlerts.App.Views.MainPage"
+             BarBackgroundColor="{StaticResource DarkGreenColor}"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             BarTextColor="{StaticResource WhiteColor}">
+    <TabbedPage.Title>
+        <OnPlatform x:TypeArguments="x:String">
+            <On Platform="iOS, UWP, WinRT, WinPhone" Value="Stock Alerts" />
+        </OnPlatform>
+    </TabbedPage.Title>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{xaml:NavigateTo 'SettingsPage'}" Text="Profile">
+            <ToolbarItem.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="iOS, Android" Value="person" />
+                    <On Platform="UWP, WinRT, WinPhone" Value="Assets/person.png" />
+                </OnPlatform>
+            </ToolbarItem.Icon>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <!-- ALERTS -->
+    <alertDefinitions:AlertsPage x:Name="AlertsPage">
+        <alertDefinitions:AlertsPage.Icon>
+            <OnPlatform x:TypeArguments="FileImageSource">
+                <On Platform="iOS, Android" Value="notifications" />
+                <On Platform="UWP, WinRT, WinPhone" Value="Assets\notifications.png" />
+            </OnPlatform>
+        </alertDefinitions:AlertsPage.Icon>
+    </alertDefinitions:AlertsPage>
+    <!-- ALERT HISTORY -->
+    <views:AlertHistoryPage x:Name="AlertHistoryPage">
+        <views:AlertHistoryPage.Icon>
+            <OnPlatform x:TypeArguments="FileImageSource">
+                <On Platform="iOS, Android" Value="history" />
+                <On Platform="UWP, WinRT, WinPhone" Value="Assets\history.png" />
+            </OnPlatform>
+        </views:AlertHistoryPage.Icon>
+    </views:AlertHistoryPage>
+    <!-- SETTINGS -->
+    <views:SettingsPage x:Name="SettingsPage">
+        <views:SettingsPage.Icon>
+            <OnPlatform x:TypeArguments="FileImageSource">
+                <On Platform="iOS, Android" Value="settings" />
+                <On Platform="UWP, WinRT, WinPhone" Value="Assets\settings.png" />
+            </OnPlatform>
+        </views:SettingsPage.Icon>
+    </views:SettingsPage>
+</TabbedPage>

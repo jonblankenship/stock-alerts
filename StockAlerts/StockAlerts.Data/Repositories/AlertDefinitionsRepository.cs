@@ -28,7 +28,7 @@ namespace StockAlerts.Data.Repositories
 
         public async Task<IEnumerable<AlertDefinition>> GetAlertDefinitionsAsync(Guid appUserId)
         {
-            var query = from a in _dbContext.AlertDefinitions
+            var query = from a in _dbContext.AlertDefinitions.Include(x => x.Stock)
                 where a.AppUserId == appUserId
                 select a;
 
@@ -81,6 +81,7 @@ namespace StockAlerts.Data.Repositories
         private async Task InsertAsync(AlertDefinition alertDefinition)
         {
             var dataObject = _mapper.Map<Data.Model.AlertDefinition>(alertDefinition);
+
             await _dbContext.AlertDefinitions.AddAsync(dataObject);
             await _dbContext.SaveChangesAsync();
 

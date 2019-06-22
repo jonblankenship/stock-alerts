@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StockAlerts.Core\StockAlerts.Core.csproj" />
     <ProjectReference Include="..\StockAlerts.Domain\StockAlerts.Domain.csproj" />
   </ItemGroup>
 
