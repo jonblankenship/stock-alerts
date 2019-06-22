@@ -63,10 +63,6 @@ namespace StockAlerts.App.Droid
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahText = global::StockAlerts.App.Droid.Resource.Styleable.ProgressWheel_ahText;
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahTextColor = global::StockAlerts.App.Droid.Resource.Styleable.ProgressWheel_ahTextColor;
 			global::AndroidHUD.Resource.Styleable.ProgressWheel_ahTextSize = global::StockAlerts.App.Droid.Resource.Styleable.ProgressWheel_ahTextSize;
-			global::Microsoft.Azure.Amqp.Resource.String.ApplicationName = global::StockAlerts.App.Droid.Resource.String.ApplicationName;
-			global::Microsoft.IdentityModel.Clients.ActiveDirectory.Resource.Id.agentWebView = global::StockAlerts.App.Droid.Resource.Id.agentWebView;
-			global::Microsoft.IdentityModel.Clients.ActiveDirectory.Resource.Layout.WebAuthenticationBroker = global::StockAlerts.App.Droid.Resource.Layout.WebAuthenticationBroker;
-			global::Microsoft.IdentityModel.Clients.ActiveDirectory.Resource.String.ApplicationName = global::StockAlerts.App.Droid.Resource.String.ApplicationName;
 			global::Xamarin.Essentials.Resource.Attribute.alpha = global::StockAlerts.App.Droid.Resource.Attribute.alpha;
 			global::Xamarin.Essentials.Resource.Attribute.coordinatorLayoutStyle = global::StockAlerts.App.Droid.Resource.Attribute.coordinatorLayoutStyle;
 			global::Xamarin.Essentials.Resource.Attribute.font = global::StockAlerts.App.Droid.Resource.Attribute.font;
@@ -6678,9 +6674,6 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f0a002e
 			public const int add = 2131361838;
 			
-			// aapt resource value: 0x7f0a0104
-			public const int agentWebView = 2131362052;
-			
 			// aapt resource value: 0x7f0a007f
 			public const int alertTitle = 2131361919;
 			
@@ -6924,8 +6917,8 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f0a00f9
 			public const int main_toolbar = 2131362041;
 			
-			// aapt resource value: 0x7f0a0106
-			public const int masked = 2131362054;
+			// aapt resource value: 0x7f0a0105
+			public const int masked = 2131362053;
 			
 			// aapt resource value: 0x7f0a00eb
 			public const int media_actions = 2131362027;
@@ -7374,8 +7367,8 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f0a001b
 			public const int view_offset_helper = 2131361819;
 			
-			// aapt resource value: 0x7f0a0105
-			public const int visible = 2131362053;
+			// aapt resource value: 0x7f0a0104
+			public const int visible = 2131362052;
 			
 			// aapt resource value: 0x7f0a00d8
 			public const int volume_item_container = 2131362008;
@@ -7770,9 +7763,6 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f040059
 			public const int Toolbar = 2130968665;
 			
-			// aapt resource value: 0x7f04005a
-			public const int WebAuthenticationBroker = 2130968666;
-			
 			static Layout()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -7807,9 +7797,6 @@ namespace StockAlerts.App.Droid
 		
 		public partial class String
 		{
-			
-			// aapt resource value: 0x7f0b004e
-			public const int ApplicationName = 2131427406;
 			
 			// aapt resource value: 0x7f0b0018
 			public const int abc_action_bar_home_description = 2131427352;
@@ -7949,8 +7936,8 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f0b0046
 			public const int hide_bottom_view_on_scroll_behavior = 2131427398;
 			
-			// aapt resource value: 0x7f0b004f
-			public const int library_name = 2131427407;
+			// aapt resource value: 0x7f0b004e
+			public const int library_name = 2131427406;
 			
 			// aapt resource value: 0x7f0b0000
 			public const int mr_button_content_description = 2131427328;

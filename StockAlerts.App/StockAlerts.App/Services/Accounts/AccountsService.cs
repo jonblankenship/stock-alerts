@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using StockAlerts.Domain.Authentication;
 using StockAlerts.App.Services.RequestProvider;
+using StockAlerts.Resources.Model.Authentication;
 
 namespace StockAlerts.App.Services.Accounts
 {

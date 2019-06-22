@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\StockAlerts\StockAlerts.Core\StockAlerts.Core.csproj" />
-    <ProjectReference Include="..\..\StockAlerts\StockAlerts.Domain\StockAlerts.Domain.csproj" />
     <ProjectReference Include="..\..\StockAlerts\StockAlerts.Resources\StockAlerts.Resources.csproj" />
   </ItemGroup>
 

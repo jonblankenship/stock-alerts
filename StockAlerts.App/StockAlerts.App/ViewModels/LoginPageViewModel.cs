@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Prism.Navigation;
-using StockAlerts.Domain.Authentication;
-using StockAlerts.App.Models.User;
 using StockAlerts.App.Services.Accounts;
 using StockAlerts.App.Services.Logging;
 using StockAlerts.App.Services.RequestProvider;
@@ -11,6 +9,7 @@ using StockAlerts.App.Services.Settings;
 using StockAlerts.App.Validations;
 using StockAlerts.App.ViewModels.Base;
 using StockAlerts.App.Views;
+using StockAlerts.Resources.Model.Authentication;
 using Xamarin.Forms;
 
 namespace StockAlerts.App.ViewModels
@@ -157,7 +156,7 @@ namespace StockAlerts.App.ViewModels
 
             if (Validate())
             {
-                LoginResponse loginResult = null;
+                LoginResponse loginResult;
 
                 try
                 {

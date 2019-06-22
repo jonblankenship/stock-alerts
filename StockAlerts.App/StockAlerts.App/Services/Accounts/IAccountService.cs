@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using StockAlerts.Domain.Authentication;
+using StockAlerts.Resources.Model.Authentication;
 
 namespace StockAlerts.App.Services.Accounts
 {

@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.App.Android", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockAlerts.App.iOS", "StockAlerts.App.iOS\StockAlerts.App.iOS.csproj", "{060F9A3A-4D33-4079-BFDE-E8BAF36A8331}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockAlerts.Domain", "..\StockAlerts\StockAlerts.Domain\StockAlerts.Domain.csproj", "{0C8D15FD-013B-4658-8778-5AF86AD8D511}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,18 +89,6 @@ Global
 		{060F9A3A-4D33-4079-BFDE-E8BAF36A8331}.Release|iPhone.Build.0 = Release|iPhone
 		{060F9A3A-4D33-4079-BFDE-E8BAF36A8331}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{060F9A3A-4D33-4079-BFDE-E8BAF36A8331}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|iPhone.Build.0 = Release|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +96,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{267896B0-E1C0-4E96-A839-5B7BCB6D6617} = {1F45BBC0-4E59-40AB-82E1-4E83C731F7C2}
 		{B562C436-8C54-4741-8808-3F2E8E06B4B6} = {1F45BBC0-4E59-40AB-82E1-4E83C731F7C2}
-		{0C8D15FD-013B-4658-8778-5AF86AD8D511} = {1F45BBC0-4E59-40AB-82E1-4E83C731F7C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27A60B39-E43E-4CA6-B2F2-37717FD3F494}
