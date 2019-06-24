@@ -1,6 +1,7 @@
 ﻿using StockAlerts.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.Domain.Repositories;
 
@@ -21,9 +22,11 @@ namespace StockAlerts.Domain.Services
             return stock;
         }
 
-        public async Task<IEnumerable<Stock>> FindStocksAsync(string symbolStartsWith)
+        public async Task<IEnumerable<Stock>> FindStocksAsync(
+            string symbolStartsWith,
+            CancellationToken cancellationToken)
         {
-            var stocks = await _stocksRepository.FindStocksAsync(symbolStartsWith);
+            var stocks = await _stocksRepository.FindStocksAsync(symbolStartsWith, cancellationToken);
             return stocks;
         }
     }

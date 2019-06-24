@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.Domain.Model;
 
@@ -25,8 +26,11 @@ namespace StockAlerts.Domain.Repositories
         /// Finds all <see cref="Stock"/>s whose symbol starts with <see cref="symbolStartsWith"/>
         /// </summary>
         /// <param name="symbolStartsWith"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IEnumerable<Stock>> FindStocksAsync(string symbolStartsWith);
+        Task<IEnumerable<Stock>> FindStocksAsync(
+            string symbolStartsWith,
+            CancellationToken cancellationToken);
 
         /// <summary>
         /// Persists <see cref="stock"/> to the database

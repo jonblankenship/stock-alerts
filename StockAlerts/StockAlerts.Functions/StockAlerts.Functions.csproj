@@ -45,14 +45,6 @@
   <ItemGroup>
     <EfMigrationItems Include="$(OutDir)bin\*" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="appsettings.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Target Name="CopyEfMigrationItems" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="@(EfMigrationItems)" DestinationFolder="$(OutDir)" />
   </Target>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using StockAlerts.Domain.Exceptions;
+﻿using StockAlerts.Domain.Exceptions;
 
 namespace StockAlerts.Domain.Authentication
 {

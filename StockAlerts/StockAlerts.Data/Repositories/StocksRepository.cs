@@ -7,6 +7,7 @@ using StockAlerts.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StockAlerts.Data.Repositories
@@ -50,13 +51,17 @@ namespace StockAlerts.Data.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<Stock>> FindStocksAsync(string symbolStartsWith)
+        public async Task<IEnumerable<Stock>> FindStocksAsync(
+            string symbolStartsWith,
+            CancellationToken cancellationToken)
         {
+            var searchString = symbolStartsWith.ToUpper();
             var query = from s in _dbContext.Stocks
-                        where s.Symbol.ToUpper().StartsWith(symbolStartsWith.ToUpper())
+                        where s.Symbol.ToUpper().StartsWith(searchString) ||
+                              s.Name.ToUpper().StartsWith(searchString)
                         select s;
 
-            var dataObjects = await query.ToListAsync();
+            var dataObjects = await query.ToListAsync(cancellationToken);
 
             return _mapper.Map<List<Stock>>(dataObjects);
         }

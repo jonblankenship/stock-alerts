@@ -10,6 +10,7 @@ using StockAlerts.Functions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StockAlerts.Functions
@@ -51,6 +52,7 @@ namespace StockAlerts.Functions
         [HandleExceptions]
         public async Task<IActionResult> FindStocksAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "stocks")] HttpRequest req,
+            CancellationToken cancellationToken,
             ILogger log)
         {
             log.LogInformation("Executing FindStocksAsync.");
@@ -62,7 +64,7 @@ namespace StockAlerts.Functions
 
             if (startsWith.Any())
             {
-                var stocks = await _stocksService.FindStocksAsync(startsWith);
+                var stocks = await _stocksService.FindStocksAsync(startsWith, cancellationToken);
                 return new OkObjectResult(stocks);
             }
 
