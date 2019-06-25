@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.App.Exceptions;
 
@@ -25,10 +26,16 @@ namespace StockAlerts.App.Services.RequestProvider
             _serializerSettings.Converters.Add(new StringEnumConverter());
         }
 
-        public async Task<TResult> GetAsync<TResult>(string uri, string token = "")
+        public Task<TResult> GetAsync<TResult>(string uri) =>
+            GetAsync<TResult>(uri, string.Empty, CancellationToken.None);
+
+        public Task<TResult> GetAsync<TResult>(string uri, string token) =>
+            GetAsync<TResult>(uri, token, CancellationToken.None);
+
+        public async Task<TResult> GetAsync<TResult>(string uri, string token, CancellationToken cancellationToken)
         {
             HttpClient httpClient = CreateHttpClient(token);
-            HttpResponseMessage response = await httpClient.GetAsync(uri);
+            HttpResponseMessage response = await httpClient.GetAsync(uri, cancellationToken);
 
             await HandleResponse(response);
             string serialized = await response.Content.ReadAsStringAsync();

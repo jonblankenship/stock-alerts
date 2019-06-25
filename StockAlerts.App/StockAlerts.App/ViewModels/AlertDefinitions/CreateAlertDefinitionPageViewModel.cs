@@ -4,9 +4,9 @@ using StockAlerts.App.ViewModels.Base;
 
 namespace StockAlerts.App.ViewModels.AlertDefinitions
 {
-    public class CreateAlertDefinitionViewModel : ViewModelBase
+    public class CreateAlertDefinitionPageViewModel : ViewModelBase
     {
-        public CreateAlertDefinitionViewModel(
+        public CreateAlertDefinitionPageViewModel(
             INavigationService navigationService,
             ILogger logger) : base(navigationService, logger)
         {

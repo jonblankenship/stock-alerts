@@ -27,6 +27,8 @@ namespace StockAlerts.App.Droid.Activities
 
             base.OnCreate(bundle);
 
+            Xamarin.Essentials.Platform.Init(this, bundle);
+
             SupportActionBar.SetDisplayShowHomeEnabled(true); // Show or hide the default home button
             SupportActionBar.SetDisplayHomeAsUpEnabled(true);
             SupportActionBar.SetDisplayShowCustomEnabled(true); // Enable overriding the default toolbar layout
@@ -56,6 +58,7 @@ namespace StockAlerts.App.Droid.Activities
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             ((PermissionsService)PermissionsService.Instance).OnRequestPermissionResult(requestCode, permissions, grantResults);
         }

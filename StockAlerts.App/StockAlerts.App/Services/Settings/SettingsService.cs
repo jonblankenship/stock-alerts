@@ -10,6 +10,9 @@ namespace StockAlerts.App.Services.Settings
 
         private const string AccessToken = "access_token";
         private readonly string AccessTokenDefault = string.Empty;
+
+        private const string RefreshToken = "refresh_token";
+        private readonly string RefreshTokenDefault = string.Empty;
         #endregion
 
         #region Settings Properties
@@ -18,6 +21,12 @@ namespace StockAlerts.App.Services.Settings
         {
             get => GetValueOrDefault(AccessToken, AccessTokenDefault);
             set => AddOrUpdateValue(AccessToken, value);
+        }
+
+        public string AuthRefreshToken
+        {
+            get => GetValueOrDefault(RefreshToken, RefreshTokenDefault);
+            set => AddOrUpdateValue(RefreshToken, value);
         }
 
         #endregion
