@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
@@ -51,7 +52,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
             var repository = CreateRepository(context);
 
             // Act
-            var stocks = await repository.FindStocksAsync("XYZ");
+            var stocks = await repository.FindStocksAsync("XYZ", CancellationToken.None);
 
             // Assert
             stocks.Should().BeEmpty();
@@ -65,7 +66,7 @@ namespace StockAlerts.Data.Tests.Unit.Repositories
             var repository = CreateRepository(context);
 
             // Act
-            var stocks = await repository.FindStocksAsync("M");
+            var stocks = await repository.FindStocksAsync("M", CancellationToken.None);
 
             // Assert
             stocks.Count().Should().Be(2);
