@@ -17,16 +17,5 @@ namespace StockAlerts.App.ViewModels
         {
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         }
-
-        public override void OnNavigatedTo(INavigationParameters parameters)
-        {
-            base.OnNavigatedTo(parameters);
-
-            if (string.IsNullOrWhiteSpace(_settingsService.AuthAccessToken) &&
-                string.IsNullOrWhiteSpace(_settingsService.AuthRefreshToken))
-            {
-                NavigationService.NavigateAsync("LoginPage");
-            }
-        }
     }
 }

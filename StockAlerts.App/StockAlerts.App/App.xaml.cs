@@ -1,4 +1,5 @@
-﻿using Prism;
+﻿using System.Net.Http;
+using Prism;
 using Prism.Ioc;
 using Prism.Modularity;
 using StockAlerts.App.Services.Accounts;
@@ -7,6 +8,7 @@ using StockAlerts.App.Services.Logging;
 using StockAlerts.App.Services.RequestProvider;
 using StockAlerts.App.Services.Settings;
 using StockAlerts.App.Services.Stocks;
+using StockAlerts.App.Utility;
 using StockAlerts.App.Views;
 using StockAlerts.App.Views.AlertDefinitions;
 
@@ -60,6 +62,9 @@ namespace StockAlerts.App
             containerRegistry.Register<IStocksService, StocksService>();
             containerRegistry.Register<IRequestProvider, RequestProvider>();
             containerRegistry.Register<ILogger, ConsoleLogger>();
+
+            IHttpClientFactory httpClientFactory = new HttpClientFactory();
+            containerRegistry.RegisterInstance(httpClientFactory);
         }
 
         protected override void OnStart()

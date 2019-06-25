@@ -6,8 +6,6 @@ namespace StockAlerts.App.Services.RequestProvider
 
     public interface IRequestProvider
     {
-
-
         Task<TResult> GetAsync<TResult>(string uri);
 
         Task<TResult> GetAsync<TResult>(string uri, string token);

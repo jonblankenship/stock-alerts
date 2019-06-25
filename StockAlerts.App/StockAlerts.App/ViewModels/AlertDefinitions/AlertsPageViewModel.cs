@@ -38,7 +38,15 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             IsBusy = true;
 
             // Get alert definitions
-            AlertDefinitions = await _alertDefinitionsService.GetAlertDefinitionItemViewModelsAsync();
+            try
+            {
+                AlertDefinitions = await _alertDefinitionsService.GetAlertDefinitionItemViewModelsAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
             IsBusy = false;
         }

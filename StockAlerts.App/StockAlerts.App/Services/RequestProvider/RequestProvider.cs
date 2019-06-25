@@ -2,21 +2,29 @@
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.App.Exceptions;
+using StockAlerts.App.Extensions;
+using StockAlerts.App.Services.Accounts;
+using StockAlerts.App.Services.Settings;
 
 namespace StockAlerts.App.Services.RequestProvider
 {
     public class RequestProvider : IRequestProvider
     {
+        private readonly ISettingsService _settingsService;
         private readonly JsonSerializerSettings _serializerSettings;
 
-        public RequestProvider()
+        public RequestProvider(
+            ISettingsService settingsService)
         {
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
+
             _serializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -35,9 +43,8 @@ namespace StockAlerts.App.Services.RequestProvider
         public async Task<TResult> GetAsync<TResult>(string uri, string token, CancellationToken cancellationToken)
         {
             HttpClient httpClient = CreateHttpClient(token);
-            HttpResponseMessage response = await httpClient.GetAsync(uri, cancellationToken);
+            var response = await ExecuteAuthenticatedRequestAsync(async() => await httpClient.GetAsync(uri, cancellationToken), cancellationToken);
 
-            await HandleResponse(response);
             string serialized = await response.Content.ReadAsStringAsync();
 
             TResult result = await Task.Run(() =>
@@ -55,12 +62,12 @@ namespace StockAlerts.App.Services.RequestProvider
 
             if (!string.IsNullOrEmpty(header))
             {
-                AddHeaderParameter(httpClient, header);
+                httpClient.AddHeaderParameter(header);
             }
 
             var content = new StringContent(JsonConvert.SerializeObject(data));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpResponseMessage response = await httpClient.PostAsync(uri, content);
+            var response = await ExecuteAuthenticatedRequestAsync(async () => await httpClient.PostAsync(uri, content), CancellationToken.None);
 
             await HandleResponse(response);
             string serialized = await response.Content.ReadAsStringAsync();
@@ -77,12 +84,12 @@ namespace StockAlerts.App.Services.RequestProvider
 
             if (!string.IsNullOrEmpty(header))
             {
-                AddHeaderParameter(httpClient, header);
+                httpClient.AddHeaderParameter(header);
             }
 
             var content = new StringContent(JsonConvert.SerializeObject(data));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            HttpResponseMessage response = await httpClient.PutAsync(uri, content);
+            var response = await ExecuteAuthenticatedRequestAsync(async () => await httpClient.PutAsync(uri, content), CancellationToken.None);
 
             await HandleResponse(response);
             string serialized = await response.Content.ReadAsStringAsync();
@@ -96,7 +103,7 @@ namespace StockAlerts.App.Services.RequestProvider
         public async Task DeleteAsync(string uri, string token = "")
         {
             HttpClient httpClient = CreateHttpClient(token);
-            await httpClient.DeleteAsync(uri);
+            await ExecuteAuthenticatedRequestAsync(async () => await httpClient.DeleteAsync(uri), CancellationToken.None);
         }
 
         private HttpClient CreateHttpClient(string token = "")
@@ -109,17 +116,6 @@ namespace StockAlerts.App.Services.RequestProvider
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
             return httpClient;
-        }
-
-        private void AddHeaderParameter(HttpClient httpClient, string parameter)
-        {
-            if (httpClient == null)
-                return;
-
-            if (string.IsNullOrEmpty(parameter))
-                return;
-
-            httpClient.DefaultRequestHeaders.Add(parameter, Guid.NewGuid().ToString());
         }
 
         private async Task HandleResponse(HttpResponseMessage response)
@@ -136,6 +132,23 @@ namespace StockAlerts.App.Services.RequestProvider
 
                 throw new HttpRequestExceptionEx(response.StatusCode, content);
             }
+        }
+
+        private async Task<HttpResponseMessage> ExecuteAuthenticatedRequestAsync(
+            Func<Task<HttpResponseMessage>> operation,
+            CancellationToken cancellationToken)
+        {
+            var response = await operation();
+            if (response.StatusCode == HttpStatusCode.Unauthorized &&
+                response.Headers.FirstOrDefault(h => h.Key == "Token-Expired").Value.FirstOrDefault() == "true")
+            {
+                //await _accountService.ExchangeRefreshTokenAsync(_settingsService.AuthAccessToken, _settingsService.AuthRefreshToken, cancellationToken);
+                response = await operation();
+            }
+
+            await HandleResponse(response);
+
+            return response;
         }
     }
 }

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Nito.Mvvm;
+﻿using Nito.Mvvm;
 using Prism.Navigation;
 using StockAlerts.App.Services.Logging;
 using StockAlerts.App.Services.Stocks;
 using StockAlerts.App.ViewModels.Base;
 using StockAlerts.Resources.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StockAlerts.App.ViewModels.AlertDefinitions
 {

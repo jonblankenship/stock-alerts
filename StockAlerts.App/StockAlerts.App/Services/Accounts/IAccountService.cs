@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using StockAlerts.Resources.Model.Authentication;
+﻿using StockAlerts.Resources.Model.Authentication;
+using System.Threading.Tasks;
 
 namespace StockAlerts.App.Services.Accounts
 {
