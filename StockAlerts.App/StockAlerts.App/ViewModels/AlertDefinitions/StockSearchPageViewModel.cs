@@ -33,7 +33,13 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             set
             {
                 _searchString = value;
-                Stocks = NotifyTask.Create(SearchStocksAsync());
+                
+                var newSearchCancellationTokenSource = new CancellationTokenSource();
+                if (_searchCancellationTokenSource != null)
+                    _searchCancellationTokenSource.Cancel();
+                _searchCancellationTokenSource = newSearchCancellationTokenSource;
+
+                Stocks = NotifyTask.Create(SearchStocksAsync(_searchCancellationTokenSource));
                 RaisePropertyChanged(nameof(SearchString));
             }
         }
@@ -49,17 +55,23 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             }
         }
 
-        private async Task<List<Stock>> SearchStocksAsync()
+        private async Task<List<Stock>> SearchStocksAsync(CancellationTokenSource searchCancellationTokenSource)
         {
-            if (_searchCancellationTokenSource != null)
-                _searchCancellationTokenSource.Cancel();
-
             if (SearchString.Length >= 1)
             {
-                using (_searchCancellationTokenSource = new CancellationTokenSource())
+                await Task.Delay(1000);
+                try
                 {
-                    var stocks = await _stocksService.FindStocksAsync(SearchString, CancellationToken.None);
-                    return stocks.ToList();
+                    if (!searchCancellationTokenSource.IsCancellationRequested)
+                    {
+                        var stocks = await _stocksService.FindStocksAsync(SearchString, searchCancellationTokenSource.Token);
+                        return stocks.ToList();
+                    }
+                }
+                finally
+                {
+                    searchCancellationTokenSource.Dispose();
+                    _searchCancellationTokenSource = null;
                 }
             }
 
