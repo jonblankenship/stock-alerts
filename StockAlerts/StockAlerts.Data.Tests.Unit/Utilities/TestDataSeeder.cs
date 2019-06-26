@@ -13,11 +13,11 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
         {
             var stocks = new List<Stock>
             {
-                CreateStock("MSFT"),
-                CreateStock("MRK"),
-                CreateStock("AAPL"),
-                CreateStock("JNJ"),
-                CreateStock("KO")
+                CreateStock("MSFT", "Microsoft"),
+                CreateStock("MRK", "Merck"),
+                CreateStock("AAPL", "Apple"),
+                CreateStock("JNJ", "Johnson and Johnson"),
+                CreateStock("KO", "Coca Cola")
             };
             await context.Stocks.AddRangeAsync(stocks);
 
@@ -40,10 +40,11 @@ namespace StockAlerts.Data.Tests.Unit.Utilities
             await context.SaveChangesAsync();
         }
 
-        private static Stock CreateStock(string symbol) => 
+        private static Stock CreateStock(string symbol, string name) => 
             new Stock
             {
                 Symbol = symbol,
+                Name = name,
                 LastPrice = 0,
                 Created = DateTimeOffset.UtcNow,
                 Modified = DateTimeOffset.UtcNow
