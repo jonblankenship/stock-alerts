@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Prism.Navigation;
+using StockAlerts.App.Constants;
 using StockAlerts.App.Extensions;
 using StockAlerts.App.Services.RequestProvider;
 using StockAlerts.App.Services.Settings;
@@ -32,7 +33,7 @@ namespace StockAlerts.App.Services.Base
             _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
             NavigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
-            HttpClient = httpClientFactory.CreateClient();
+            HttpClient = httpClientFactory.CreateClient(MiscConstants.StockAlertsApi);
 
             _serializerSettings = new JsonSerializerSettings
             {

@@ -1,29 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace StockAlerts.App.Utility
 {
     // Naive HttpClientFactory implementation while we wait for Xamarin support .NET Core
-    public class HttpClientFactory : IHttpClientFactory
+    public class HttpClientFactory : IHttpClientFactory, IDisposable
     {
-        private const string DefaultHttpClientKey = "DefaultHttpClient";
-
+        private readonly IDictionary<string, Action<HttpClient>> _configurations = new Dictionary<string, Action<HttpClient>>();
         private readonly IDictionary<string, HttpClient> _clients = new Dictionary<string, HttpClient>();
 
-        public HttpClient CreateClient() => CreateClient(DefaultHttpClientKey);
+        public void RegisterClient(string name, Action<HttpClient> configurationAction)
+        {
+            if (_configurations.ContainsKey(name))
+                _configurations.Remove(name);
+
+            _configurations.Add(name, configurationAction);
+        }
 
         public HttpClient CreateClient(string name)
         {
             if (!_clients.ContainsKey(name))
             {
                 var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                if (_configurations.ContainsKey(name))
+                {
+                    _configurations[name].Invoke(httpClient);
+                }
 
-                _clients.Add(name, new HttpClient());
+                _clients.Add(name, httpClient);
             }
 
             return _clients[name];
+        }
+
+        public void Dispose()
+        {
+            foreach (var c in _clients)
+            {
+                c.Value.Dispose();
+            }
         }
     }
 }

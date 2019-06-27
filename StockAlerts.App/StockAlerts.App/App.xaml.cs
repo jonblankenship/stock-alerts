@@ -1,7 +1,10 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using Prism;
 using Prism.Ioc;
 using Prism.Modularity;
+using StockAlerts.App.Constants;
 using StockAlerts.App.Services.Accounts;
 using StockAlerts.App.Services.AlertDefinitions;
 using StockAlerts.App.Services.Logging;
@@ -64,6 +67,13 @@ namespace StockAlerts.App
             containerRegistry.Register<ILogger, ConsoleLogger>();
 
             IHttpClientFactory httpClientFactory = new HttpClientFactory();
+            httpClientFactory.RegisterClient(
+                MiscConstants.StockAlertsApi, 
+                c =>
+                {
+                    c.BaseAddress = new Uri(MiscConstants.StockAlertsApiBaseUri);
+                    c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                });
             containerRegistry.RegisterInstance(httpClientFactory);
         }
 

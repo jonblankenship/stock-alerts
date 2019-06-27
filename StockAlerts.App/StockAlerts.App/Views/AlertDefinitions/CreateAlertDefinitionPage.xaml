@@ -6,18 +6,31 @@
              xmlns:xaml="clr-namespace:Prism.Navigation.Xaml;assembly=Prism.Forms"
              mc:Ignorable="d"
              x:Class="StockAlerts.App.Views.AlertDefinitions.CreateAlertDefinitionPage">
+    <ContentPage.Resources>
+        <Style x:Key="SaveButtonStyle"
+               TargetType="{x:Type Label}">
+            <Setter Property="FontFamily"
+                    Value="{StaticResource MontserratRegular}" />
+            <Setter Property="TextColor"
+                    Value="{StaticResource WhiteColor}" />
+            <Setter Property="HorizontalOptions"
+                    Value="Center" />
+            <Setter Property="VerticalOptions"
+                    Value="Center" />
+        </Style>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
             </Grid.RowDefinitions>
-            <Label Text="Create Alert Definition"
-                   VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand" />
+            <Label Text="Create Alert Definition" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10" FontSize="Large"></Label>
 
-            <Grid Grid.Row="1">
+            <!-- CREATE ALERT DEFINITION FORM -->
+            <Grid Grid.Row="1" Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -27,8 +40,42 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Label Text="Stock"></Label>
-                <Button Grid.Column="1" Text="Search" Command="{xaml:NavigateTo 'StockSearchPage'}"></Button>
+
+                <!-- STOCK -->
+                <Label Text="Stock" FontAttributes="Bold" VerticalTextAlignment="Center"></Label>
+                <Grid Grid.Row="0" Grid.Column="1" HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Entry Text="{Binding StockSymbol}" IsEnabled="False"></Entry>
+                    <ImageButton Grid.Column="1" Source="search_icon.png" Command="{xaml:NavigateTo 'StockSearchPage'}" BackgroundColor="Transparent"></ImageButton>
+                </Grid>
+
+                <!-- ALERT NAME -->
+                <Label Grid.Row="1" Text="Alert Name" FontAttributes="Bold" VerticalTextAlignment="Center"></Label>
+                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding AlertName}" HorizontalOptions="Fill"></Entry>
+
+                <!-- CRITERIA -->
+
+
+            </Grid>
+
+            <!-- SAVE BUTTON -->
+            <Grid
+                BackgroundColor="{StaticResource LightGreenColor}"
+                Grid.Row="2"
+                Padding="0"
+                ColumnSpacing="0"
+                RowSpacing="0">
+                <Label
+                    Text="SAVE"
+                    Style="{StaticResource SaveButtonStyle}"/>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Command="{Binding SaveCommand}"
+                        NumberOfTapsRequired="1" />
+                </Grid.GestureRecognizers>
             </Grid>
         </Grid>
     </ContentPage.Content>

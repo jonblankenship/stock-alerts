@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StockAlerts.App.Constants;
 
 namespace StockAlerts.App.ViewModels.AlertDefinitions
 {
@@ -52,6 +53,19 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             {
                 _stocks = value;
                 RaisePropertyChanged(nameof(Stocks));
+            }
+        }
+
+        private Stock _stock;
+        public Stock SelectedStock
+        {
+            get => _stock;
+            set
+            {
+                _stock = value;
+                var navigationParams = new NavigationParameters();
+                navigationParams.Add(NavigationParameterKeys.SelectedStock, _stock);
+                NavigationService.GoBackAsync(navigationParams);
             }
         }
 
