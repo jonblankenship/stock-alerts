@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Prism.Navigation;
+using StockAlerts.App.Constants;
 using StockAlerts.App.Extensions;
 using StockAlerts.App.Services.Base;
 using StockAlerts.App.Services.Logging;
@@ -31,7 +32,7 @@ namespace StockAlerts.App.Services.AlertDefinitions
         public async Task<ObservableCollection<AlertDefinitionItemViewModel>> GetAlertDefinitionItemViewModelsAsync()
         {
             // TODO: Get base URL from settings
-            var alertDefinitions = await GetAsync<IEnumerable<AlertDefinition>>("https://stockalerts.azurewebsites.net/api/alert-definitions", CancellationToken.None);
+            var alertDefinitions = await GetAsync<IEnumerable<AlertDefinition>>($"{MiscConstants.StockAlertsApiBaseUri}alert-definitions", CancellationToken.None);
             if (alertDefinitions == null)
             {
                 return new ObservableCollection<AlertDefinitionItemViewModel>();

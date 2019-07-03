@@ -67,7 +67,7 @@ namespace StockAlerts.App
             containerRegistry.Register<ILogger, ConsoleLogger>();
 
             IHttpClientFactory httpClientFactory = new HttpClientFactory();
-            httpClientFactory.RegisterClient(
+            httpClientFactory.AddHttpClient(
                 MiscConstants.StockAlertsApi, 
                 c =>
                 {

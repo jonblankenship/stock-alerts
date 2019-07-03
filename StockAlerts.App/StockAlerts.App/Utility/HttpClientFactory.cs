@@ -10,11 +10,11 @@ namespace StockAlerts.App.Utility
         private readonly IDictionary<string, Action<HttpClient>> _configurations = new Dictionary<string, Action<HttpClient>>();
         private readonly IDictionary<string, HttpClient> _clients = new Dictionary<string, HttpClient>();
 
-        public void RegisterClient(string name, Action<HttpClient> configurationAction)
+        public void AddHttpClient(string name, Action<HttpClient> configurationAction)
         {
-            if (_configurations.ContainsKey(name))
-                _configurations.Remove(name);
-
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name), $"{nameof(name)} must be provided.");
+            if (_configurations.ContainsKey(name)) throw new ArgumentNullException(nameof(name), $"A client with the name {name} has already been added.");
+            
             _configurations.Add(name, configurationAction);
         }
 
@@ -22,11 +22,11 @@ namespace StockAlerts.App.Utility
         {
             if (!_clients.ContainsKey(name))
             {
+                if (!_configurations.ContainsKey(name)) throw new ArgumentException($"A client by the name of {name} has not yet been registered.  Call {nameof(AddHttpClient)} first.");
+
                 var httpClient = new HttpClient();
-                if (_configurations.ContainsKey(name))
-                {
-                    _configurations[name].Invoke(httpClient);
-                }
+
+                _configurations[name].Invoke(httpClient);
 
                 _clients.Add(name, httpClient);
             }

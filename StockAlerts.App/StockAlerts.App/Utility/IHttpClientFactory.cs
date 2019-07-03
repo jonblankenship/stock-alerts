@@ -6,7 +6,7 @@ namespace StockAlerts.App.Utility
     // Use our own IHttpClientFactory until (if?) Xamarin supports .NET Core
     public interface IHttpClientFactory
     {
-        void RegisterClient(string name, Action<HttpClient> configurationAction);
+        void AddHttpClient(string name, Action<HttpClient> configurationAction);
 
         HttpClient CreateClient(string name);
     }

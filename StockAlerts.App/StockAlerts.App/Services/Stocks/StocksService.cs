@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using StockAlerts.App.Constants;
 using StockAlerts.App.Services.RequestProvider;
 using StockAlerts.App.Services.Settings;
 using StockAlerts.Resources.Model;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StockAlerts.App.Services.Stocks
 {
@@ -24,7 +24,7 @@ namespace StockAlerts.App.Services.Stocks
 
         public async Task<IEnumerable<Stock>> FindStocksAsync(string searchString, CancellationToken cancellationToken)
         {
-            var url = $"https://stockalerts.azurewebsites.net/api/stocks?startsWith={searchString}";
+            var url = $"{MiscConstants.StockAlertsApiBaseUri}stocks?startsWith={searchString}";
 
             var stocks = await _requestProvider.GetAsync<IEnumerable<Stock>>(url, _settingsService.AuthAccessToken, cancellationToken);
 
