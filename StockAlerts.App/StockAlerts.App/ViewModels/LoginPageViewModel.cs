@@ -18,14 +18,6 @@ namespace StockAlerts.App.ViewModels
     {
         private readonly ISettingsService _settingsService;
         private readonly IAccountService _accountService;
-        private ValidatableObject<string> _emailAddress;
-        private ValidatableObject<string> _userName;
-        private ValidatableObject<string> _password;
-        private bool _isValid;
-        private bool _isRegistering;
-        private bool _isLogin;
-        private string _authUrl;
-        private string _loginErrorMessage;
 
         public LoginPageViewModel(
             ISettingsService settingsService,
@@ -49,6 +41,7 @@ namespace StockAlerts.App.ViewModels
             AddValidations();
         }
 
+        private ValidatableObject<string> _userName;
         public ValidatableObject<string> UserName
         {
             get => _userName;
@@ -60,6 +53,7 @@ namespace StockAlerts.App.ViewModels
             }
         }
 
+        private ValidatableObject<string> _emailAddress;
         public ValidatableObject<string> EmailAddress
         {
             get => _emailAddress;
@@ -71,6 +65,7 @@ namespace StockAlerts.App.ViewModels
             }
         }
 
+        private ValidatableObject<string> _password;
         public ValidatableObject<string> Password
         {
             get => _password;
@@ -82,6 +77,7 @@ namespace StockAlerts.App.ViewModels
             }
         }
 
+        private bool _isValid;
         public bool IsValid
         {
             get => _isValid;
@@ -91,6 +87,7 @@ namespace StockAlerts.App.ViewModels
             }
         }
 
+        private bool _isRegistering;
         public bool IsRegistering
         {
             get { return _isRegistering; }
@@ -101,6 +98,7 @@ namespace StockAlerts.App.ViewModels
             }
         }
 
+        private string _loginErrorMessage;
         public string LoginErrorMessage
         {
             get { return _loginErrorMessage; }
@@ -184,6 +182,7 @@ namespace StockAlerts.App.ViewModels
                 if (!string.IsNullOrWhiteSpace(loginResult.AccessToken.Token))
                 {
                     _settingsService.AuthAccessToken = loginResult.AccessToken.Token;
+                    _settingsService.AuthRefreshToken = loginResult.RefreshToken;
                     await NavigationService.NavigateAsync(nameof(MainPage));
                 }
             }

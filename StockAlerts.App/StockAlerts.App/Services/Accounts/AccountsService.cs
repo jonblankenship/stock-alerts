@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.App.Services.RequestProvider;
+using StockAlerts.App.Services.Settings;
 using StockAlerts.Resources.Model.Authentication;
 
 namespace StockAlerts.App.Services.Accounts
@@ -8,10 +10,14 @@ namespace StockAlerts.App.Services.Accounts
     public class AccountService : IAccountService
     {
         private readonly IRequestProvider _requestProvider;
+        private readonly ISettingsService _settingsService;
 
-        public AccountService(IRequestProvider requestProvider)
+        public AccountService(
+            IRequestProvider requestProvider,
+            ISettingsService settingsService)
         {
             _requestProvider = requestProvider ?? throw new ArgumentNullException(nameof(requestProvider));
+            _settingsService = settingsService ?? throw new ArgumentNullException(nameof(settingsService));
         }
 
         public async Task<LoginResponse> LoginAsync(string username, string password)

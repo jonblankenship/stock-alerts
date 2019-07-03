@@ -27,10 +27,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
         public ObservableCollection<AlertDefinitionItemViewModel> AlertDefinitions
         {
             get => _alertDefinitions;
-            set
-            {
-                SetProperty(ref _alertDefinitions, value);
-            }
+            set => SetProperty(ref _alertDefinitions, value);
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -38,7 +35,15 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             IsBusy = true;
 
             // Get alert definitions
-            AlertDefinitions = await _alertDefinitionsService.GetAlertDefinitionItemViewModelsAsync();
+            try
+            {
+                AlertDefinitions = await _alertDefinitionsService.GetAlertDefinitionItemViewModelsAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
             IsBusy = false;
         }
