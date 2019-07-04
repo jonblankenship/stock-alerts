@@ -26,7 +26,7 @@ namespace StockAlerts.Data
 
         public static void ConfigureStartupOptions(
             bool isDevelopment,
-            IConfigurationRoot configuration,
+            IConfiguration configuration,
             DbContextOptionsBuilder optionsBuilder
         )
         {

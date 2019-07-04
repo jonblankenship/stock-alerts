@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using StockAlerts.Resources.Model;
 
-namespace StockAlerts.Functions
+namespace StockAlerts.Api
 {
     public class ResourceModelMappingProfile : Profile
     {
