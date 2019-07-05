@@ -52,7 +52,7 @@ namespace StockAlerts.App.Services.Base
             var response = await ExecuteAuthenticatedRequestAsync(async () => await HttpClient.GetAsync(uri, cancellationToken), cancellationToken);
 
             if (!response.IsSuccessStatusCode)
-                return default;
+                return default(TResult);
 
             var serialized = await response.Content.ReadAsStringAsync();
             var result = await Task.Run(() => JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings), cancellationToken);
