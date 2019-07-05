@@ -5,7 +5,7 @@ namespace StockAlerts.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class PingController : ControllerBase
     {
         // GET api/ping
         [HttpGet]

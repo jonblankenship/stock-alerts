@@ -1,16 +1,13 @@
 ﻿using StockAlerts.Domain.Enums;
+using StockAlerts.Domain.Exceptions;
+using StockAlerts.Domain.Factories;
 using StockAlerts.Domain.QueueMessages;
 using StockAlerts.Domain.Repositories;
 using StockAlerts.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using StockAlerts.Domain.Exceptions;
-using StockAlerts.Domain.Factories;
 
 namespace StockAlerts.Domain.Model
 {

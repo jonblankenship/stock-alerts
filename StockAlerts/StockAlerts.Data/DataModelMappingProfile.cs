@@ -15,7 +15,9 @@ namespace StockAlerts.Data
         private void MapDataToDomainModel()
         {
             CreateMap<AlertDefinition, Domain.Model.AlertDefinition>().ConstructUsingServiceLocator();
-            CreateMap<Stock, Domain.Model.Stock>().ConstructUsingServiceLocator();
+            CreateMap<Stock, Domain.Model.Stock>()
+                .ForMember(d => d.OpenPrice, opt => opt.Ignore())
+                .ConstructUsingServiceLocator();
             CreateMap<AlertTriggerHistory, Domain.Model.AlertTriggerHistory>();
             CreateMap<AppUser, Domain.Model.AppUser>().ConstructUsingServiceLocator();
             CreateMap<UserPreferences, Domain.Model.UserPreferences>().ConstructUsingServiceLocator();
@@ -30,6 +32,7 @@ namespace StockAlerts.Data
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.AlertDefinition, AlertDefinition>()
+                .ForMember(d => d.AlertTriggerHistories, opt => opt.Ignore())
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
             
@@ -38,14 +41,17 @@ namespace StockAlerts.Data
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.AlertTriggerHistory, AlertTriggerHistory>()
+                .ForMember(d => d.AlertDefinition, opt => opt.Ignore())
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.AppUser, AppUser>()
+                .ForMember(d => d.AlertDefinitions, opt => opt.Ignore())
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 
             CreateMap<Domain.Model.UserPreferences, UserPreferences>()
+                .ForMember(d => d.AppUser, opt => opt.Ignore())
                 .ForMember(d => d.Created, opt => opt.Ignore())
                 .ForMember(d => d.Modified, opt => opt.Ignore());
 

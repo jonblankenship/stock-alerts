@@ -14,8 +14,14 @@ namespace StockAlerts.Api
         private void MapResourceToDomainModel()
         {
             CreateMap<AlertDefinition, Domain.Model.AlertDefinition>()
+                .ForMember(d => d.Stock, opt => opt.Ignore())
+                .ForMember(d => d.AlertTriggerHistories, opt => opt.Ignore())
+                .ForMember(d => d.AppUser, opt => opt.Ignore())
                 .ConstructUsingServiceLocator();
-            CreateMap<AlertCriteria, Domain.Model.AlertCriteria>();
+            CreateMap<AlertCriteria, Domain.Model.AlertCriteria>()
+                .ForMember(d => d.AlertDefinition, opt => opt.Ignore())
+                .ForMember(d => d.ParentCriteria, opt => opt.Ignore());
+                
             CreateMap<UserPreferences, Domain.Model.UserPreferences>()
                 .ConstructUsingServiceLocator();
         }
