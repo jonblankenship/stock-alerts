@@ -6,12 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="local.settings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="local.settings.json">
+    <None Update="local.settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
