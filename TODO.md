@@ -22,10 +22,10 @@
 
 #### StockAlerts.Functions
 
-- Split HTTP endpoints out of Functions project into their own Web API project
+- ~~Split HTTP endpoints out of Functions project into their own Web API project~~
 
-  - Create app service for Web API
-  - Set up release pipeline for Web API
+  - ~~Create app service for Web API~~
+  - ~~Set up release pipeline for Web API~~
 
 - Split authentication out into its own class library project
 
