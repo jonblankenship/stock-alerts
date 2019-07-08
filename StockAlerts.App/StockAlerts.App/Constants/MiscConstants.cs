@@ -4,6 +4,6 @@
     {
         public const string StockAlertsApi = "StockAlertsApi";
 
-        public const string StockAlertsApiBaseUri = "https://stockalerts.azurewebsites.net/api/";
+        public const string StockAlertsApiBaseUri = "https://stockalertsapi.azurewebsites.net/api/";
     }
 }

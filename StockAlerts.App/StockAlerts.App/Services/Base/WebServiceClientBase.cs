@@ -127,8 +127,7 @@ namespace StockAlerts.App.Services.Base
         {
             var exchangeRefreshTokenRequest = new ExchangeRefreshTokenRequest { AccessToken = accessToken, RefreshToken = refreshToken };
 
-            // TODO: Get base URL from settings
-            var result = await PostAsync("https://stockalerts.azurewebsites.net/api/auth/refresh-token", exchangeRefreshTokenRequest);
+            var result = await PostAsync($"{MiscConstants.StockAlertsApiBaseUri}refresh-tokens", exchangeRefreshTokenRequest);
 
             _settingsService.AuthAccessToken = result.AccessToken;
             _settingsService.AuthRefreshToken = result.RefreshToken;

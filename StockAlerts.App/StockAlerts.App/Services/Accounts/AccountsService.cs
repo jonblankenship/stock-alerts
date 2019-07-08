@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StockAlerts.App.Constants;
 using StockAlerts.App.Services.RequestProvider;
 using StockAlerts.App.Services.Settings;
 using StockAlerts.Resources.Model.Authentication;
@@ -28,7 +29,7 @@ namespace StockAlerts.App.Services.Accounts
                 Password = password
             };
 
-            var result = await _requestProvider.PostAsync<LoginRequest, LoginResponse>("https://stockalerts.azurewebsites.net/api/accounts/login", loginRequest);
+            var result = await _requestProvider.PostAsync<LoginRequest, LoginResponse>($"{MiscConstants.StockAlertsApiBaseUri}accounts/login", loginRequest);
 
             return result;
         }
@@ -42,7 +43,7 @@ namespace StockAlerts.App.Services.Accounts
                 Password = password
             };
 
-            var result = await _requestProvider.PostAsync<RegisterRequest, LoginResponse>("https://stockalerts.azurewebsites.net/api/accounts/register", registerRequest);
+            var result = await _requestProvider.PostAsync<RegisterRequest, LoginResponse>($"{MiscConstants.StockAlertsApiBaseUri}accounts/register", registerRequest);
 
             return result;
         }
