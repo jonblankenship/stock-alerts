@@ -10,18 +10,11 @@ using Xamarin.Forms.Xaml;
 namespace StockAlerts.App.Views.AlertDefinitions
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class StockSearchPage : ContentPage
+    public partial class CriteriaView : ContentView
     {
-        public StockSearchPage()
+        public CriteriaView()
         {
             InitializeComponent();
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            SearchBar.Focus();
         }
     }
 }

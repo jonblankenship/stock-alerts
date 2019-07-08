@@ -12,6 +12,10 @@ namespace StockAlerts.App.Extensions
             {
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Authorization = null;
+            }
         }
 
         public static void AddHeaderParameter(this HttpClient httpClient, string parameter)

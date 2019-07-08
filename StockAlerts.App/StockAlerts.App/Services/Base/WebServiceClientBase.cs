@@ -127,9 +127,10 @@ namespace StockAlerts.App.Services.Base
         {
             var exchangeRefreshTokenRequest = new ExchangeRefreshTokenRequest { AccessToken = accessToken, RefreshToken = refreshToken };
 
-            var result = await PostAsync($"{MiscConstants.StockAlertsApiBaseUri}refresh-tokens", exchangeRefreshTokenRequest);
+            _settingsService.AuthAccessToken = string.Empty;
+            var result = await PostAsync<ExchangeRefreshTokenRequest, ExchangeRefreshTokenResponse>($"{MiscConstants.StockAlertsApiBaseUri}refresh-tokens", exchangeRefreshTokenRequest);
 
-            _settingsService.AuthAccessToken = result.AccessToken;
+            _settingsService.AuthAccessToken = result.AccessToken.Token;
             _settingsService.AuthRefreshToken = result.RefreshToken;
         }
     }

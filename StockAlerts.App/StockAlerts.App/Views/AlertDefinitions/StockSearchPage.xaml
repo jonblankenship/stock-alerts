@@ -14,7 +14,7 @@
                 <RowDefinition Height="60"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Text="Search" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10" FontSize="Large"></Label>
-            <SearchBar Grid.Row="1" Placeholder="Start typing ticker or company name" Text="{Binding SearchString, Mode=TwoWay}"></SearchBar>
+            <SearchBar Grid.Row="1" Placeholder="Start typing ticker or company name" Text="{Binding SearchString, Mode=TwoWay}" x:Name="SearchBar"></SearchBar>
             <ListView Grid.Row="2" ItemsSource="{Binding Stocks.Result}" SelectedItem="{Binding SelectedStock}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

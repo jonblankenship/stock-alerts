@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Prism.Navigation;
 using StockAlerts.App.Constants;
@@ -39,6 +40,15 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
         {
             get => _alertName;
             set => SetProperty(ref _alertName, value);
+        }
+
+        public ObservableCollection<CriteriaViewModel> CriteriaCollection { get; set; } = new ObservableCollection<CriteriaViewModel>();
+
+        public ICommand AddCriteriaCommand => new Command(ExecuteAddCriteria);
+
+        private void ExecuteAddCriteria()
+        {
+            CriteriaCollection.Add(new CriteriaViewModel(new AlertCriteria(), NavigationService, Logger));
         }
 
         public ICommand SaveCommand => new Command(async () => await ExecuteSaveAsync());

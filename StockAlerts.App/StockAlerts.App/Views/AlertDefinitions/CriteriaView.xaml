@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="StockAlerts.App.Views.AlertDefinitions.CriteriaView">
+  <ContentView.Content>
+      <Grid>
+          <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"></ColumnDefinition>
+              <ColumnDefinition Width="60">
+              </ColumnDefinition>
+          </Grid.ColumnDefinitions>
+          <Frame BorderColor="Gray">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition Width="120">
+                        </ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Criteria Name"></Label>
+                    <Label Text=">=" Grid.Column="1"></Label>
+                    <Entry Grid.Column="2"></Entry>
+                </Grid>
+          </Frame>
+          <ImageButton Grid.Column="1" Source="remove_circle.png" BackgroundColor="Transparent" HorizontalOptions="Center" Command="{Binding RemoveCriteriaCommand}"></ImageButton>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

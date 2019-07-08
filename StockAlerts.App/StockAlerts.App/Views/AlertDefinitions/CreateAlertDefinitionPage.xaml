@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:xaml="clr-namespace:Prism.Navigation.Xaml;assembly=Prism.Forms"
+             xmlns:alertDefinitions="clr-namespace:StockAlerts.App.Views.AlertDefinitions;assembly=StockAlerts.App"
              mc:Ignorable="d"
              x:Class="StockAlerts.App.Views.AlertDefinitions.CreateAlertDefinitionPage">
     <ContentPage.Resources>
@@ -35,6 +36,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -48,17 +50,39 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Entry Text="{Binding StockSymbol}" IsEnabled="False"></Entry>
+                    <StackLayout>
+                        <Entry Text="{Binding StockSymbol}" IsEnabled="False" >
+                        </Entry>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{xaml:NavigateTo 'StockSearchPage'}" 
+                                NumberOfTapsRequired="1" />
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
                     <ImageButton Grid.Column="1" Source="search_icon.png" Command="{xaml:NavigateTo 'StockSearchPage'}" BackgroundColor="Transparent"></ImageButton>
                 </Grid>
 
                 <!-- ALERT NAME -->
-                <Label Grid.Row="1" Text="Alert Name" FontAttributes="Bold" VerticalTextAlignment="Center"></Label>
+                <Label Grid.Row="1" Grid.Column="0" Text="Alert Name" FontAttributes="Bold" VerticalTextAlignment="Center"></Label>
                 <Entry Grid.Row="1" Grid.Column="1" Text="{Binding AlertName}" HorizontalOptions="Fill"></Entry>
 
                 <!-- CRITERIA -->
-
-
+                <Label Grid.Row="2" Grid.Column="0" Text="Criteria" FontAttributes="Bold" VerticalTextAlignment="Center"></Label>
+                <StackLayout Grid.Row="3" Grid.ColumnSpan="2">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                        <Label>AND</Label>
+                        <Switch ></Switch>
+                        <Label>OR</Label>
+                    </StackLayout>
+                    <StackLayout BindableLayout.ItemsSource="{Binding CriteriaCollection}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <alertDefinitions:CriteriaView BindingContext="{Binding}"></alertDefinitions:CriteriaView>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                    <ImageButton Source="plus_sign.png" BackgroundColor="Transparent" HorizontalOptions="Center" Command="{Binding AddCriteriaCommand}"></ImageButton>
+                </StackLayout>
             </Grid>
 
             <!-- SAVE BUTTON -->
