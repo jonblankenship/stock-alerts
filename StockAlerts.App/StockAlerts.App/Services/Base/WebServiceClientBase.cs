@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -60,10 +61,10 @@ namespace StockAlerts.App.Services.Base
             return result;
         }
 
-        protected Task<TResult> PostAsync<TResult>(string uri, TResult data, string token = "", string header = "") =>
-            PostAsync<TResult, TResult>(uri, data, token, header);
+        protected Task<TResult> PostAsync<TResult>(string uri, TResult data, string header = "") =>
+            PostAsync<TResult, TResult>(uri, data, header);
 
-        protected async Task<TResult> PostAsync<TData, TResult>(string uri, TData data, string token = "", string header = "")
+        protected async Task<TResult> PostAsync<TData, TResult>(string uri, TData data, string header = "")
         {
             HttpClient.EnsureAuthTokenSet(_settingsService.AuthAccessToken);
 
@@ -84,13 +85,42 @@ namespace StockAlerts.App.Services.Base
             return result;
         }
 
-        // Similar methods for PUT, DELETE
+        protected Task<TResult> PutAsync<TResult>(string uri, TResult data, string header = "") =>
+            PutAsync<TResult, TResult>(uri, data, header);
+
+        protected async Task<TResult> PutAsync<TData, TResult>(string uri, TData data, string header = "")
+        {
+            HttpClient.EnsureAuthTokenSet(_settingsService.AuthAccessToken);
+
+            if (!string.IsNullOrEmpty(header))
+            {
+                HttpClient.AddHeaderParameter(header);
+            }
+
+            var content = new StringContent(JsonConvert.SerializeObject(data));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var response = await ExecuteAuthenticatedRequestAsync(async () => await HttpClient.PutAsync(uri, content), CancellationToken.None);
+
+            string serialized = await response.Content.ReadAsStringAsync();
+
+            TResult result = await Task.Run(() =>
+                JsonConvert.DeserializeObject<TResult>(serialized, _serializerSettings));
+
+            return result;
+        }
+
+        // Similar methods for DELETE
 
         private async Task<HttpResponseMessage> ExecuteAuthenticatedRequestAsync(
             Func<Task<HttpResponseMessage>> operation,
             CancellationToken cancellationToken)
         {
             var response = await operation();
+
+            var content = await response.Content.ReadAsStringAsync();
+            Debug.Write(content);
+
+
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 if (response.Headers.Contains("Token-Expired") &&

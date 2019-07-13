@@ -54,8 +54,8 @@ namespace StockAlerts.Domain.Model
                 errors.Add($"Alert Criteria of type Composite cannot have an operator of type {Operator}.");
             if (Level.HasValue)
                 errors.Add("Alert Criteria of type Composite must have a null level.");
-            if (ChildrenCriteria.Count < 2)
-                errors.Add("Alert Criteria of type Composite should have at least two children.");
+            if (ChildrenCriteria.Count < 1)
+                errors.Add("Alert Criteria of type Composite should have at least one child.");
             
             foreach(var c in ChildrenCriteria)
                 c.Validate(errors);

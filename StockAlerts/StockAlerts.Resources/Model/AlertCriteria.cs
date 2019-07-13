@@ -12,9 +12,9 @@ namespace StockAlerts.Resources.Model
 
         public Guid? ParentCriteriaId { get; set; }
 
-        public CriteriaType Type { get; set; }
+        public CriteriaType? Type { get; set; }
 
-        public CriteriaOperator Operator { get; set; }
+        public CriteriaOperator? Operator { get; set; }
 
         public decimal? Level { get; set; }
 

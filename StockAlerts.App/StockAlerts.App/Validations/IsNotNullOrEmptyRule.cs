@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StockAlerts.App.Validations
+﻿namespace StockAlerts.App.Validations
 {
     public class IsNotNullOrEmptyRule<T> : IValidationRule<T>
     {

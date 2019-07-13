@@ -31,7 +31,6 @@ namespace StockAlerts.App.Services.AlertDefinitions
 
         public async Task<ObservableCollection<AlertDefinitionItemViewModel>> GetAlertDefinitionItemViewModelsAsync()
         {
-            // TODO: Get base URL from settings
             var alertDefinitions = await GetAsync<IEnumerable<AlertDefinition>>($"{MiscConstants.StockAlertsApiBaseUri}alert-definitions", CancellationToken.None);
             if (alertDefinitions == null)
             {
@@ -41,6 +40,14 @@ namespace StockAlerts.App.Services.AlertDefinitions
             var alertDefinitionVms = (from ad in alertDefinitions
                                       select new AlertDefinitionItemViewModel(ad, NavigationService, _logger)).ToList();
             return alertDefinitionVms.ToObservableCollection();
+        }
+
+        public async Task<AlertDefinition> SaveAlertDefinitionAsync(AlertDefinition alertDefinition)
+        {
+            if (alertDefinition.AlertDefinitionId == Guid.Empty)
+                return await PostAsync($"{MiscConstants.StockAlertsApiBaseUri}alert-definitions", alertDefinition);
+
+            return await PutAsync($"{MiscConstants.StockAlertsApiBaseUri}alert-definitions/{alertDefinition.AlertDefinitionId}", alertDefinition);
         }
     }
 }

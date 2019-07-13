@@ -180,6 +180,7 @@ x:Class="StockAlerts.App.App">
             <converters:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
             <converters:InverseCountToBoolConverter x:Key="InverseCountToBoolConverter" />-->
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:NullableDecimalConverter x:Key="NullableDecimalConverter" />
             <!--<converters:ItemsToHeightConverter x:Key="ItemsToHeightConverter" />
             <converters:ToUpperConverter x:Key="ToUpperConverter" />-->
 
