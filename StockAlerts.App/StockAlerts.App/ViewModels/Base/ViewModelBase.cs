@@ -31,6 +31,10 @@ namespace StockAlerts.App.ViewModels.Base
             {
                 _isBusy = value;
                 SetProperty(ref _isBusy, value);
+                Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
+                {
+                    RaisePropertyChanged(nameof(IsBusy));
+                });
             }
         }
 

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace StockAlerts.App.Views.AlertDefinitions
+namespace StockAlerts.App.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CreateAlertDefinitionPage : ContentPage
+    public partial class LoadingIndicatorView : ContentView
     {
-        public CreateAlertDefinitionPage()
+        public LoadingIndicatorView()
         {
             InitializeComponent();
         }

@@ -28,8 +28,8 @@ namespace StockAlerts.Data.Repositories
 
         public async Task<IEnumerable<AlertDefinition>> GetAlertDefinitionsAsync(Guid appUserId)
         {
-            var query = from a in _dbContext.AlertDefinitions.Include(x => x.Stock)
-                where a.AppUserId == appUserId
+            var query = from a in _dbContext.AlertDefinitions.IncludeAllRelatedEntities()
+                        where a.AppUserId == appUserId
                 select a;
 
             var dataObjects = await query.ToListAsync();

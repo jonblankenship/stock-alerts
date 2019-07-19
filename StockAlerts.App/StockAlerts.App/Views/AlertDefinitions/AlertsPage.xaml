@@ -27,11 +27,11 @@
             RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="60" />
+                <RowDefinition Height="80" />
             </Grid.RowDefinitions>
 
             <!-- ALERT DEFINITIONS LIST VIEW -->
-            <ListView ItemsSource="{Binding AlertDefinitions}">
+            <ListView ItemsSource="{Binding AlertDefinitions}" SelectedItem="{Binding SelectedAlertDefinition}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -47,9 +47,9 @@
                                        FontAttributes="Bold"
                                        VerticalTextAlignment="Center"
                                        HorizontalTextAlignment="Center"></Label>
-                                <StackLayout Grid.Column="1" Orientation="Vertical">
-                                    <Label Text="{Binding Name}"></Label>
-                                    <Label Text="{Binding Description}" FontSize="Micro"></Label>
+                                <StackLayout Grid.Column="1" Orientation="Vertical" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" Margin="0,4,0,0"></Label>
+                                    <Label Text="{Binding Description}" FontSize="Micro" Margin="0,-8,0,4"></Label>
                                 </StackLayout>
                                 <Label Grid.Column="2"
                                        Text="{Binding LastPrice}"
@@ -64,21 +64,11 @@
             </ListView>
 
             <!-- CREATE ALERT BUTTON -->
-            <Grid
-                BackgroundColor="{StaticResource LightGreenColor}"
-                Grid.Row="1"
-                Padding="0"
-                ColumnSpacing="0"
-                RowSpacing="0">
-                <Label
-                    Text="CREATE ALERT"
-                    Style="{StaticResource CreateAlertButtonStyle}"/>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding CreateAlertCommand}"
-                        NumberOfTapsRequired="1" />
-                </Grid.GestureRecognizers>
-            </Grid>
+            <Frame CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" HasShadow="True" Padding="0">
+                <Button CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"
+                        Text="Create Alert" Command="{Binding CreateAlertCommand}"
+                        BackgroundColor="{StaticResource DarkGrayColor}" TextColor="{StaticResource WhiteColor}"></Button>
+            </Frame>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

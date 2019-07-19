@@ -7,6 +7,7 @@ using StockAlerts.Resources.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using StockAlerts.App.Constants;
@@ -78,6 +79,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 {
                     if (!searchCancellationTokenSource.IsCancellationRequested)
                     {
+                        IsBusy = true;
                         var stocks = await _stocksService.FindStocksAsync(SearchString, searchCancellationTokenSource.Token);
                         return stocks.ToList();
                     }
@@ -86,6 +88,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 {
                     searchCancellationTokenSource.Dispose();
                     _searchCancellationTokenSource = null;
+                    IsBusy = false;
                 }
             }
 

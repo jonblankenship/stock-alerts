@@ -8,9 +8,9 @@
              xmlns:xaml="clr-namespace:Prism.Navigation.Xaml;assembly=Prism.Forms"
              mc:Ignorable="d"
              x:Class="StockAlerts.App.Views.MainPage"
-             BarBackgroundColor="{StaticResource DarkGreenColor}"
+             BarBackgroundColor="{StaticResource DarkGrayColor}"
              BackgroundColor="{StaticResource BackgroundColor}"
-             BarTextColor="{StaticResource WhiteColor}">
+             BarTextColor="{StaticResource AccentColor}">
     <TabbedPage.Title>
         <OnPlatform x:TypeArguments="x:String">
             <On Platform="iOS, UWP, WinRT, WinPhone" Value="Stock Alerts" />

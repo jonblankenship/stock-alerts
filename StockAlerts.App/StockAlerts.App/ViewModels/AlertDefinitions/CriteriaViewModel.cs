@@ -84,11 +84,13 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             set => SetProperty(ref _isInvalid, value);
         }
 
-        public ICommand RemoveCriteriaCommand => new Command(ExecuteRemoveCriteria);
+        public EventHandler RemoveCriteria;
 
+        public ICommand RemoveCriteriaCommand => new Command(ExecuteRemoveCriteria);
+        
         private void ExecuteRemoveCriteria(object obj)
         {
-            throw new NotImplementedException();
+            RemoveCriteria?.Invoke(this, null);
         }
         
         private void InitAlertCriteria()

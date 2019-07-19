@@ -56,7 +56,7 @@ namespace StockAlerts.App
             containerRegistry.RegisterForNavigation<SettingsPage>();
             containerRegistry.RegisterForNavigation<AlertsPage>();
             containerRegistry.RegisterForNavigation<AlertHistoryPage>();
-            containerRegistry.RegisterForNavigation<CreateAlertDefinitionPage>();
+            containerRegistry.RegisterForNavigation<EditAlertDefinitionPage>();
             containerRegistry.RegisterForNavigation<StockSearchPage>();
 
             containerRegistry.Register<ISettingsService, SettingsService>();

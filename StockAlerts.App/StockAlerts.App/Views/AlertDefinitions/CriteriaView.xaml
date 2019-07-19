@@ -20,18 +20,17 @@
               <ColumnDefinition Width="25"></ColumnDefinition>
             </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
-              <RowDefinition Height="Auto"></RowDefinition>
-              <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
           </Grid.RowDefinitions>
-            <Image Source="error.png" HeightRequest="20" WidthRequest="20" BackgroundColor="Transparent" HorizontalOptions="Center"  VerticalOptions="Center" IsVisible="{Binding IsInvalid}"></Image>
-            <Picker Grid.Column="1" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}">
-            </Picker>
-            <Picker Grid.Column="2" ItemsSource="{Binding Operators}" SelectedItem="{Binding SelectedOperator}">
-            </Picker>
-            <Entry Grid.Column="3" VerticalOptions="Center" Text="{Binding Level, Converter={StaticResource NullableDecimalConverter}}" Keyboard="Numeric">
-            </Entry>
-            <ImageButton Grid.Column="4" Source="remove_circle.png" HeightRequest="20" WidthRequest="20" BackgroundColor="Transparent" HorizontalOptions="Center"  VerticalOptions="Center"
-                       Command="{Binding RemoveCriteriaCommand}"></ImageButton>
+          <Image Source="error.png" HeightRequest="20" WidthRequest="20" BackgroundColor="Transparent" HorizontalOptions="Center"  VerticalOptions="Center" IsVisible="{Binding IsInvalid}"></Image>
+          <Picker Grid.Column="1" ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}">
+          </Picker>
+          <Picker Grid.Column="2" ItemsSource="{Binding Operators}" SelectedItem="{Binding SelectedOperator}">
+          </Picker>
+          <Entry Grid.Column="3" VerticalOptions="Center" Text="{Binding Level, Converter={StaticResource NullableDecimalConverter}}" Keyboard="Numeric">
+          </Entry>
+          <ImageButton Grid.Column="4" Source="remove_circle.png" HeightRequest="20" WidthRequest="20" BackgroundColor="Transparent" HorizontalOptions="Center"  VerticalOptions="Center"
+                     Command="{Binding RemoveCriteriaCommand}"></ImageButton>
         </Grid>
   </ContentView.Content>
 </ContentView>

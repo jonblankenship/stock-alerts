@@ -110,7 +110,7 @@ namespace StockAlerts.App.ViewModels
 
         public string LoginButtonText
         {
-            get => IsRegistering ? "[ REGISTER ]" : "[ LOGIN ]";
+            get => IsRegistering ? "Register" : "Login";
         }
 
         public ICommand SwitchToLoginCommand => new Command(SwitchToLogin);

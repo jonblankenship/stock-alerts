@@ -9605,6 +9605,9 @@ namespace StockAlerts.App.Droid
 			// aapt resource value: 0x7f0d01f7
 			public const int Widget_Support_CoordinatorLayout = 2131558903;
 			
+			// aapt resource value: 0x7f0d0203
+			public const int textAppearanceButton = 2131558915;
+			
 			static Style()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

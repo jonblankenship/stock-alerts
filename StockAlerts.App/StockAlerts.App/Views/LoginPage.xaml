@@ -7,6 +7,7 @@
              xmlns:animations="clr-namespace:StockAlerts.App.Animations;assembly=StockAlerts.App"
              xmlns:triggers="clr-namespace:StockAlerts.App.Triggers;assembly=StockAlerts.App"
              xmlns:behaviors="clr-namespace:StockAlerts.App.Behaviors;assembly=StockAlerts.App"
+             xmlns:views="clr-namespace:StockAlerts.App.Views;assembly=StockAlerts.App"
              mc:Ignorable="d"
              x:Class="StockAlerts.App.Views.LoginPage">
     <ContentPage.Title>
@@ -18,20 +19,6 @@
         <ResourceDictionary>
             <converters:FirstValidationErrorConverter x:Key="FirstValidationErrorConverter" />
 
-            <Style x:Key="TitleLabelStyle"
-                TargetType="{x:Type Label}">
-                <Setter Property="FontFamily"
-                    Value="{StaticResource MontserratRegular}" />
-                <Setter Property="FontAttributes"
-                    Value="Bold" />
-                <Setter Property="FontSize"
-                    Value="{StaticResource MediumSize}" />
-                <Setter Property="HorizontalOptions"
-                    Value="Center" />
-                <Setter Property="Margin"
-                    Value="0, 12" />
-            </Style>
-
             <Style x:Key="HeaderLabelStyle"
                 TargetType="{x:Type Label}">
                 <Setter Property="FontFamily"
@@ -39,53 +26,9 @@
                 <Setter Property="FontSize"
                     Value="{StaticResource LittleSize}" />
                 <Setter Property="TextColor"
-                    Value="{StaticResource GreenColor}" />
+                    Value="{StaticResource LightGrayColor}" />
                 <Setter Property="HorizontalOptions"
                     Value="Start" />
-            </Style>
-
-            <Style x:Key="LoginButtonStyle"
-                TargetType="{x:Type Label}">
-                <Setter Property="FontFamily"
-                    Value="{StaticResource MontserratRegular}" />
-                <Setter Property="TextColor"
-                    Value="{StaticResource WhiteColor}" />
-                <Setter Property="HorizontalOptions"
-                    Value="Center" />
-                <Setter Property="VerticalOptions"
-                    Value="Center" />
-            </Style>
-
-            <Style x:Key="LoginPanelStyle"
-                TargetType="{x:Type Grid}">
-                <Setter Property="HeightRequest"
-                    Value="60" />
-                <Setter Property="BackgroundColor"
-                    Value="{StaticResource LightGreenColor}" />
-                <Setter Property="HorizontalOptions"
-                    Value="FillAndExpand" />
-                <Setter Property="VerticalOptions"
-                    Value="FillAndExpand" />
-            </Style>
-
-            <Style x:Key="RegisterPanelStyle"
-                TargetType="{x:Type Grid}"
-                BasedOn="{StaticResource LoginPanelStyle}">
-                <Setter Property="BackgroundColor"
-                    Value="{StaticResource GreenColor}" />
-            </Style>
-
-            <Style x:Key="SettingsPanelStyle"
-                TargetType="{x:Type Grid}"
-                BasedOn="{StaticResource LoginPanelStyle}">
-                <Setter Property="BackgroundColor"
-                    Value="{StaticResource BlackColor}" />
-            </Style>
-
-            <Style x:Key="SettingsImageStyle"
-                TargetType="{x:Type Image}">
-                <Setter Property="Margin"
-                    Value="12" />
             </Style>
 
             <animations:StoryBoard
@@ -116,66 +59,67 @@
             ColumnSpacing="0"
             RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="80" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="60" />
-                <RowDefinition Height="60" />
+                <RowDefinition Height="80" />
             </Grid.RowDefinitions>
-            <!-- LOGIN / REGISTER -->
-            <Grid   
-                Grid.Row="0"
-                Margin="48, 24">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackLayout  
-                  Grid.Column="0"
-                  Orientation="Horizontal"
-                  HorizontalOptions="Center">
-                    <Label     
-                        Text="["
-                        TextColor="{StaticResource LightGreenColor}"
-                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
-                    <Label
-                        Text="LOGIN"/>
-                    <Label
-                        Text="]"
-                        TextColor="{StaticResource LightGreenColor}"
-                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
-                    <StackLayout.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding SwitchToLoginCommand}"
-                            NumberOfTapsRequired="1" />
-                    </StackLayout.GestureRecognizers>
-                </StackLayout>
-                <StackLayout
-                  Grid.Column="1"
-                  Orientation="Horizontal"
-                  HorizontalOptions="Center">
-                    <Label     
-                        Text="["
-                        TextColor="{StaticResource LightGreenColor}"
-                        IsVisible="{Binding IsRegistering}"/>
-                    <Label
-                        Text="REGISTER"
-                        TextColor="Gray"/>
-                    <Label
-                        Text="]"
-                        TextColor="{StaticResource LightGreenColor}"
-                        IsVisible="{Binding IsRegistering}"/>
-                    <StackLayout.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Command="{Binding SwitchToRegisterCommand}"
-                            NumberOfTapsRequired="1" />
-                    </StackLayout.GestureRecognizers>
-                </StackLayout>
-            </Grid>
             <!-- LOGIN FORM -->
             <StackLayout   
                 Grid.Row="2"
-                Margin="24">
+                Margin="50">
+
+                <!-- LOGIN / REGISTER -->
+                <Grid
+                Margin="48, 24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackLayout  
+                  Grid.Column="0"
+                  Orientation="Horizontal"
+                  HorizontalOptions="Center">
+                        <Label     
+                        Text="["
+                        TextColor="{StaticResource AccentColor}"
+                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
+                        <Label
+                        Text="LOGIN"/>
+                        <Label
+                        Text="]"
+                        TextColor="{StaticResource AccentColor}"
+                        IsVisible="{Binding IsRegistering, Converter={StaticResource InverseBoolConverter}}"/>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer
+                            Command="{Binding SwitchToLoginCommand}"
+                            NumberOfTapsRequired="1" />
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                    <StackLayout
+                  Grid.Column="1"
+                  Orientation="Horizontal"
+                  HorizontalOptions="Center">
+                        <Label     
+                        Text="["
+                        TextColor="{StaticResource AccentColor}"
+                        IsVisible="{Binding IsRegistering}"/>
+                        <Label
+                        Text="REGISTER"
+                        TextColor="Gray"/>
+                        <Label
+                        Text="]"
+                        TextColor="{StaticResource AccentColor}"
+                        IsVisible="{Binding IsRegistering}"/>
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer
+                            Command="{Binding SwitchToRegisterCommand}"
+                            NumberOfTapsRequired="1" />
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </Grid>
+
                 <StackLayout IsVisible="{Binding IsRegistering}">
                     <Label
                         Text="E-mail"
@@ -246,6 +190,7 @@
                 <Label 
 					Text="{Binding Password.Errors, Converter={StaticResource FirstValidationErrorConverter}}"
 					Style="{StaticResource ValidationErrorLabelStyle}" />
+
             </StackLayout>
             <!-- LOGIN ERROR MESSAGE -->
             <Grid
@@ -253,35 +198,13 @@
                 <Label Text="{Binding LoginErrorMessage}" Style="{StaticResource ValidationErrorLabelStyle}" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
             </Grid>
             <!-- LOGIN BUTTON -->
-            <Grid
-                BackgroundColor="{StaticResource LightGreenColor}"
-                Grid.Row="4"
-                Padding="0"
-                ColumnSpacing="0"
-                RowSpacing="0">
-                <Label
-                  Text="{Binding LoginButtonText}"
-                  Style="{StaticResource LoginButtonStyle}"/>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer
-                        Command="{Binding SignInCommand}"
-                        NumberOfTapsRequired="1" />
-                </Grid.GestureRecognizers>
-            </Grid>
+            <Frame CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="4" HasShadow="True" Padding="0">
+                <Button CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"
+                        Text="{Binding LoginButtonText}" Command="{Binding SignInCommand}"
+                        BackgroundColor="{StaticResource DarkGrayColor}" TextColor="{StaticResource WhiteColor}"></Button>
+            </Frame>
         </Grid>
         <!-- INDICATOR -->
-        <ActivityIndicator      
-            Color="{StaticResource LightGreenColor}"
-            IsRunning="{Binding IsBusy}"
-            IsVisible="{Binding IsBusy}"
-            VerticalOptions="Center"
-            HorizontalOptions="Center">
-            <ActivityIndicator.WidthRequest>
-                <OnPlatform x:TypeArguments="x:Double">
-                    <On Platform="iOS, Android" Value="100" />
-                    <On Platform="UWP, WinRT, WinPhone" Value="400" />
-                </OnPlatform>
-            </ActivityIndicator.WidthRequest>
-        </ActivityIndicator>
+        <views:LoadingIndicatorView></views:LoadingIndicatorView>
     </Grid>
 </ContentPage>

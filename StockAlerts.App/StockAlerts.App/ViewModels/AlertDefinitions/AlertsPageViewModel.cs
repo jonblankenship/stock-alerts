@@ -3,10 +3,12 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Prism.Navigation;
+using StockAlerts.App.Constants;
 using StockAlerts.App.Services.AlertDefinitions;
 using StockAlerts.App.Services.Logging;
 using StockAlerts.App.ViewModels.Base;
 using StockAlerts.App.Views.AlertDefinitions;
+using StockAlerts.Resources.Model;
 using Xamarin.Forms;
 
 namespace StockAlerts.App.ViewModels.AlertDefinitions
@@ -28,6 +30,21 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
         {
             get => _alertDefinitions;
             set => SetProperty(ref _alertDefinitions, value);
+        }
+
+        private AlertDefinitionItemViewModel _selectedAlertDefinition;
+        public AlertDefinitionItemViewModel SelectedAlertDefinition
+        {
+            get => _selectedAlertDefinition;
+            set
+            {
+                if (value != null)
+                {
+                    var navigationParams = new NavigationParameters();
+                    navigationParams.Add(NavigationParameterKeys.SelectedAlertDefinition, value);
+                    NavigationService.NavigateAsync(nameof(EditAlertDefinitionPage), navigationParams);
+                }
+            }
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -52,7 +69,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
 
         private void ExecuteCreateAlert()
         {
-            NavigationService.NavigateAsync(nameof(CreateAlertDefinitionPage));
+            NavigationService.NavigateAsync(nameof(EditAlertDefinitionPage));
         }
     }
 }
