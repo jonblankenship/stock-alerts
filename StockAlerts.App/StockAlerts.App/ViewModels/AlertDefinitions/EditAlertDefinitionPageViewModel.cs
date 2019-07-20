@@ -9,6 +9,7 @@ using StockAlerts.App.Constants;
 using StockAlerts.App.Services.AlertDefinitions;
 using StockAlerts.App.Services.Logging;
 using StockAlerts.App.ViewModels.Base;
+using StockAlerts.App.Views;
 using StockAlerts.App.Views.AlertDefinitions;
 using StockAlerts.Core.Enums;
 using StockAlerts.Resources.Model;
@@ -37,7 +38,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 }
             };
 
-            Title = "Alert Definition";
+            Title = "Create Alert Definition";
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -126,15 +127,15 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 if (_alertDefinition.RootCriteria.ChildrenCriteria == null)
                     _alertDefinition.RootCriteria.ChildrenCriteria = new List<AlertCriteria>();
 
+                _alertDefinition.RootCriteria.ChildrenCriteria.Clear();
                 foreach (var c in CriteriaCollection)
                 {
-                    if (!_alertDefinition.RootCriteria.ChildrenCriteria.Select(x => x.AlertCriteriaId).Contains(c.AlertCriteriaId))
                         c.AddToAlertCriteria(_alertDefinition.RootCriteria);
                 }
 
                 await _alertDefinitionsService.SaveAlertDefinitionAsync(_alertDefinition);
 
-                await NavigationService.NavigateAsync(nameof(AlertsPage));
+                await NavigationService.NavigateAsync(nameof(MainPage));
             }
 
             IsBusy = false;
