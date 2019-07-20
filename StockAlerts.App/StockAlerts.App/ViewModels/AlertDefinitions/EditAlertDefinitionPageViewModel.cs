@@ -9,6 +9,7 @@ using StockAlerts.App.Constants;
 using StockAlerts.App.Services.AlertDefinitions;
 using StockAlerts.App.Services.Logging;
 using StockAlerts.App.ViewModels.Base;
+using StockAlerts.App.Views.AlertDefinitions;
 using StockAlerts.Core.Enums;
 using StockAlerts.Resources.Model;
 using Xamarin.Forms;
@@ -27,7 +28,16 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             ILogger logger) : base(navigationService, logger)
         {
             _alertDefinitionsService = alertDefinitionsService ?? throw new ArgumentNullException(nameof(alertDefinitionsService));
-            _alertDefinition = new AlertDefinition();
+            _alertDefinition = new AlertDefinition
+            {
+                RootCriteria = new AlertCriteria
+                {
+                    Type = CriteriaType.Composite,
+                    Operator = CriteriaOperator.And
+                }
+            };
+
+            Title = "Alert Definition";
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -46,20 +56,11 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 else if (parameters.ContainsKey((NavigationParameterKeys.SelectedAlertDefinition)))
                 {
                     // If parameters contains NavigationParameterKeys.SelectedAlertDefinition, then we're navigating from the alert defs page
-                    IsBusy = true;
                     var alertDefinitionItemViewModel = (AlertDefinitionItemViewModel) parameters[NavigationParameterKeys.SelectedAlertDefinition];
                     _alertDefinition = alertDefinitionItemViewModel.AlertDefinition;
                     InitializeForEdit();
-                    IsBusy = false;
                 }
             }
-        }
-
-        private string _title = "Alert Definition";
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
         }
 
         public string StockSymbol => _stock?.Symbol;
@@ -71,7 +72,12 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             set => SetProperty(ref _alertName, value);
         }
 
-        public int SelectedOperatorButtonIndex { get; set; } = 0;
+
+        public int SelectedOperatorButtonIndex
+        {
+            get => (int)(_alertDefinition.RootCriteria?.Operator ?? CriteriaOperator.And);
+            set => _alertDefinition.RootCriteria.Operator = (CriteriaOperator)Enum.ToObject(typeof(CriteriaOperator), value);
+        }
 
         private string _errorMessage;
         public string ErrorMessage
@@ -117,18 +123,18 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
                 _alertDefinition.Name = _alertName;
                 _alertDefinition.Status = AlertDefinitionStatuses.Enabled;
 
-                _alertDefinition.RootCriteria = new AlertCriteria
-                {
-                    Type = CriteriaType.Composite,
-                    Operator = SelectedOperatorButtonIndex == 0 ? CriteriaOperator.And : CriteriaOperator.Or
-                };
+                if (_alertDefinition.RootCriteria.ChildrenCriteria == null)
+                    _alertDefinition.RootCriteria.ChildrenCriteria = new List<AlertCriteria>();
 
                 foreach (var c in CriteriaCollection)
                 {
-                    c.AddToAlertCriteria(_alertDefinition.RootCriteria);
+                    if (!_alertDefinition.RootCriteria.ChildrenCriteria.Select(x => x.AlertCriteriaId).Contains(c.AlertCriteriaId))
+                        c.AddToAlertCriteria(_alertDefinition.RootCriteria);
                 }
 
                 await _alertDefinitionsService.SaveAlertDefinitionAsync(_alertDefinition);
+
+                await NavigationService.NavigateAsync(nameof(AlertsPage));
             }
 
             IsBusy = false;
@@ -172,7 +178,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             AlertName = _alertDefinition.Name;
             if (_alertDefinition.RootCriteria != null)
             {
-                SelectedOperatorButtonIndex = _alertDefinition.RootCriteria?.Operator == CriteriaOperator.Or ? 1 : 0;
+                //SelectedOperatorButtonIndex = _alertDefinition.RootCriteria?.Operator == CriteriaOperator.Or ? 1 : 0;
                 foreach (var c in _alertDefinition.RootCriteria?.ChildrenCriteria)
                 {
                     AddCriteria(new CriteriaViewModel(c, NavigationService, Logger));
@@ -180,6 +186,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             }
             
             RaisePropertyChanged(nameof(StockSymbol));
+            RaisePropertyChanged(nameof(SelectedOperatorButtonIndex));
         }
     }
 }

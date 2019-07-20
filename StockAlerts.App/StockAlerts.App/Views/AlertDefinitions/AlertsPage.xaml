@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:StockAlerts.App.Views;assembly=StockAlerts.App"
              mc:Ignorable="d"
              x:Class="StockAlerts.App.Views.AlertDefinitions.AlertsPage">
     <ContentPage.Resources>
@@ -21,7 +22,8 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid
+        <Grid>
+            <Grid
             Padding="0"
             ColumnSpacing="0"
             RowSpacing="0">
@@ -69,6 +71,8 @@
                         Text="Create Alert" Command="{Binding CreateAlertCommand}"
                         BackgroundColor="{StaticResource DarkGrayColor}" TextColor="{StaticResource WhiteColor}"></Button>
             </Frame>
+        </Grid>
+            <views:LoadingIndicatorView></views:LoadingIndicatorView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

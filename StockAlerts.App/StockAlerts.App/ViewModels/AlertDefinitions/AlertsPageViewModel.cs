@@ -24,6 +24,8 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             ILogger logger) : base(navigationService, logger)
         {
             _alertDefinitionsService = alertDefinitionsService ?? throw new ArgumentNullException(nameof(alertDefinitionsService));
+
+            IsBusy = true;
         }
 
         public ObservableCollection<AlertDefinitionItemViewModel> AlertDefinitions
@@ -49,8 +51,6 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
-            IsBusy = true;
-
             // Get alert definitions
             try
             {

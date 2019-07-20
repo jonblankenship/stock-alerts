@@ -49,8 +49,7 @@
         </EventTrigger>
     </ContentPage.Triggers>
 
-    <Grid
-      BackgroundColor="{StaticResource BackgroundColor}">
+    <Grid BackgroundColor="{StaticResource BackgroundColor}">
 
         <!-- AUTH -->
         <Grid

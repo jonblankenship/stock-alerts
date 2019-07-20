@@ -12,12 +12,12 @@
     <ContentView.Content>
       <Grid>
           <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="25"></ColumnDefinition>
+              <ColumnDefinition Width="15"></ColumnDefinition>
               <ColumnDefinition Width="*"></ColumnDefinition>
-              <ColumnDefinition Width="60"></ColumnDefinition>
-              <ColumnDefinition Width="60"></ColumnDefinition>
-              <ColumnDefinition Width="40"></ColumnDefinition>
-              <ColumnDefinition Width="25"></ColumnDefinition>
+              <ColumnDefinition Width="50"></ColumnDefinition>
+              <ColumnDefinition Width="70"></ColumnDefinition>
+              <ColumnDefinition Width="30"></ColumnDefinition>
+              <ColumnDefinition Width="15"></ColumnDefinition>
             </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>

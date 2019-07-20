@@ -22,10 +22,10 @@ namespace StockAlerts.App.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = value as string;
-            int decimalValue;
+            decimal decimalValue;
             decimal? result = null;
 
-            if (int.TryParse(stringValue, out decimalValue))
+            if (decimal.TryParse(stringValue, out decimalValue))
             {
                 result = new decimal?(decimalValue);
             }

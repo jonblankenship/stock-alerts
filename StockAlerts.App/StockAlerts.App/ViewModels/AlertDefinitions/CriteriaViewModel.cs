@@ -26,6 +26,8 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             InitAlertCriteria();
         }
 
+        public Guid AlertCriteriaId => _alertCriteria.AlertCriteriaId;
+
         public string SelectedType
         {
             get => _alertCriteria.Type?.ToDisplayString();
@@ -98,8 +100,9 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
             if (_alertCriteria.AlertCriteriaId == Guid.Empty)
             {
                 _alertCriteria.Type = CriteriaType.Price;
-                SetOperators();
             }
+
+            SetOperators();
         }
 
         private void SetOperators()
@@ -136,9 +139,6 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
 
         public void AddToAlertCriteria(AlertCriteria alertCriteria)
         {
-            if (alertCriteria.ChildrenCriteria == null)
-                alertCriteria.ChildrenCriteria = new List<AlertCriteria>();
-
             alertCriteria.ChildrenCriteria.Add(_alertCriteria);
         }
     }
