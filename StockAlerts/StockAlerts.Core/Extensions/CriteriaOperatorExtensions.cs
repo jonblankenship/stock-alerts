@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StockAlerts.App.Extensions
+namespace StockAlerts.Core.Extensions
 {
     public static class CriteriaOperatorExtensions
     {
@@ -11,7 +11,8 @@ namespace StockAlerts.App.Extensions
             { CriteriaOperator.GreaterThan, ">" },
             { CriteriaOperator.GreaterThanOrEqualTo, ">=" },
             { CriteriaOperator.LessThan, "<" },
-            { CriteriaOperator.LessThanOrEqualTo, "<=" }
+            { CriteriaOperator.LessThanOrEqualTo, "<=" },
+            { CriteriaOperator.Equals, "=" }
         };
 
         public static string ToDisplayString(this CriteriaOperator criteriaType)

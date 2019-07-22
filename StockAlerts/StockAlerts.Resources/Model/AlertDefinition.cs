@@ -16,7 +16,9 @@ namespace StockAlerts.Resources.Model
         public DateTimeOffset? LastSent { get; set; }
 
         public string Name { get; set; }
-        
+
+        public string Description { get; set; }
+
         public AlertCriteria RootCriteria { get; set; }
 
         public Stock Stock { get; set; }

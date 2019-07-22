@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StockAlerts.App.Extensions
+namespace StockAlerts.Core.Extensions
 {
     public static class CriteriaTypeExtensions
     {

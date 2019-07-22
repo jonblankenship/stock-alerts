@@ -1,7 +1,10 @@
-﻿using StockAlerts.Domain.Enums;
+﻿using StockAlerts.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using StockAlerts.Core.Extensions;
+using StockAlerts.Domain.Specifications;
 
 namespace StockAlerts.Domain.Model
 {
@@ -26,7 +29,7 @@ namespace StockAlerts.Domain.Model
 
         public AlertCriteria ParentCriteria { get; set; }
 
-        public ICollection<AlertCriteria> ChildrenCriteria { get; set; }
+        public ICollection<AlertCriteria> ChildrenCriteria { get; set; } = new List<AlertCriteria>();
 
         public bool ContainsAlertCriteriaId(Guid alertCriteriaId)
         {
@@ -69,6 +72,36 @@ namespace StockAlerts.Domain.Model
                 errors.Add($"Alert Criteria of type {Type} must have a level.");
             if (ChildrenCriteria.Any())
                 errors.Add("Non-composite Alert Criteria may not have children.");
+        }
+
+        public override string ToString()
+        {
+            switch (Type)
+            {
+                case CriteriaType.Price:
+                    return $"{Type.ToDisplayString()} {Operator.ToDisplayString()} {Level:C}";
+                case CriteriaType.DailyPercentageGainLoss:
+                    return $"{Type.ToDisplayString()} {Operator.ToDisplayString()} {Level:P2}";
+                case CriteriaType.Composite:
+                    var sb = new StringBuilder();
+                    foreach (var c in ChildrenCriteria)
+                    {
+                        var operatorText = Operator == CriteriaOperator.And ? "AND" : "OR";
+                        if (sb.Length > 0)
+                        {
+                            sb.Append($" {operatorText} ");
+                        }
+
+                        if (c.Type == CriteriaType.Composite)
+                            sb.Append($"({c})");
+                        else
+                            sb.Append(c);
+                    }
+
+                    return sb.ToString();
+                default:
+                    return string.Empty;
+            }
         }
     }
 }

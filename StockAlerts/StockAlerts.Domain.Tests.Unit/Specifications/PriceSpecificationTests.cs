@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
-using StockAlerts.Domain.Enums;
+using StockAlerts.Core.Enums;
+using StockAlerts.Core.Extensions;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.QueueMessages;
 using StockAlerts.Domain.Specifications;

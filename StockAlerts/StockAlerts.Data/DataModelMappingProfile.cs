@@ -14,7 +14,9 @@ namespace StockAlerts.Data
 
         private void MapDataToDomainModel()
         {
-            CreateMap<AlertDefinition, Domain.Model.AlertDefinition>().ConstructUsingServiceLocator();
+            CreateMap<AlertDefinition, Domain.Model.AlertDefinition>()
+                .ForMember(d => d.Description, opt => opt.Ignore())
+                .ConstructUsingServiceLocator();
             CreateMap<Stock, Domain.Model.Stock>()
                 .ForMember(d => d.OpenPrice, opt => opt.Ignore())
                 .ConstructUsingServiceLocator();

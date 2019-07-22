@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using StockAlerts.Core.Extensions;
 using Xamarin.Forms;
 
 namespace StockAlerts.App.ViewModels.AlertDefinitions

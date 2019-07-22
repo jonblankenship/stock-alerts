@@ -27,16 +27,16 @@ namespace StockAlerts.Functions
             [TimerTrigger("0 */1 8-16 * * 1-5", RunOnStartup = true)]TimerInfo myTimer,
             ILogger log)
         {
-            //if (DateTimeOffset.UtcNow >= _settings.AppSettings.MarketOpenUtc &&
-            //    DateTimeOffset.UtcNow <= _settings.AppSettings.MarketCloseUtc)
-            //{
-            //    log.Log(LogLevel.Information, "Executing GetQuotes: Performing update quotes for subscribed stocks.");
-            //    await _dataUpdateService.UpdateQuotesForSubscribedStocksAsync();
-            //}
-            //else
-            //{
-            //    log.Log(LogLevel.Information, "Executing GetQuotes: Outside of market hours - no update.");
-            //}
+            if (DateTimeOffset.UtcNow >= _settings.AppSettings.MarketOpenUtc &&
+                DateTimeOffset.UtcNow <= _settings.AppSettings.MarketCloseUtc)
+            {
+                log.Log(LogLevel.Information, "Executing GetQuotes: Performing update quotes for subscribed stocks.");
+                await _dataUpdateService.UpdateQuotesForSubscribedStocksAsync();
+            }
+            else
+            {
+                log.Log(LogLevel.Information, "Executing GetQuotes: Outside of market hours - no update.");
+            }
         }
     }
 }

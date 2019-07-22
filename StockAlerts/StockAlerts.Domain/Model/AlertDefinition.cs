@@ -41,6 +41,8 @@ namespace StockAlerts.Domain.Model
         public DateTimeOffset? LastSent { get; set; }
 
         public string Name { get; set; }
+
+        public string Description => RootCriteria?.ToString();
         
         public ICollection<AlertTriggerHistory> AlertTriggerHistories { get; set; }
 

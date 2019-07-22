@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using StockAlerts.Core.Enums;
 using StockAlerts.Data.Repositories;
 using StockAlerts.Data.Tests.Unit.Utilities;
-using StockAlerts.Domain.Enums;
 using StockAlerts.Domain.Exceptions;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.Repositories;

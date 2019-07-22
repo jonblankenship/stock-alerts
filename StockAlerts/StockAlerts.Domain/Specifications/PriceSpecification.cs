@@ -1,7 +1,8 @@
-﻿using StockAlerts.Domain.QueueMessages;
-using System;
-using StockAlerts.Domain.Enums;
+﻿using StockAlerts.Core.Enums;
+using StockAlerts.Core.Extensions;
 using StockAlerts.Domain.Model;
+using StockAlerts.Domain.QueueMessages;
+using System;
 
 namespace StockAlerts.Domain.Specifications
 {

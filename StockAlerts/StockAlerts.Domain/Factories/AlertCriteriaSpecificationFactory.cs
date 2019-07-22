@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using StockAlerts.Domain.Enums;
+﻿using StockAlerts.Core.Enums;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.QueueMessages;
 using StockAlerts.Domain.Specifications;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace StockAlerts.Domain.Factories
 {

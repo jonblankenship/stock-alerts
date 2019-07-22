@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
-using StockAlerts.Domain.Enums;
+using StockAlerts.Core.Enums;
 using StockAlerts.Domain.Factories;
 using StockAlerts.Domain.Model;
 using StockAlerts.Domain.QueueMessages;
