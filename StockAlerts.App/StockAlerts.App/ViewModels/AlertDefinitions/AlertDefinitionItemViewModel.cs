@@ -22,7 +22,7 @@ namespace StockAlerts.App.ViewModels.AlertDefinitions
 
         public string Name => _alertDefinition.Name;
 
-        public string Description => "Price > 225 OR Price < 175"; // TODO: Populate and get from web service
+        public string Description => _alertDefinition.Description;
 
         public decimal LastPrice => _alertDefinition.Stock.LastPrice;
 
