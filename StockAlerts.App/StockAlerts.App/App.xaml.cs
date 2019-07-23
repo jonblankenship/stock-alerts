@@ -11,6 +11,7 @@ using StockAlerts.App.Services.Logging;
 using StockAlerts.App.Services.RequestProvider;
 using StockAlerts.App.Services.Settings;
 using StockAlerts.App.Services.Stocks;
+using StockAlerts.App.Services.UserPreferences;
 using StockAlerts.App.Utility;
 using StockAlerts.App.Views;
 using StockAlerts.App.Views.AlertDefinitions;
@@ -62,6 +63,7 @@ namespace StockAlerts.App
             containerRegistry.Register<ISettingsService, SettingsService>();
             containerRegistry.Register<IAccountService, AccountService>();
             containerRegistry.Register<IAlertDefinitionsService, AlertDefinitionsService>();
+            containerRegistry.Register<IUserPreferencesService, UserPreferencesService>();
             containerRegistry.Register<IStocksService, StocksService>();
             containerRegistry.Register<IRequestProvider, RequestProvider>();
             containerRegistry.Register<ILogger, ConsoleLogger>();

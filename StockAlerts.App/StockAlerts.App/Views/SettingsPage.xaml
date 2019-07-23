@@ -3,13 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:StockAlerts.App.Views;assembly=StockAlerts.App"
+             xmlns:mvvm="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutowireViewModel="True"
              x:Class="StockAlerts.App.Views.SettingsPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Settings"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="80"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Label Text="{Binding Title}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10" FontSize="Large"></Label>
+
+                <!-- USER SETTINGS FORM -->
+                <Grid Grid.Row="1" Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackLayout Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding ShouldSendPush}"></CheckBox>
+                        <Label VerticalOptions="Center">Push Notifications</Label>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Grid.Row="1">
+                        <CheckBox IsChecked="{Binding ShouldSendEmail}"></CheckBox>
+                        <Label VerticalOptions="Center">Email Notifications</Label>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Grid.Row="2">
+                        <CheckBox IsChecked="{Binding ShouldSendSms}"></CheckBox>
+                        <Label VerticalOptions="Center">Text Notifications</Label>
+                    </StackLayout>
+                </Grid>
+
+                <!-- SAVE BUTTON -->
+                <Frame CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="2" HasShadow="True" Padding="0">
+                    <Button CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"
+                            Text="Save" Command="{Binding SaveCommand}"
+                            BackgroundColor="{StaticResource DarkGrayColor}" TextColor="{StaticResource WhiteColor}"></Button>
+                </Frame>
+            </Grid>
+            <!-- INDICATOR -->
+            <views:LoadingIndicatorView></views:LoadingIndicatorView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

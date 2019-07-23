@@ -42,7 +42,11 @@ namespace StockAlerts.App.ViewModels.Base
         public bool IsActive
         {
             get => _isActive;
-            set => SetProperty(ref _isActive, value, () => Console.WriteLine($"{GetType().Name}: IsActive: {value}"));
+            set => SetProperty(ref _isActive, value, () =>
+            {
+                Console.WriteLine($"{GetType().Name}: IsActive: {value}");
+                IsActiveChanged?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         public event EventHandler IsActiveChanged;
