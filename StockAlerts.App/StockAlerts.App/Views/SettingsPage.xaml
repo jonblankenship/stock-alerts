@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:StockAlerts.App.Views;assembly=StockAlerts.App"
              xmlns:mvvm="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:behaviors="clr-namespace:StockAlerts.App.Behaviors;assembly=StockAlerts.App"
              mc:Ignorable="d"
              mvvm:ViewModelLocator.AutowireViewModel="True"
              x:Class="StockAlerts.App.Views.SettingsPage">
@@ -14,38 +15,55 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="80"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label Text="{Binding Title}" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Margin="10" FontSize="Large"></Label>
 
                 <!-- USER SETTINGS FORM -->
-                <Grid Grid.Row="1" Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <StackLayout Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding ShouldSendPush}"></CheckBox>
-                        <Label VerticalOptions="Center">Push Notifications</Label>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal" Grid.Row="1">
-                        <CheckBox IsChecked="{Binding ShouldSendEmail}"></CheckBox>
-                        <Label VerticalOptions="Center">Email Notifications</Label>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal" Grid.Row="2">
-                        <CheckBox IsChecked="{Binding ShouldSendSms}"></CheckBox>
-                        <Label VerticalOptions="Center">Text Notifications</Label>
-                    </StackLayout>
-                </Grid>
+                <ScrollView Grid.Row="1">
+                    <Grid Grid.Row="1" Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Orientation="Horizontal" Grid.ColumnSpan="2">
+                            <CheckBox IsChecked="{Binding ShouldSendPush}"></CheckBox>
+                            <Label VerticalOptions="Center">Push Notifications</Label>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
+                            <CheckBox IsChecked="{Binding ShouldSendEmail}"></CheckBox>
+                            <Label VerticalOptions="Center">Email Notifications</Label>
+                        </StackLayout>
+                        <Label Text="Email Address" Grid.Row="2" VerticalOptions="Center" Margin="30,0,0,0"></Label>
+                        <Entry Text="{Binding EmailAddress}" Grid.Row="2" Grid.Column="1" IsEnabled="{Binding ShouldSendEmail}" HorizontalTextAlignment="End"></Entry>
+                        <StackLayout Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
+                            <CheckBox IsChecked="{Binding ShouldSendSms}"></CheckBox>
+                            <Label VerticalOptions="Center">Text Notifications</Label>
+                        </StackLayout>
+                        <Label Text="Phone Number" Grid.Row="4" VerticalOptions="Center" Margin="30,0,0,0"></Label>
+                        <Entry Text="{Binding SmsNumber}" Grid.Row="4" Grid.Column="1" IsEnabled="{Binding ShouldSendSms}" HorizontalTextAlignment="End" Keyboard="Numeric" WidthRequest="50">
+                            <Entry.Behaviors>
+                                <behaviors:MaskedBehavior Mask="(XXX) XXX-XXXX" />
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Grid>
+                </ScrollView>
+
+                <!-- ERROR MESSAGES -->
+                <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource ErrorColor}" Grid.Row="2" Margin="10,0,0,0">
+                </Label>
 
                 <!-- SAVE BUTTON -->
-                <Frame CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="2" HasShadow="True" Padding="0">
+                <Frame CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="3" HasShadow="True" Padding="0">
                     <Button CornerRadius="22" WidthRequest="160" HeightRequest="44" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"
                             Text="Save" Command="{Binding SaveCommand}"
                             BackgroundColor="{StaticResource DarkGrayColor}" TextColor="{StaticResource WhiteColor}"></Button>
