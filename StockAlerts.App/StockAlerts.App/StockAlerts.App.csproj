@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Acr.UserDialogs" Version="7.0.4" />
     <PackageReference Include="FreshEssentials" Version="2.1.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Nito.Mvvm.Async" Version="1.0.0-pre-03" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.431" />
     <PackageReference Include="Prism.Forms" Version="7.1.0.431" />
